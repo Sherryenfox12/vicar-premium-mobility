@@ -1,0 +1,118 @@
+/* AdminLogin CSS - Matching KW99 Theme */
+
+/* CSS Variables - Same as other pages */
+:root {
+  --primary-red: #d41111;
+  --dark-bg: #111111;
+  --card-bg: #1a1a1a;
+  --text-light: #f5f5f5;
+  --text-muted: #a3a3a3;
+  --border-color: #392828;
+}
+
+.admin-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--dark-bg);
+  padding: 20px;
+  font-family: 'OPPO Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.login-container {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--border-color);
+}
+
+.login-container h1 {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Bebas', sans-serif;
+  letter-spacing: 0.1em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-family: 'OPPO Sans', sans-serif;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--dark-bg);
+  color: var(--text-light);
+  transition: border-color 0.3s ease;
+  font-family: 'OPPO Sans', sans-serif;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(212, 17, 17, 0.1);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.login-btn {
+  background: linear-gradient(135deg, var(--primary-red) 0%, #b30f0f 100%);
+  color: white;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Bebas', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 17, 17, 0.3);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+  
+  .login-container h1 {
+    font-size: 1.5rem;
+  }
+}
+

@@ -1,0 +1,13 @@
+/* Red Line Component Styles */
+.red-line {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #dc2626, transparent);
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  display: block;
+}

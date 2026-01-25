@@ -1,0 +1,225 @@
+/* Mobile App Section Styles */
+.mobile-app-section {
+  background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 100%);
+  padding: 5rem 0;
+  margin-top: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-app-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/vecteezy_a-red-and-black-background-with-a-bright-light-gradient-art_.jpg') center/cover;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.app-promotion-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.app-info {
+  color: var(--text-light);
+}
+
+.app-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--primary-red);
+  font-family: 'Bebas', sans-serif;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.app-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.app-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: var(--text-muted);
+  max-width: 500px;
+}
+
+.appointment-btn {
+  background: var(--primary-red);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  font-family: 'Bebas', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.appointment-btn:hover {
+  background: #b30f0f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 17, 17, 0.3);
+}
+
+.store-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.store-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-light);
+  text-decoration: none;
+}
+
+.store-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: var(--primary-red);
+}
+
+.store-btn svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary-red);
+}
+
+.btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.btn-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-title {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.app-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-app-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.mobile-app-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .app-promotion-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+  
+  .app-info {
+    order: 2;
+  }
+  
+  .app-image {
+    order: 1;
+  }
+  
+  .app-description {
+    max-width: 100%;
+  }
+  
+  .store-buttons {
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-app-section {
+    padding: 3rem 0;
+  }
+  
+  .app-title {
+    font-size: 2.5rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .app-description {
+    font-size: 1rem;
+  }
+  
+  .appointment-btn {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+  }
+  
+  .store-btn {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .btn-title {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 2rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .store-buttons {
+    gap: 0.75rem;
+  }
+  
+  .store-btn {
+    padding: 0.75rem 1rem;
+  }
+}

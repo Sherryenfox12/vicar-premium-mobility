@@ -1,0 +1,194 @@
+/* Mobile App Promotion */
+.mobile-app-section {
+  padding: 3rem 0 !important;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/image/LuxuryChauffeurService - Phone.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.app-promotion-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 3rem !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.app-info {
+  flex: 1 !important;
+  max-width: 500px !important;
+}
+
+.app-title {
+  font-size: 3.5rem !important;
+  font-weight: bold !important;
+  color: var(--text-light) !important;
+  margin-bottom: 0.75rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.1em !important;
+  line-height: 1 !important;
+}
+
+.app-subtitle {
+  font-size: 1.25rem !important;
+  color: var(--text-light) !important;
+  margin-bottom: 1rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.05em !important;
+}
+
+.app-description {
+  font-size: 1.125rem !important;
+  color: var(--text-muted) !important;
+  line-height: 1.6 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.appointment-btn {
+  background: linear-gradient(90deg, #670000 0%, #F20000 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.1em !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin-bottom: 1.5rem !important;
+  text-transform: uppercase !important;
+}
+
+.appointment-btn:hover {
+  background: linear-gradient(90deg, #5a0000 0%, #d40000 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(212, 17, 17, 0.3) !important;
+}
+
+.store-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+.store-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  background: #1a1a1a !important;
+  border: 2px solid #333 !important;
+  border-radius: 0.5rem !important;
+  color: var(--text-light) !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  min-width: 140px !important;
+}
+
+.store-btn:hover {
+  border-color: var(--primary-red) !important;
+  background: rgba(212, 17, 17, 0.1) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(212, 17, 17, 0.2) !important;
+}
+
+.store-btn svg {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  color: var(--primary-red) !important;
+  flex-shrink: 0 !important;
+}
+
+.btn-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.btn-label {
+  font-size: 0.625rem !important;
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}
+
+.btn-title {
+  font-size: 0.875rem !important;
+  font-weight: bold !important;
+  color: var(--text-light) !important;
+}
+
+.app-image {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-top: 2rem !important;
+}
+
+.app-image .mobile-app-img {
+  animation: float 3s ease-in-out infinite !important;
+  will-change: transform !important;
+}
+
+.mobile-app-img {
+  max-width: 600px !important;
+  height: auto !important;
+  border-radius: 2rem !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  animation: float 3s ease-in-out infinite !important;
+  will-change: transform !important;
+}
+
+.mobile-app-img:hover {
+  animation-play-state: paused !important;
+  transform: scale(1.05) translateY(0px) !important;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) !important;
+  }
+  50% {
+    transform: translateY(-15px) !important;
+  }
+  100% {
+    transform: translateY(0px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-promotion-content {
+    flex-direction: column !important;
+    gap: 2rem !important;
+    text-align: center !important;
+  }
+  
+  .app-title {
+    font-size: 2.5rem !important;
+  }
+  
+  .store-buttons {
+    justify-content: center !important;
+    gap: 0.5rem !important;
+  }
+  
+  .store-btn {
+    min-width: 120px !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .mobile-app-img {
+    max-width: 350px !important;
+    animation: float 3s ease-in-out infinite !important;
+    will-change: transform !important;
+  }
+}

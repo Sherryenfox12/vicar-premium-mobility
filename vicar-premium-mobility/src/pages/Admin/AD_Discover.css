@@ -1,0 +1,726 @@
+.ad-discover {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.discover-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.discover-header h2 {
+  color: #d41111;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+.discover-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.discover-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.search-section {
+  display: flex;
+  flex: 1;
+  max-width: 400px;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #d41111;
+}
+
+.search-btn {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.search-btn:hover {
+  background: #333;
+}
+
+.add-blog-btn {
+  background: #d41111;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-blog-btn:hover {
+  background: #b30f0f;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+
+
+
+
+.discover-content {
+  min-height: 500px;
+}
+
+/* Loading and Error States */
+.ad-discover-loading-state, .ad-discover-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.ad-discover-error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ad-discover-error-message button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ad-discover-error-message button:hover {
+  background: #c82333;
+}
+
+/* Blog Grid */
+.ad-discover-blogs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.ad-discover-blog-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ad-discover-blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.ad-discover-blog-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.ad-discover-blog-image img,
+.ad-discover-blog-image video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-discover-media-gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ad-discover-media-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ad-discover-media-counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Add navigation arrows for multiple media */
+.ad-discover-media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.ad-discover-media-nav:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.ad-discover-media-nav.prev {
+  left: 10px;
+}
+
+.ad-discover-media-nav.next {
+  right: 10px;
+}
+
+.ad-discover-no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 2rem;
+  color: #ccc;
+  background: #f8f9fa;
+}
+
+.ad-discover-blog-content {
+  padding: 20px;
+}
+
+.ad-discover-blog-title {
+  margin: 0 0 10px 0;
+  color: #1a1a1a;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.ad-discover-blog-summary {
+  color: #666;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ad-discover-blog-link {
+  display: inline-block;
+  color: #d41111;
+  text-decoration: none;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.ad-discover-blog-link:hover {
+  text-decoration: underline;
+}
+
+.ad-discover-blog-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.ad-discover-blog-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ad-discover-edit-btn, .ad-discover-delete-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.ad-discover-edit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.ad-discover-edit-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.ad-discover-delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.ad-discover-delete-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Blog Form */
+.ad-discover-blog-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.ad-discover-blog-form {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.ad-discover-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.ad-discover-form-header h3 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.5rem;
+}
+
+.ad-discover-close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.ad-discover-close-btn:hover {
+  background: #f0f0f0;
+}
+
+.ad-discover-form-group {
+  margin-bottom: 20px;
+}
+
+.ad-discover-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.ad-discover-form-group input,
+.ad-discover-form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.ad-discover-form-group input:focus,
+.ad-discover-form-group textarea:focus {
+  outline: none;
+  border-color: #d41111;
+}
+
+.ad-discover-form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Rich text editor styling */
+.ad-discover-form-group .simple-rich-editor {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.ad-discover-form-group .simple-rich-editor:focus-within {
+  border-color: #d41111;
+  box-shadow: 0 0 0 2px rgba(212, 17, 17, 0.1);
+}
+
+.ad-discover-form-group .editor-toolbar {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.ad-discover-form-group .toolbar-btn {
+  border: 1px solid #ddd;
+  background: white;
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+.ad-discover-form-group .toolbar-btn:hover:not(:disabled) {
+  background: #e9ecef;
+}
+
+.ad-discover-form-group .toolbar-btn.active {
+  background: #d41111;
+  border-color: #d41111;
+  color: white;
+}
+
+.ad-discover-form-group .toolbar-btn.active strong,
+.ad-discover-form-group .toolbar-btn.active em,
+.ad-discover-form-group .toolbar-btn.active u,
+.ad-discover-form-group .toolbar-btn.active span {
+  color: white;
+}
+
+.ad-discover-form-group .toolbar-btn.active:hover {
+  background: #b30f0f;
+}
+
+.ad-discover-error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.ad-discover-file-info {
+  color: #333;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.ad-discover-current-media {
+  color: #333;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.ad-discover-file-hint {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+
+
+.ad-discover-selected-files {
+  margin-top: 10px;
+}
+
+.ad-discover-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.ad-discover-remove-file-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.ad-discover-remove-file-btn:hover {
+  background: #c82333;
+}
+
+.ad-discover-current-file {
+  background: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 3px;
+  margin-top: 3px;
+  font-size: 0.8rem;
+  word-break: break-all;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ad-discover-current-file.marked-for-deletion {
+  background: #ffe6e6;
+  color: #d63384;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.ad-discover-delete-file-btn,
+.ad-discover-undo-delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.ad-discover-delete-file-btn:hover {
+  background: #c82333;
+}
+
+.ad-discover-undo-delete-btn {
+  background: #28a745;
+}
+
+.ad-discover-undo-delete-btn:hover {
+  background: #218838;
+}
+
+.ad-discover-form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.ad-discover-cancel-btn, .ad-discover-submit-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.ad-discover-cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.ad-discover-cancel-btn:hover {
+  background: #5a6268;
+}
+
+.ad-discover-submit-btn {
+  background: #d41111;
+  color: white;
+}
+
+.ad-discover-submit-btn:hover:not(:disabled) {
+  background: #b30f0f;
+  transform: translateY(-1px);
+}
+
+.ad-discover-submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+
+/* Blog Body Content Styles */
+.ad-discover-blog-body {
+  margin: 15px 0;
+  line-height: 1.6;
+  color: #333;
+}
+
+.ad-discover-blog-body h1,
+.ad-discover-blog-body h2,
+.ad-discover-blog-body h3 {
+  margin: 20px 0 10px 0;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.ad-discover-blog-body h1 {
+  font-size: 1.8rem;
+}
+
+.ad-discover-blog-body h2 {
+  font-size: 1.5rem;
+}
+
+.ad-discover-blog-body h3 {
+  font-size: 1.3rem;
+}
+
+.ad-discover-blog-body p {
+  margin: 10px 0;
+}
+
+.ad-discover-blog-body ul,
+.ad-discover-blog-body ol {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.ad-discover-blog-body li {
+  margin: 5px 0;
+}
+
+.ad-discover-blog-body a {
+  color: #d41111;
+  text-decoration: none;
+}
+
+.ad-discover-blog-body a:hover {
+  text-decoration: underline;
+}
+
+.ad-discover-blog-body strong {
+  font-weight: 600;
+}
+
+.ad-discover-blog-body em {
+  font-style: italic;
+}
+
+.ad-discover-blog-body u {
+  text-decoration: underline;
+}
+
+.ad-discover-blog-body s {
+  text-decoration: line-through;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .discover-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-section {
+    max-width: none;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ad-discover-blogs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ad-discover-blog-form {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .ad-discover-form-actions {
+    flex-direction: column;
+  }
+  
+  .ad-discover-blog-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .ad-discover-blog-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .ad-discover {
+    padding: 15px;
+  }
+  
+  .discover-header h2 {
+    font-size: 2rem;
+  }
+  
+  .ad-discover-blog-form {
+    padding: 15px;
+  }
+}

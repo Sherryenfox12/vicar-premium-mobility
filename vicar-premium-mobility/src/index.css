@@ -1,0 +1,166 @@
+/* Font Face Declarations */
+@font-face {
+  font-family: 'OPPO Sans';
+  src: url('/fonts/ENG & CN Font - OPPO Sans/OPPO SANS 4.0.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/ENG Title Font - Bebas/BebasNeue-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/ENG Title Font - Bebas/BEBASNEUE BOLD.TTF') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/ENG Title Font - Bebas/BEBASNEUE-LIGHT.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/ENG Title Font - Bebas/BEBASNEUE-THIN.TTF') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NotoSansCJK';
+  src: url('/fonts/CN Title Font - 思源黑体/NotoSansCJK-Regular-1.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NotoSansCJK';
+  src: url('/fonts/CN Title Font - 思源黑体/NotoSansCJK-Bold-6.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NotoSansCJK';
+  src: url('/fonts/CN Title Font - 思源黑体/NotoSansCJK-Medium-5.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NotoSansCJK';
+  src: url('/fonts/CN Title Font - 思源黑体/NotoSansCJK-Light-3.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  font-family: 'OPPO Sans', 'NotoSansCJK', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #111111;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #111111;
+  color: #f5f5f5;
+}
+
+/* Remove default button styles that might interfere */
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove default link styles that might interfere */
+a {
+  font-family: inherit;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove default heading styles that might interfere */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: inherit;
+}
+
+/* Remove default paragraph styles that might interfere */
+p {
+  margin: 0;
+  font-family: inherit;
+}
+
+/* Pulse animation for contact button */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 20px rgba(212, 17, 17, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(212, 17, 17, 0.6);
+  }
+  100% {
+    box-shadow: 0 4px 20px rgba(212, 17, 17, 0.3);
+  }
+}
+
+/* Slide in animation for popup */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Circle appear animation */
+@keyframes circleAppear {
+  from {
+    opacity: 0;
+    transform: scale(0) translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

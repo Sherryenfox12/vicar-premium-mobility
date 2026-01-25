@@ -1,0 +1,42 @@
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+    },
+    role: {
+        type: String,
+        default: 'staff',
+    },
+    firstName: {
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    phoneNumber: {
+        type: String,
+    },
+    createdByDate: {
+        type: Date,
+        default: Date.now,
+    },
+    lastModifiedDate: {
+        type: Date,
+        default: Date.now,
+    },
+}, { collection: 'UserList' }); 
+
+const UserModel = mongoose.model('UserList', userSchema); 
+
+module.exports = UserModel;
