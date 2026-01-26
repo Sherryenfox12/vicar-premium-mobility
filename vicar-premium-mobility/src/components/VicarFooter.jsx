@@ -21,7 +21,7 @@ function VicarFooter() {
 
             <div className="vicar-footerLux__trust">
               <img className="vicar-footerLux__trustLogo" src="/kw99.png" alt="KW99" loading="lazy" />
-              <span className="vicar-footerLux__trustText">Premium Mobility Partner</span>
+              <span className="vicar-footerLux__trustText">{t('footer.premiumMobilityPartner')}</span>
             </div>
 
             <div className="vicar-footerLux__social" aria-label="Social links">
@@ -69,11 +69,11 @@ function VicarFooter() {
                 <a className="vicar-footerLux__metaValue" href="tel:+601155572999">011-55572999</a>
               </div>
               <div className="vicar-footerLux__meta">
-                <span className="vicar-footerLux__metaLabel">Location</span>
-                <span className="vicar-footerLux__metaValue">Penang, Malaysia</span>
+                <span className="vicar-footerLux__metaLabel">{t('footer.location')}</span>
+                <span className="vicar-footerLux__metaValue">{t('footer.penangMalaysia')}</span>
               </div>
               <Link to="/contact-us" className="vicar-footerLux__cta">
-                Contact Concierge
+                {t('footer.contactConcierge')}
               </Link>
             </div>
           </div>
@@ -82,7 +82,7 @@ function VicarFooter() {
         <div className="vicar-footerLux__bottom">
           <div className="vicar-footerLux__bottomInner">
             <p className="vicar-footerLux__copyright">{t('footer.copyright')}</p>
-            <p className="vicar-footerLux__signature">Designed for quiet luxury mobility.</p>
+            <p className="vicar-footerLux__signature">{t('footer.designedFor')}</p>
           </div>
         </div>
       </div>

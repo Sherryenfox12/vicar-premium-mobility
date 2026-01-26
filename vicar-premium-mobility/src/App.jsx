@@ -10,6 +10,7 @@ import CarRecommendation from './pages/CarRecommendation'
 import ContactUs from './pages/ContactUs'
 import Discover from './pages/Discover'
 import DiscoverDetails from './pages/DiscoverDetails'
+import TownDetails from './pages/TownDetails'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import TestPage from './pages/TestPage'
@@ -34,6 +35,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs/>} />
           <Route path="/discover" element={<Discover/>} />
           <Route path="/discover-details/:id" element={<DiscoverDetails/>} />
+          <Route path="/town-details/:townId" element={<TownDetails />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/test" element={<TestPage />} />

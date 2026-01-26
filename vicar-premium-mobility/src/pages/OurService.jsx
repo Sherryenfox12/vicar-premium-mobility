@@ -169,12 +169,12 @@ function OurService() {
             {bannerLoading ? (
               <div className="hero-loading">
                 <div className="loading-spinner"></div>
-                <p>Loading banner media...</p>
+                <p>{t('service.loadingBannerMedia')}</p>
               </div>
             ) : bannerError ? (
               <div className="hero-error">
-                <p>⚠️ Error loading banner media: {bannerError}</p>
-                <p>Using default image...</p>
+                <p>{t('service.errorLoadingBanner')} {bannerError}</p>
+                <p>{t('service.usingDefaultImage')}</p>
                 <img 
                   src="/image/benz_service.png" 
                   alt="Our Service Banner" 
@@ -244,7 +244,7 @@ function OurService() {
         {/* Service Thumbnail Navigation */}
         <section className="service-thumbnails-section">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="service-thumbnails-title">EXPLORE WHAT WE CAN DO</h2>
+            <h2 className="service-thumbnails-title">{t('service.exploreWhatWeDo')}</h2>
             <div className="service-thumbnails-grid">
               {services.map((service) => (
                 <div
@@ -277,20 +277,15 @@ function OurService() {
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">route</span>
-                <h3 className="text-4xl font-bold mb-4">City-to-city rides</h3>
+                <h3 className="text-4xl font-bold mb-4">{t('service.cityToCityRides')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  A hassle-free option for long-distance travel with professional chauffeurs worldwide. 
-                  Whether you're traveling between major cities or need a comfortable journey across regions, 
-                  our city-to-city service ensures a seamless and luxurious experience. Our experienced 
-                  drivers are well-versed in navigating various routes, ensuring you arrive at your 
-                  destination safely and on time. Enjoy premium comfort, reliable service, and the 
-                  convenience of door-to-door transportation for your intercity travels.
+                  {t('service.cityToCityDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
                   onClick={() => navigate('/service-details/city-to-city')}
                 >
-                  Learn more
+                  {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">
@@ -313,20 +308,15 @@ function OurService() {
             <div className="flex flex-col md:flex-row-reverse items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">local_taxi</span>
-                <h3 className="text-4xl font-bold mb-4">Chauffeur hailing</h3>
+                <h3 className="text-4xl font-bold mb-4">{t('service.chauffeurHailing')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  Experience the comfort of a classic chauffeur service, with the ease of booking and quick pickup. 
-                  Our chauffeur hailing service combines traditional luxury with modern convenience, allowing you 
-                  to request a professional driver at a moment's notice. Perfect for business meetings, special 
-                  events, or when you simply want to travel in style. With our user-friendly booking system, 
-                  you can arrange a ride quickly and efficiently, while our fleet of premium vehicles and 
-                  trained chauffeurs guarantee a first-class experience from start to finish.
+                  {t('service.chauffeurHailingDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
                   onClick={() => navigate('/service-details/chauffeur-hailing')}
                 >
-                  Learn more
+                  {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">
@@ -349,21 +339,15 @@ function OurService() {
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">flight</span>
-                <h3 className="text-4xl font-bold mb-4">Airport transfers</h3>
+                <h3 className="text-4xl font-bold mb-4">{t('service.airportTransfers')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  With extra waiting time and real-time flight monitoring for delays, we ensure smooth and 
-                  effortless airport transfers. Our dedicated airport transfer service takes the stress out 
-                  of travel by tracking your flight status and adjusting pickup times accordingly. Whether 
-                  you're arriving or departing, our professional chauffeurs will be there to greet you, 
-                  assist with your luggage, and provide a comfortable journey to or from the airport. 
-                  Enjoy peace of mind knowing that your transportation is handled with precision and care, 
-                  allowing you to focus on your journey ahead.
+                  {t('service.airportTransfersDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
                   onClick={() => navigate('/service-details/airport-transfers')}
                 >
-                  Learn more
+                  {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">
@@ -386,22 +370,15 @@ function OurService() {
             <div className="flex flex-col md:flex-row-reverse items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">schedule</span>
-                <h3 className="text-4xl font-bold mb-4">Hourly and full day hire</h3>
+                <h3 className="text-4xl font-bold mb-4">{t('service.hourlyFullDayHire')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  Whether hourly or full-day chauffeur bookings, select from our customized services for 
-                  maximum flexibility, comfort, and reliability. Perfect for business trips, city tours, 
-                  shopping excursions, or special occasions, our flexible booking options adapt to your 
-                  schedule. Choose from hourly rates for short trips or full-day packages for extended 
-                  journeys. Our professional chauffeurs and premium vehicles are at your service, 
-                  providing personalized attention and ensuring your comfort throughout the duration 
-                  of your booking. Experience the freedom of having a dedicated driver at your disposal, 
-                  ready to take you wherever you need to go.
+                  {t('service.hourlyFullDayHireDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
                   onClick={() => navigate('/service-details/hourly-hire')}
                 >
-                  Learn more
+                  {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">

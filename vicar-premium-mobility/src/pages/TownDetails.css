@@ -1,0 +1,448 @@
+/* TownDetails CSS - Adapted from ServiceDetails theme */
+
+:root {
+  --primary-red: #d41111;
+  --dark-bg: #111111;
+  --card-bg: #1a1a1a;
+  --text-light: #f5f5f5;
+  --text-muted: #a3a3a3;
+  --border-color: #392828;
+}
+
+.town-details-page {
+  font-family: 'OPPO Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  background-color: var(--dark-bg) !important;
+  color: var(--text-light) !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  animation: fadeIn 0.5s ease-out;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.town-details-page * {
+  box-sizing: border-box !important;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.main-content {
+  padding-top: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  min-height: 100vh !important;
+}
+
+/* Hero */
+.hero-section {
+  position: relative !important;
+  height: 50vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  color: white !important;
+  overflow: hidden !important;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.hero-background {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+}
+
+.hero-bg-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+}
+
+.hero-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05)) !important;
+  z-index: 2 !important;
+}
+
+.hero-black-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  z-index: 2 !important;
+}
+
+.hero-content {
+  position: relative !important;
+  z-index: 3 !important;
+  max-width: 800px !important;
+  padding: 0 2rem !important;
+}
+
+.hero-title {
+  font-size: 3rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.1em !important;
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 4.5rem !important;
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.2rem !important;
+  opacity: 0.92 !important;
+  max-width: 650px !important;
+  margin: 0 auto !important;
+}
+
+@media (min-width: 768px) {
+  .hero-subtitle {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Details section */
+.town-details-section {
+  padding: 5rem 0 !important;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.town-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3rem !important;
+  align-items: center !important;
+}
+
+@media (min-width: 768px) {
+  .town-content {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+}
+
+.town-info {
+  flex: 1 !important;
+  max-width: 600px !important;
+  animation: fadeInLeft 0.8s ease-out 0.2s both;
+}
+
+.town-icon {
+  margin-bottom: 1.5rem !important;
+}
+
+.town-icon .material-icons {
+  font-size: 4rem !important;
+  color: var(--primary-red) !important;
+  animation: scaleIn 0.8s ease-out 0.3s both;
+  transition: transform 0.3s ease, color 0.3s ease !important;
+}
+
+.town-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1.5rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.05em !important;
+}
+
+.town-description {
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+  margin-bottom: 2rem !important;
+  color: var(--text-muted) !important;
+}
+
+.town-features {
+  margin-bottom: 2.5rem !important;
+}
+
+.town-features h3 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 1rem !important;
+  color: var(--text-light) !important;
+}
+
+.town-features ul {
+  list-style: none !important;
+  padding: 0 !important;
+}
+
+.town-features li {
+  padding: 0.5rem 0 !important;
+  padding-left: 1.5rem !important;
+  position: relative !important;
+  color: var(--text-muted) !important;
+}
+
+.town-features li::before {
+  content: '✓' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--primary-red) !important;
+  font-weight: bold !important;
+}
+
+.town-actions {
+  display: flex !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+}
+
+.primary-btn {
+  background: linear-gradient(90deg, #670000 0%, #f20000 100%) !important;
+  color: white !important;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(90deg, #5a0000 0%, #d40000 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 20px rgba(212, 17, 17, 0.3) !important;
+}
+
+.secondary-btn {
+  background-color: transparent !important;
+  color: var(--text-light) !important;
+  border: 2px solid var(--border-color) !important;
+}
+
+.secondary-btn:hover {
+  background-color: var(--border-color) !important;
+  transform: translateY(-2px) !important;
+}
+
+.town-image {
+  flex: 1 !important;
+  max-width: 500px !important;
+  animation: fadeInRight 0.8s ease-out 0.4s both;
+}
+
+.town-img {
+  width: 100% !important;
+  height: 400px !important;
+  object-fit: cover !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.town-img:hover {
+  transform: scale(1.02) !important;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Extra info */
+.additional-info-section {
+  padding: 4rem 0 !important;
+  background-color: var(--card-bg) !important;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.additional-info-section h2 {
+  text-align: center !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 3rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.05em !important;
+}
+
+.info-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 2rem !important;
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+}
+
+@media (min-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+.info-card {
+  text-align: center !important;
+  padding: 2rem 1.5rem !important;
+  background-color: var(--dark-bg) !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid var(--border-color) !important;
+  transition: transform 0.3s ease !important;
+  animation: scaleIn 0.6s ease-out both;
+}
+
+.info-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 10px 30px rgba(212, 17, 17, 0.2) !important;
+}
+
+.info-card .material-icons {
+  font-size: 3rem !important;
+  color: var(--primary-red) !important;
+  margin-bottom: 1rem !important;
+}
+
+.info-card h3 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 1rem !important;
+  color: var(--text-light) !important;
+}
+
+.info-card p {
+  color: var(--text-muted) !important;
+  line-height: 1.6 !important;
+}
+
+/* Material Icons */
+.material-icons {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-feature-settings: 'liga' !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+@media (max-width: 768px) {
+  .town-content {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .town-info {
+    max-width: 100% !important;
+  }
+
+  .town-image {
+    max-width: 100% !important;
+  }
+
+  .town-actions {
+    justify-content: center !important;
+  }
+
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem !important;
+  }
+
+  .town-title {
+    font-size: 2rem !important;
+  }
+
+  .additional-info-section h2 {
+    font-size: 2rem !important;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

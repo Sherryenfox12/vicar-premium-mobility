@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaCar, FaCalendarAlt, FaKey } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
 import Lottie from 'lottie-react';
@@ -14,6 +14,7 @@ import './HomePage.css';
 
 function HomePage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const [flow, setFlow] = useState('rental');
   const videoRef = useRef(null);
@@ -42,6 +43,17 @@ function HomePage() {
   const [canScrollArrivalsRight, setCanScrollArrivalsRight] = useState(true);
 
   const KW99_LANDING_API_URL = `${import.meta.env.VITE_LANDING_PAGE_CAR_LIST_URL}`;
+
+  const goToTownDetails = (id) => {
+    navigate(`/town-details/${id}`);
+  };
+
+  const handleCityKeyDown = (e, id) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      goToTownDetails(id);
+    }
+  };
 
   // Load Security Car Black Lottie animation
   useEffect(() => {
@@ -410,7 +422,7 @@ function HomePage() {
           {imageError ? (
             <div className="image-error">
               <div className="error-icon">🚗</div>
-              <p>Image unavailable</p>
+              <p>{t('home.imageUnavailable')}</p>
             </div>
           ) : (
             <img
@@ -464,13 +476,13 @@ function HomePage() {
     <div className="new-arrivals-error">
       <div className="error-content">
         <div className="error-icon">⚠️</div>
-        <h3>Failed to Load New Arrivals</h3>
+        <h3>{t('home.failedToLoadArrivals')}</h3>
         <p>{vehiclesError}</p>
         <button 
           className="retry-btn"
           onClick={() => window.location.reload()}
         >
-          Retry
+          {t('home.retry')}
         </button>
       </div>
     </div>
@@ -481,8 +493,8 @@ function HomePage() {
     <div className="new-arrivals-empty">
       <div className="empty-content">
         <div className="empty-icon">🚗</div>
-        <h3>No Vehicles Available</h3>
-        <p>Check back later for new arrivals!</p>
+        <h3>{t('home.noVehiclesAvailable')}</h3>
+        <p>{t('home.checkBackLater')}</p>
       </div>
     </div>
   );
@@ -507,13 +519,13 @@ function HomePage() {
             </video>
 
             <div className={`home-video-text-overlay ${!showText ? 'fade-out' : ''}`}>
-              <p className="home-video-eyebrow">ViCAR Premium Mobility</p>
+              <p className="home-video-eyebrow">{t('home.vicarPremiumMobility')}</p>
               <h1 className="home-video-title">
-                ARRIVE IN<br />
-                <span className="lux-gold">QUIET LUXURY</span>
+                {t('home.arriveInQuietLuxury').split(' ').slice(0, 2).join(' ')}<br />
+                <span className="lux-gold">{t('home.arriveInQuietLuxury').split(' ').slice(2).join(' ')}</span>
               </h1>
               <p className="home-video-subtitle">
-                Chauffeur service and premium mobility — curated for discretion, comfort, and impeccable timing.
+                {t('home.chauffeurServiceTagline')}
               </p>
             </div>
 
@@ -525,7 +537,7 @@ function HomePage() {
                       <div className="home-wheel"></div>
                     </div>
                   </div>
-                  <p className="home-scroll-text">Scroll to continue</p>
+                  <p className="home-scroll-text">{t('home.scrollToContinue')}</p>
                 </div>
               </div>
             )}
@@ -535,7 +547,7 @@ function HomePage() {
               onClick={handleSkipVideo}
               aria-label="Skip video"
             >
-              Skip
+              {t('home.skip')}
             </button>
 
             {/* Lottie Loading Animation - appears during video fade-out */}
@@ -569,11 +581,10 @@ function HomePage() {
           <div className="chauffeur-bg-overlay"></div>
           <div className="chauffeur-content">
             <div className="chauffeur-text-side">
-              <p className="lux-eyebrow">Chauffeur • Airport • City-to-city</p>
-              <h2 className="chauffeur-title">Malaysia luxury chauffeur service</h2>
+              <p className="lux-eyebrow">{t('home.chauffeurAirportCity')}</p>
+              <h2 className="chauffeur-title">{t('home.malaysiaChauffeurService')}</h2>
               <p className="chauffeur-subtitle">
-                Experience luxury transportation with our premium chauffeur service. 
-                Available for one-way trips or hourly bookings.
+                {t('home.experienceLuxuryTransport')}
               </p>
               <div className="lux-trustbar" aria-label="Trusted partners">
                 <div className="lux-trust-item">
@@ -581,11 +592,11 @@ function HomePage() {
                 </div>
                 <div className="lux-trust-divider" aria-hidden="true"></div>
                 <div className="lux-trust-item">
-                  <span className="lux-trust-text">24/7 Concierge</span>
+                  <span className="lux-trust-text">{t('home.concierge24')}</span>
                 </div>
                 <div className="lux-trust-divider" aria-hidden="true"></div>
                 <div className="lux-trust-item">
-                  <span className="lux-trust-text">Premium Fleet</span>
+                  <span className="lux-trust-text">{t('home.premiumFleet')}</span>
                 </div>
               </div>
               <div className="chauffeur-features">
@@ -593,19 +604,19 @@ function HomePage() {
                   <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span>Professional Drivers</span>
+                  <span>{t('home.professionalDrivers')}</span>
                 </div>
                 <div className="feature-item">
                   <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span>24/7 Availability</span>
+                  <span>{t('home.availability24')}</span>
                 </div>
                 <div className="feature-item">
                   <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span>Luxury Vehicles</span>
+                  <span>{t('home.luxuryVehicles')}</span>
                 </div>
               </div>
             </div>
@@ -613,13 +624,13 @@ function HomePage() {
             <div className="chauffeur-form-side">
               <div className="chauffeur-form-card">
                 <div className="home-form-tabs">
-                  <button className="home-form-tab active">One way</button>
-                  <button className="home-form-tab">By the hour</button>
+                  <button className="home-form-tab active">{t('home.oneWay')}</button>
+                  <button className="home-form-tab">{t('home.byTheHour')}</button>
                 </div>
                 
                 <form className="home-booking-form" onSubmit={(e) => e.preventDefault()}>
                   <div className="home-form-group">
-                    <label className="home-form-label">From</label>
+                    <label className="home-form-label">{t('home.from')}</label>
                     <div className="home-input-with-icon">
                       <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
@@ -628,13 +639,13 @@ function HomePage() {
                       <input 
                         type="text" 
                         className="home-form-input" 
-                        placeholder="Address, airport, hotel, ..."
+                        placeholder={t('home.addressPlaceholder')}
                       />
                     </div>
                   </div>
 
                   <div className="home-form-group">
-                    <label className="home-form-label">To</label>
+                    <label className="home-form-label">{t('home.to')}</label>
                     <div className="home-input-with-icon">
                       <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
@@ -643,14 +654,14 @@ function HomePage() {
                       <input 
                         type="text" 
                         className="home-form-input" 
-                        placeholder="Address, airport, hotel, ..."
+                        placeholder={t('home.addressPlaceholder')}
                       />
                     </div>
                   </div>
 
                   <div className="home-form-row">
                     <div className="home-form-group flex-1">
-                      <label className="home-form-label">Date</label>
+                      <label className="home-form-label">{t('home.date')}</label>
                       <div className="home-input-with-icon">
                         <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
@@ -664,7 +675,7 @@ function HomePage() {
                     </div>
 
                     <div className="home-form-group flex-1">
-                      <label className="home-form-label">Pickup time</label>
+                      <label className="home-form-label">{t('home.pickupTime')}</label>
                       <div className="home-input-with-icon">
                         <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
@@ -678,10 +689,10 @@ function HomePage() {
                     </div>
                   </div>
 
-                  <p className="home-form-note">Chauffeur will wait 15 minutes free of charge.</p>
+                  <p className="home-form-note">{t('home.chauffeurWaitNote')}</p>
 
                   <button type="submit" className="home-search-btn">
-                    Search
+                    {t('home.search')}
                   </button>
                 </form>
               </div>
@@ -696,16 +707,16 @@ function HomePage() {
         <section className="home-our-services-section">
           <div className="container">
             <div className="lux-servicesHeader">
-              <p className="lux-eyebrow">Signature services</p>
+              <p className="lux-eyebrow">{t('home.signatureServices')}</p>
               <div className="lux-servicesHeaderRow">
                 <div>
-                  <h2 className="home-services-title">Our services</h2>
+                  <h2 className="home-services-title">{t('home.ourServices')}</h2>
                   <p className="lux-servicesSubtitle">
-                    Curated mobility for airport transfers, city travel, and by-the-hour chauffeur bookings.
+                    {t('home.curatedMobility')}
                   </p>
                 </div>
                 <Link to="/service" className="lux-btn lux-btn--secondary lux-btnLink lux-servicesAll">
-                  View all
+                  {t('home.viewAll')}
                 </Link>
               </div>
             </div>
@@ -713,18 +724,16 @@ function HomePage() {
             <div className="lux-servicesMosaic" aria-label="Our services">
               {/* Tile A – text panel (like the left block in the reference) */}
               <div className="lux-servicesTile lux-servicesTile--intro">
-                <p className="lux-servicesKicker">ViCAR • Premium Mobility</p>
+                <p className="lux-servicesKicker">{t('home.vicarPremiumMobilityShort')}</p>
                 <h3 className="lux-servicesIntroTitle">
-                  Chauffeur-led travel,
-                  <br />
-                  perfected for comfort.
+                  {t('home.chauffeurLedTravel')}
                 </h3>
                 <p className="lux-servicesIntroBody">
-                  Discreet service, immaculate vehicles, and precise timing — across Malaysia and beyond.
+                  {t('home.discreetService')}
                 </p>
                 <div className="lux-servicesIntroActions">
                   <a href="/service#chauffeur-hailing" className="lux-btn lux-btn--primary lux-btnLink">
-                    Book chauffeur
+                    {t('home.bookChauffeur')}
                   </a>
                 </div>
               </div>
@@ -734,9 +743,9 @@ function HomePage() {
                 <a href="/service#airport-transfers" className="lux-servicesTile lux-servicesTile--hero" aria-label="Airport transfers">
                   <img src="/image/ourservice_mini_3.png" alt="Airport transfers" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">Airport transfers</h3>
-                    <p className="lux-servicesDesc">Flight monitoring + complimentary waiting time.</p>
-                    <span className="lux-servicesLink">Learn more</span>
+                    <h3 className="lux-servicesTitle">{t('home.airportTransfers')}</h3>
+                    <p className="lux-servicesDesc">{t('home.flightMonitoring')}</p>
+                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>
               </AnimatedContent>
@@ -748,9 +757,9 @@ function HomePage() {
               <a href="/service#city-to-city" className="lux-servicesTile lux-servicesTile--small2" aria-label="Chauffeur hailing">
                 <img src="/image/ourservice_mini_1.png" alt="City-to-city rides" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">City-to-city rides</h3>
-                    <p className="lux-servicesDesc">Long-distance travel in Malaysia without friction.</p>
-                    <span className="lux-servicesLink">Learn more</span>
+                    <h3 className="lux-servicesTitle">{t('home.cityToCityRides')}</h3>
+                    <p className="lux-servicesDesc">{t('home.longDistanceTravel')}</p>
+                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>
               </AnimatedContent>
@@ -760,9 +769,9 @@ function HomePage() {
                 <a href="/service#hourly-hire" className="lux-servicesTile lux-servicesTile--wide" aria-label="Hourly and full day hire">
                   <img src="/image/ourservice_mini_4.png" alt="Hourly and full day hire" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">Hourly & full day hire</h3>
-                    <p className="lux-servicesDesc">Your itinerary, your pace — with a dedicated chauffeur.</p>
-                    <span className="lux-servicesLink">Learn more</span>
+                    <h3 className="lux-servicesTitle">{t('home.hourlyFullDayHire')}</h3>
+                    <p className="lux-servicesDesc">{t('home.yourItinerary')}</p>
+                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>
               </AnimatedContent>
@@ -772,9 +781,9 @@ function HomePage() {
                 <a href="/service#chauffeur-hailing" className="lux-servicesTile lux-servicesTile--small2" aria-label="Chauffeur hailing">
                   <img src="/image/ourservice_mini_2.png" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">Chauffeur hailing</h3>
-                    <p className="lux-servicesDesc">On-demand booking, with premium comfort and reliability.</p>
-                    <span className="lux-servicesLink">Learn more</span>
+                    <h3 className="lux-servicesTitle">{t('home.chauffeurHailing')}</h3>
+                    <p className="lux-servicesDesc">{t('home.onDemandBooking')}</p>
+                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>
               </AnimatedContent>
@@ -806,11 +815,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.1}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('kuala-lumpur')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'kuala-lumpur')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/kualalumpur.jpg" alt="Kuala Lumpur" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Kuala Lumpur</h3>
+                      <h3 className="city-name">{t('city.kualaLumpur')}</h3>
                     </div>
                   </div>
                 </div>
@@ -828,11 +843,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.15}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('penang')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'penang')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/penang.jpg" alt="Penang" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Penang</h3>
+                      <h3 className="city-name">{t('city.penang')}</h3>
                     </div>
                   </div>
                 </div>
@@ -850,11 +871,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.2}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('johor')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'johor')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/johor.jpg" alt="Johor Bahru" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Johor Bahru</h3>
+                      <h3 className="city-name">{t('city.johorBahru')}</h3>
                     </div>
                   </div>
                 </div>
@@ -872,11 +899,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.25}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('melaka')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'melaka')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/melaka.jpg" alt="Melaka" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Melaka</h3>
+                      <h3 className="city-name">{t('city.melaka')}</h3>
                     </div>
                   </div>
                 </div>
@@ -894,11 +927,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.3}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('ipoh')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'ipoh')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/ipoh.jpg" alt="Ipoh" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Ipoh</h3>
+                      <h3 className="city-name">{t('city.ipoh')}</h3>
                     </div>
                   </div>
                 </div>
@@ -916,11 +955,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.15}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('langkawi')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'langkawi')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/langkawi.jpg" alt="Langkawi" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Langkawi</h3>
+                      <h3 className="city-name">{t('city.langkawi')}</h3>
                     </div>
                   </div>
                 </div>
@@ -938,11 +983,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.2}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('kedah')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'kedah')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/kedah.jpg" alt="Kedah" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Kedah</h3>
+                      <h3 className="city-name">{t('city.kedah')}</h3>
                     </div>
                   </div>
                 </div>
@@ -960,11 +1011,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.25}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('terengganu')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'terengganu')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/terengganu.jpg" alt="Terengganu" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Terengganu</h3>
+                      <h3 className="city-name">{t('city.terengganu')}</h3>
                     </div>
                   </div>
                 </div>
@@ -982,11 +1039,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.3}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('perak')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'perak')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/perak.jpg" alt="Perak" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Perak</h3>
+                      <h3 className="city-name">{t('city.perak')}</h3>
                     </div>
                   </div>
                 </div>
@@ -1004,11 +1067,17 @@ function HomePage() {
                 threshold={0.2}
                 delay={0.35}
               >
-                <div className="city-card">
+                <div
+                  className="city-card"
+                  onClick={() => goToTownDetails('perlis')}
+                  onKeyDown={(e) => handleCityKeyDown(e, 'perlis')}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="city-image-container">
                     <img src="/image/cityMalaysia/perlis.jpg" alt="Perlis" className="city-image" />
                     <div className="city-overlay">
-                      <h3 className="city-name">Perlis</h3>
+                      <h3 className="city-name">{t('city.perlis')}</h3>
                     </div>
                   </div>
                 </div>
@@ -1016,7 +1085,7 @@ function HomePage() {
             </div>
 
             <div className="view-more-container">
-              <button className="view-more-btn">
+              <button className="view-more-btn" onClick={() => goToTownDetails('kuala-lumpur')}>
                 <span>{t('home.viewMore')}</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -1035,18 +1104,18 @@ function HomePage() {
             <div className="flow-content rental-flow" data-section="rentalFlow">
               <div className="lux-flow">
                 <div className="lux-flow__intro">
-                  <p className="lux-eyebrow">Experience</p>
+                  <p className="lux-eyebrow">{t('home.experience')}</p>
                   <h2 className="lux-flow__title">{t('home.rentalTitle')}</h2>
                   <p className="lux-flow__desc">{t('home.rentalDescription')}</p>
 
                   <div className="lux-flow__pills" aria-label="Service highlights">
-                    <span className="lux-flow__pill">24/7 Concierge</span>
-                    <span className="lux-flow__pill">Discreet & On-time</span>
-                    <span className="lux-flow__pill">Premium Fleet</span>
+                    <span className="lux-flow__pill">{t('home.concierge24')}</span>
+                    <span className="lux-flow__pill">{t('home.discreetOnTime')}</span>
+                    <span className="lux-flow__pill">{t('home.premiumFleet')}</span>
                   </div>
 
                   <Link to="/contact-us" className="lux-btn lux-btn--primary lux-btnLink lux-flow__cta">
-                    Request Concierge
+                    {t('home.requestConcierge')}
                   </Link>
                 </div>
 
@@ -1199,9 +1268,9 @@ function HomePage() {
           <div className="container">
             <div className="lux-cta-card">
               <div className="lux-cta-copy">
-                <p className="lux-eyebrow">Private Concierge</p>
+                <p className="lux-eyebrow">{t('home.privateConcierge')}</p>
                 <h2 className="lux-cta-title">
-                  Reserved. Refined. <span className="lux-gold">Effortless.</span>
+                  {t('home.reservedRefinedEffortless').split('.').slice(0, 2).join('. ')}. <span className="lux-gold">{t('home.reservedRefinedEffortless').split('.')[2].trim()}.</span>
                 </h2>
                 <p className="lux-cta-subtitle">
                   Tell us where you’re headed — we’ll curate the vehicle, chauffeur, and timing with quiet precision.
@@ -1209,10 +1278,10 @@ function HomePage() {
               </div>
               <div className="lux-cta-actions">
                 <Link to="/contact-us" className="lux-btn lux-btn--primary lux-btnLink">
-                  Contact Concierge
+                  {t('home.contactConcierge')}
                 </Link>
                 <Link to="/service" className="lux-btn lux-btn--secondary lux-btnLink">
-                  View Services
+                  {t('home.viewServices')}
                 </Link>
               </div>
             </div>

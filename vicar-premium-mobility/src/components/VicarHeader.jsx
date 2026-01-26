@@ -87,7 +87,7 @@ function VicarHeader({ currentPage = 'home' }) {
 
           <div className="vicar-header__actions">
             <Link to="/contact-us" className="vicar-header__cta">
-              Concierge
+              {t('header.concierge')}
             </Link>
 
             <button
@@ -114,7 +114,7 @@ function VicarHeader({ currentPage = 'home' }) {
         aria-label="Mobile navigation"
       >
         <div className="vicar-drawer__header">
-          <span className="vicar-drawer__title">Menu</span>
+          <span className="vicar-drawer__title">{t('header.menu')}</span>
           <button type="button" className="vicar-drawer__close" onClick={closeMenu} aria-label="Close menu">
             <span></span>
             <span></span>
@@ -136,9 +136,9 @@ function VicarHeader({ currentPage = 'home' }) {
 
         <div className="vicar-drawer__footer">
           <Link to="/contact-us" className="vicar-drawer__cta" onClick={closeMenu}>
-            Contact Concierge
+            {t('header.contactConcierge')}
           </Link>
-          <p className="vicar-drawer__hint">Quiet luxury. Always on time.</p>
+          <p className="vicar-drawer__hint">{t('header.tagline')}</p>
         </div>
       </div>
 
