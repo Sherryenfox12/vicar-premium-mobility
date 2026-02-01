@@ -15,23 +15,19 @@ function OurService() {
 
   // Service images - centralized for easy updates (used in detail sections)
   const serviceImages = {
-    cityToCity: '/image/ourservice_mini_1.png',
-    chauffeurHailing: '/image/ourservice_mini_2.png',
-    airportTransfers: '/image/ourservice_mini_3.png',
-    hourlyHire: '/image/ourservice_mini_4.png',
+    pointToPoint: '/image/ourservice_mini_2.png',
+    chauffeurService: '/image/ourservice_mini_1.png',
+    carRental: '/image/carRental.jpeg',
     reconCar: 'toyota harrierz.png',
-    carRental: 'Toyota vellfire 2023.jpg',
-    maintenance: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB923oaeb18SfR1gbA5Y7FfTTCQKTOVl2gdohdif5f-pMn1uXF70Rl5FLBtnWo9vCqyCRGvSKYJ54oWZ39t6L4xF7Hh99jjzABAX_-3qv7XcU_q_5D5Wu0lAxp0BO7_6OcswPvYyXbGK5rUXCAzOeCsc-xGAhI8K-cPCaYSEbtak0u39kMCN7iNCPbvWCi-AfuIrWIKMEOHr3ktF05ZbJNZ5qziZr5E6kfo4BUjo_jFadCw4ydpqkmFqxpAF_PhafrEmIUDABOqIEjz'
+    maintenance: '/maintainence.jpeg'
   };
 
   // Service navigation data - icon + label for "Explore What we can do" section
   const services = [
-    { id: 'city-to-city', nameKey: 'service.cityToCityRides', icon: 'route' },
-    { id: 'chauffeur-hailing', nameKey: 'service.chauffeurHailing', icon: 'local_taxi' },
-    { id: 'airport-transfers', nameKey: 'service.airportTransfers', icon: 'flight' },
-    { id: 'hourly-hire', nameKey: 'service.hourlyFullDayHire', icon: 'schedule' },
-    { id: 'recon-car', nameKey: 'service.reconCarTitle', icon: 'directions_car' },
+    { id: 'point-to-point', nameKey: 'service.pointToPointTransport', icon: 'alt_route' },
+    { id: 'chauffeur-service', nameKey: 'service.chauffeurService', icon: 'local_taxi' },
     { id: 'car-rental', nameKey: 'service.carRentalTitle', icon: 'car_rental' },
+    { id: 'recon-car', nameKey: 'service.reconCarTitle', icon: 'directions_car' },
     { id: 'maintenance', nameKey: 'service.maintenanceTitle', icon: 'build' }
   ];
 
@@ -263,27 +259,27 @@ function OurService() {
         {/* Red Line Separator */}
         <RedLine />
 
-        {/* City-to-city Rides Section */}
-        <section className="py-20" id="city-to-city">
+        {/* Point to Point Transport Section */}
+        <section className="py-20" id="point-to-point">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
-                <span className="material-icons text-red-500 text-4xl mb-4">route</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.cityToCityRides')}</h3>
+                <span className="material-icons text-red-500 text-4xl mb-4">alt_route</span>
+                <h3 className="text-4xl font-bold mb-4">{t('service.pointToPointTransport')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.cityToCityDesc')}
+                  {t('service.pointToPointTransportDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/city-to-city')}
+                  onClick={() => navigate('/service-details/point-to-point')}
                 >
                   {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">
                 <img 
-                  src={serviceImages.cityToCity} 
-                  alt="City-to-city rides" 
+                  src={serviceImages.pointToPoint} 
+                  alt="Point to Point Transport" 
                   className="w-full h-80 object-cover rounded-lg shadow-2xl"
                 />
               </div>
@@ -294,120 +290,27 @@ function OurService() {
         {/* Red Line Separator */}
         <RedLine />
 
-        {/* Chauffeur Hailing Section */}
-        <section className="py-20" id="chauffeur-hailing">
+        {/* Chauffeur Service Section */}
+        <section className="py-20" id="chauffeur-service">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row-reverse items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">local_taxi</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.chauffeurHailing')}</h3>
+                <h3 className="text-4xl font-bold mb-4">{t('service.chauffeurService')}</h3>
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.chauffeurHailingDesc')}
+                  {t('service.chauffeurServiceDesc')}
                 </p>
                 <button 
                   className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/chauffeur-hailing')}
+                  onClick={() => navigate('/service-details/chauffeur-service')}
                 >
                   {t('home.learnMore')}
                 </button>
               </div>
               <div className="md:w-1/2">
                 <img 
-                  src={serviceImages.chauffeurHailing} 
-                  alt="Chauffeur hailing" 
-                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Red Line Separator */}
-        <RedLine />
-
-        {/* Airport Transfers Section */}
-        <section className="py-20" id="airport-transfers">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row items-center gap-12">
-              <div className="md:w-1/2">
-                <span className="material-icons text-red-500 text-4xl mb-4">flight</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.airportTransfers')}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.airportTransfersDesc')}
-                </p>
-                <button 
-                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/airport-transfers')}
-                >
-                  {t('home.learnMore')}
-                </button>
-              </div>
-              <div className="md:w-1/2">
-                <img 
-                  src={serviceImages.airportTransfers} 
-                  alt="Airport transfers" 
-                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Red Line Separator */}
-        <RedLine />
-
-        {/* Hourly and Full Day Hire Section */}
-        <section className="py-20" id="hourly-hire">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-              <div className="md:w-1/2">
-                <span className="material-icons text-red-500 text-4xl mb-4">schedule</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.hourlyFullDayHire')}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.hourlyFullDayHireDesc')}
-                </p>
-                <button 
-                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/hourly-hire')}
-                >
-                  {t('home.learnMore')}
-                </button>
-              </div>
-              <div className="md:w-1/2">
-                <img 
-                  src={serviceImages.hourlyHire} 
-                  alt="Hourly and full day hire" 
-                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Red Line Separator */}
-        <RedLine />
-
-        {/* Recon Car Section */}
-        <section className="py-20" id="recon-car">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row items-center gap-12">
-              <div className="md:w-1/2">
-                <span className="material-icons text-red-500 text-4xl mb-4">directions_car</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.reconCarTitle')}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.reconCarDesc')}
-                </p>
-                <button 
-                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/recon-car')}
-                >
-                  {t('service.explore')} 
-                </button>
-              </div>
-              <div className="md:w-1/2">
-                <img 
-                  src={serviceImages.reconCar} 
-                  alt="Luxury car showcase" 
+                  src={serviceImages.chauffeurService} 
+                  alt="Chauffeur Service" 
                   className="w-full h-80 object-cover rounded-lg shadow-2xl"
                 />
               </div>
@@ -421,7 +324,7 @@ function OurService() {
         {/* Car Rental Section */}
         <section className="py-20" id="car-rental">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+            <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">car_rental</span>
                 <h3 className="text-4xl font-bold mb-4">{t('service.carRentalTitle')}</h3>
@@ -439,6 +342,37 @@ function OurService() {
                 <img 
                   src={serviceImages.carRental} 
                   alt="Car rental service" 
+                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Red Line Separator */}
+        <RedLine />
+
+        {/* Recon Car Section */}
+        <section className="py-20" id="recon-car">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+              <div className="md:w-1/2">
+                <span className="material-icons text-red-500 text-4xl mb-4">directions_car</span>
+                <h3 className="text-4xl font-bold mb-4">{t('service.reconCarTitle')}</h3>
+                <p className="text-gray-300 mb-6 leading-relaxed">
+                  {t('service.reconCarDesc')}
+                </p>
+                <button 
+                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+                  onClick={() => navigate('/service-details/recon-car')}
+                >
+                  {t('service.explore')} 
+                </button>
+              </div>
+              <div className="md:w-1/2">
+                <img 
+                  src={serviceImages.reconCar} 
+                  alt="Luxury car showcase" 
                   className="w-full h-80 object-cover rounded-lg shadow-2xl"
                 />
               </div>

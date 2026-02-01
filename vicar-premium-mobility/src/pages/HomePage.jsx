@@ -729,15 +729,15 @@ function HomePage() {
                   {t('home.discreetService')}
                 </p>
                 <div className="lux-servicesIntroActions">
-                  <a href="/service#chauffeur-hailing" className="lux-btn lux-btn--primary lux-btnLink">
+                  <a href="/service#chauffeur-service" className="lux-btn lux-btn--primary lux-btnLink">
                     {t('home.bookChauffeur')}
                   </a>
                 </div>
               </div>
 
-              {/* Tile B – large image */}
+              {/* Tile B – Airport transfers */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.05}>
-                <a href="/service#airport-transfers" className="lux-servicesTile lux-servicesTile--hero" aria-label="Airport transfers">
+                <a href="/service-details/chauffeur-service#airport" className="lux-servicesTile lux-servicesTile--hero" aria-label="Airport transfers">
                   <img src="/image/ourservice_mini_3.png" alt="Airport transfers" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.airportTransfers')}</h3>
@@ -747,12 +747,10 @@ function HomePage() {
                 </a>
               </AnimatedContent>
 
-
-
-                    {/* Tile C */}
+              {/* Tile C – City-to-city rides */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
-              <a href="/service#city-to-city" className="lux-servicesTile lux-servicesTile--small2" aria-label="Chauffeur hailing">
-                <img src="/image/ourservice_mini_1.png" alt="City-to-city rides" className="lux-servicesMedia" loading="lazy" />
+                <a href="/service-details/chauffeur-service#city-to-city" className="lux-servicesTile lux-servicesTile--small2" aria-label="City-to-city rides">
+                  <img src="/image/ourservice_mini_1.png" alt="City-to-city rides" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.cityToCityRides')}</h3>
                     <p className="lux-servicesDesc">{t('home.longDistanceTravel')}</p>
@@ -761,25 +759,25 @@ function HomePage() {
                 </a>
               </AnimatedContent>
 
-              {/* Tile D – wide */}
+              {/* Tile D – Chauffeur hailing */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.15}>
-                <a href="/service#hourly-hire" className="lux-servicesTile lux-servicesTile--wide" aria-label="Hourly and full day hire">
-                  <img src="/image/ourservice_mini_4.png" alt="Hourly and full day hire" className="lux-servicesMedia" loading="lazy" />
+                <a href="/service-details/chauffeur-service#chauffeur-hailing" className="lux-servicesTile lux-servicesTile--wide" aria-label="Chauffeur hailing">
+                  <img src="/image/ourservice_mini_2.png" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">{t('home.hourlyFullDayHire')}</h3>
-                    <p className="lux-servicesDesc">{t('home.yourItinerary')}</p>
+                    <h3 className="lux-servicesTitle">{t('home.chauffeurHailing')}</h3>
+                    <p className="lux-servicesDesc">{t('home.onDemandBooking')}</p>
                     <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>
               </AnimatedContent>
 
-              {/* Tile E */}
+              {/* Tile E – Car Rental */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
-                <a href="/service#chauffeur-hailing" className="lux-servicesTile lux-servicesTile--small2" aria-label="Chauffeur hailing">
-                  <img src="/image/ourservice_mini_2.png" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
+                <a href="/service#car-rental" className="lux-servicesTile lux-servicesTile--small2" aria-label="Car Rental">
+                  <img src="/image/carRental.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">{t('home.chauffeurHailing')}</h3>
-                    <p className="lux-servicesDesc">{t('home.onDemandBooking')}</p>
+                    <h3 className="lux-servicesTitle">{t('btn.carRental')}</h3>
+                    <p className="lux-servicesDesc">{t('home.carRentalDesc')}</p>
                     <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
                 </a>

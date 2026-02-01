@@ -6,6 +6,7 @@ import './VicarFooter.css';
 function VicarFooter() {
   const { t } = useTranslation();
 
+
   return (
     <footer className="vicar-footerLux">
       <div className="vicar-footerLux__inner">

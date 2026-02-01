@@ -19,6 +19,27 @@ function ServiceDetails() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [serviceType]);
 
+  // Handle hash-based scrolling for subsections (e.g., #airport)
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // Wait for the page to render
+      setTimeout(() => {
+        const element = document.getElementById(hash.substring(1));
+        if (element) {
+          const headerOffset = 120; // Adjust for fixed header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 300);
+    }
+  }, [serviceType]);
+
   // Smooth scroll function
   const scrollToMobileApp = () => {
     const mobileAppSection = document.getElementById('mobile-app-promotion');
@@ -32,77 +53,91 @@ function ServiceDetails() {
 
   // Service configurations
   const serviceConfigs = {
-    'city-to-city': {
-      title: 'City-to-city rides',
-      subtitle: 'Seamless long-distance travel with professional chauffeurs worldwide',
-      icon: 'route',
-      description: 'A hassle-free option for long-distance travel with professional chauffeurs worldwide. Whether you\'re traveling between major cities or need a comfortable journey across regions, our city-to-city service ensures a seamless and luxurious experience. Our experienced drivers are well-versed in navigating various routes, ensuring you arrive at your destination safely and on time. Enjoy premium comfort, reliable service, and the convenience of door-to-door transportation for your intercity travels. Perfect for business professionals, families, and travelers seeking comfort and reliability on extended journeys.',
+    'point-to-point': {
+      title: t('serviceDetails.pointToPointTitle'),
+      subtitle: t('serviceDetails.pointToPointSubtitle'),
+      icon: 'alt_route',
+      description: t('serviceDetails.pointToPointDesc'),
       features: [
-        'Professional chauffeurs with extensive route knowledge and experience',
-        'Premium luxury vehicles equipped with modern amenities for long journeys',
-        'Door-to-door service for maximum convenience and comfort',
-        'Flexible scheduling to accommodate your travel plans',
-        'Real-time journey tracking and communication with your driver',
-        'Complimentary refreshments and Wi-Fi connectivity during your trip',
-        'Competitive pricing with transparent, all-inclusive rates'
+        t('serviceDetails.pointToPointFeature1'),
+        t('serviceDetails.pointToPointFeature2'),
+        t('serviceDetails.pointToPointFeature3'),
+        t('serviceDetails.pointToPointFeature4'),
+        t('serviceDetails.pointToPointFeature5')
+      ],
+      image: '/image/inside_car.jpeg',
+      ctaText: t('serviceDetails.bookNow'),
+      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+point-to-point+transport.&type=phone_number&app_absent=0', '_blank')
+    },
+    'chauffeur-service': {
+      title: t('serviceDetails.chauffeurServiceTitle'),
+      subtitle: t('serviceDetails.chauffeurServiceSubtitle'),
+      icon: 'local_taxi',
+      description: t('serviceDetails.chauffeurServiceDesc'),
+      subsections: [
+        {
+          id: 'airport',
+          title: t('service.airportTransfers'),
+          icon: 'flight',
+          description: t('service.airportTransfersDesc'),
+          features: [
+            t('serviceDetails.airportFeature1'),
+            t('serviceDetails.airportFeature2'),
+            t('serviceDetails.airportFeature3'),
+            t('serviceDetails.airportFeature4')
+          ],
+          image: '/image/ourservice_mini_3.png'
+        },
+        {
+          id: 'chauffeur-hailing',
+          title: t('service.chauffeurHailing'),
+          icon: 'hail',
+          description: t('service.chauffeurHailingDesc'),
+          features: [
+            t('serviceDetails.hailingFeature1'),
+            t('serviceDetails.hailingFeature2'),
+            t('serviceDetails.hailingFeature3'),
+            t('serviceDetails.hailingFeature4')
+          ],
+          image: '/image/ourservice_mini_2.png'
+        },
+        {
+          id: 'city-to-city',
+          title: t('service.cityToCityRides'),
+          icon: 'route',
+          description: t('service.cityToCityDesc'),
+          features: [
+            t('serviceDetails.cityToCityFeature1'),
+            t('serviceDetails.cityToCityFeature2'),
+            t('serviceDetails.cityToCityFeature3'),
+            t('serviceDetails.cityToCityFeature4')
+          ],
+          image: '/image/ourservice_mini_1.png'
+        },
+        {
+          id: 'hourly-hire',
+          title: t('service.hourlyFullDayHire'),
+          icon: 'schedule',
+          description: t('service.hourlyFullDayHireDesc'),
+          features: [
+            t('serviceDetails.hourlyFeature1'),
+            t('serviceDetails.hourlyFeature2'),
+            t('serviceDetails.hourlyFeature3'),
+            t('serviceDetails.hourlyFeature4')
+          ],
+          image: '/image/ourservice_mini_4.png'
+        }
+      ],
+      features: [
+        t('serviceDetails.chauffeurServiceFeature1'),
+        t('serviceDetails.chauffeurServiceFeature2'),
+        t('serviceDetails.chauffeurServiceFeature3'),
+        t('serviceDetails.chauffeurServiceFeature4'),
+        t('serviceDetails.chauffeurServiceFeature5')
       ],
       image: '/image/ourservice_mini_1.png',
-      ctaText: 'Book Your Journey',
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+city-to-city+ride.&type=phone_number&app_absent=0', '_blank')
-    },
-    'chauffeur-hailing': {
-      title: 'Chauffeur hailing',
-      subtitle: 'Classic luxury meets modern convenience',
-      icon: 'local_taxi',
-      description: 'Experience the comfort of a classic chauffeur service, with the ease of booking and quick pickup. Our chauffeur hailing service combines traditional luxury with modern convenience, allowing you to request a professional driver at a moment\'s notice. Perfect for business meetings, special events, or when you simply want to travel in style. With our user-friendly booking system, you can arrange a ride quickly and efficiently, while our fleet of premium vehicles and trained chauffeurs guarantee a first-class experience from start to finish. Available 24/7, our service ensures you always have reliable transportation when you need it most.',
-      features: [
-        'Instant booking with quick pickup times for urgent travel needs',
-        'Professional, well-trained chauffeurs with excellent service standards',
-        'Premium fleet of luxury vehicles maintained to the highest standards',
-        '24/7 availability for your convenience, any day of the week',
-        'User-friendly mobile and web booking platforms',
-        'Transparent pricing with no hidden fees or surge charges',
-        'Personalized service tailored to your preferences and requirements'
-      ],
-      image: '/image/ourservice_mini_2.png',
-      ctaText: 'Hail a Chauffeur',
+      ctaText: t('serviceDetails.bookChauffeur'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+chauffeur+service.&type=phone_number&app_absent=0', '_blank')
-    },
-    'airport-transfers': {
-      title: 'Airport transfers',
-      subtitle: 'Stress-free airport transportation with flight monitoring',
-      icon: 'flight',
-      description: 'With extra waiting time and real-time flight monitoring for delays, we ensure smooth and effortless airport transfers. Our dedicated airport transfer service takes the stress out of travel by tracking your flight status and adjusting pickup times accordingly. Whether you\'re arriving or departing, our professional chauffeurs will be there to greet you, assist with your luggage, and provide a comfortable journey to or from the airport. Enjoy peace of mind knowing that your transportation is handled with precision and care, allowing you to focus on your journey ahead. We understand the importance of punctuality and reliability when it comes to airport travel, which is why we go above and beyond to ensure your experience is seamless.',
-      features: [
-        'Real-time flight monitoring to adjust pickup times automatically',
-        'Generous waiting time included - no rush, no stress',
-        'Meet and greet service at the airport terminal',
-        'Luggage assistance from our professional chauffeurs',
-        'Premium vehicles with spacious interiors for comfortable travel',
-        'Fixed pricing with no hidden charges, even for flight delays',
-        '24/7 service covering all major airports and flight schedules'
-      ],
-      image: '/image/ourservice_mini_3.png',
-      ctaText: 'Book Airport Transfer',
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+an+airport+transfer.&type=phone_number&app_absent=0', '_blank')
-    },
-    'hourly-hire': {
-      title: 'Hourly and full day hire',
-      subtitle: 'Flexible chauffeur service for any duration',
-      icon: 'schedule',
-      description: 'Whether hourly or full-day chauffeur bookings, select from our customized services for maximum flexibility, comfort, and reliability. Perfect for business trips, city tours, shopping excursions, or special occasions, our flexible booking options adapt to your schedule. Choose from hourly rates for short trips or full-day packages for extended journeys. Our professional chauffeurs and premium vehicles are at your service, providing personalized attention and ensuring your comfort throughout the duration of your booking. Experience the freedom of having a dedicated driver at your disposal, ready to take you wherever you need to go, whenever you need to go there.',
-      features: [
-        'Flexible hourly and full-day booking options to suit your needs',
-        'Customizable itineraries for business, leisure, or special events',
-        'Professional chauffeurs dedicated to your service for the entire duration',
-        'Premium luxury vehicles with all modern amenities and comforts',
-        'No mileage restrictions - travel as far as you need within your booking time',
-        'Competitive rates with transparent pricing for both hourly and daily packages',
-        'Easy booking process with instant confirmation and flexible cancellation'
-      ],
-      image: '/image/ourservice_mini_4.png',
-      ctaText: 'Book Now',
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+an+hourly+or+full-day+chauffeur+service.&type=phone_number&app_absent=0', '_blank')
     },
     'recon-car': {
       title: t('serviceDetails.reconCarTitle'),
@@ -132,7 +167,7 @@ function ServiceDetails() {
         t('serviceDetails.carRentalFeature4'),
         t('serviceDetails.carRentalFeature5')
       ],
-      image: '/Toyota vellfire 2023.jpg',
+      image: '/image/carRental.jpeg',
       ctaText: t('serviceDetails.rentNow'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     },
@@ -148,7 +183,7 @@ function ServiceDetails() {
         t('serviceDetails.maintenanceFeature4'),
         t('serviceDetails.maintenanceFeature5')
       ],
-      image: '/Toyota GR Yaris  ….jpg',
+      image: '/maintainence.jpeg',
       ctaText: t('serviceDetails.scheduleService'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     }
@@ -172,8 +207,8 @@ function ServiceDetails() {
         <section className="hero-section">
           <div className="hero-background">
             <img 
-              src="/corollawallpaper.jpg" 
-              alt="Corolla Wallpaper" 
+              src="/image/inside_car.jpeg" 
+              alt="Service Details" 
               className="hero-bg-image"
             />
             <div className="hero-overlay"></div>
@@ -188,13 +223,45 @@ function ServiceDetails() {
         {/* Service Details Section */}
         <section className="service-details-section">
           <div className="container">
-            <div className="service-content">
+            <div className={`service-content ${serviceType === 'chauffeur-service' ? 'service-content-full' : ''}`}>
               <div className="service-info">
                 <div className="service-icon">
                   <span className="material-icons">{currentService.icon}</span>
                 </div>
                 <h2 className="service-title">{currentService.title}</h2>
                 <p className="service-description">{currentService.description}</p>
+                
+                {/* If it's chauffeur service, show subsections */}
+                {serviceType === 'chauffeur-service' && currentService.subsections && (
+                  <div className="service-subsections">
+                    <h3 className="subsections-title">{t('serviceDetails.ourChauffeurServices')}</h3>
+                    {currentService.subsections.map((subsection, index) => (
+                      <div key={subsection.id} id={subsection.id} className="subsection-card">
+                        <div className="subsection-header">
+                          <span className="material-icons subsection-icon">{subsection.icon}</span>
+                          <h4 className="subsection-title">{subsection.title}</h4>
+                        </div>
+                        <div className="subsection-content">
+                          <div className="subsection-text">
+                            <p className="subsection-description">{subsection.description}</p>
+                            <ul className="subsection-features">
+                              {subsection.features.map((feature, idx) => (
+                                <li key={idx}>{feature}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="subsection-image">
+                            <img 
+                              src={subsection.image} 
+                              alt={subsection.title}
+                              className="subsection-img"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 
                 <div className="service-features">
                   <h3>{t('serviceDetails.whatWeOffer')}</h3>
@@ -221,13 +288,16 @@ function ServiceDetails() {
                 </div>
               </div>
               
-              <div className="service-image">
-                <img 
-                  src={currentService.image} 
-                  alt={currentService.title}
-                  className="service-img"
-                />
-              </div>
+              {/* Only show main image if not chauffeur service (subsections have their own images) */}
+              {serviceType !== 'chauffeur-service' && (
+                <div className="service-image">
+                  <img 
+                    src={currentService.image} 
+                    alt={currentService.title}
+                    className="service-img"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>

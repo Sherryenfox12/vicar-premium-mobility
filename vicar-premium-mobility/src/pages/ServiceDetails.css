@@ -249,6 +249,18 @@ html {
   }
 }
 
+/* Full width layout for chauffeur service with subsections */
+.service-content-full {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  max-width: 100% !important;
+}
+
+.service-content-full .service-info {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
 .service-info {
   flex: 1 !important;
   max-width: 600px !important;
@@ -621,3 +633,152 @@ html {
     gap: 1rem !important;
   }
 }
+
+/* Subsections for Chauffeur Service */
+.service-subsections {
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
+  width: 100% !important;
+}
+
+.subsections-title {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 2rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  color: var(--text-light) !important;
+  text-align: center !important;
+}
+
+.subsection-card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.75rem !important;
+  padding: 2rem !important;
+  margin-bottom: 2rem !important;
+  transition: all 0.3s ease !important;
+  animation: fadeInUp 0.8s ease-out both;
+  scroll-margin-top: 120px !important; /* For anchor scrolling with fixed header */
+  width: 100% !important;
+}
+
+.subsection-card:hover {
+  border-color: var(--primary-red) !important;
+  box-shadow: 0 10px 40px rgba(212, 17, 17, 0.15) !important;
+  transform: translateY(-3px) !important;
+}
+
+.subsection-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 2px solid var(--border-color) !important;
+}
+
+.subsection-icon {
+  font-size: 2.5rem !important;
+  color: var(--primary-red) !important;
+}
+
+.subsection-title {
+  font-size: 1.75rem !important;
+  font-weight: 600 !important;
+  color: var(--text-light) !important;
+  margin: 0 !important;
+}
+
+.subsection-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+  width: 100% !important;
+}
+
+@media (min-width: 768px) {
+  .subsection-content {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+}
+
+.subsection-text {
+  flex: 1 !important;
+}
+
+.subsection-description {
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.subsection-features {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.subsection-features li {
+  padding: 0.5rem 0 !important;
+  padding-left: 1.5rem !important;
+  position: relative !important;
+  color: var(--text-muted) !important;
+  font-size: 0.95rem !important;
+}
+
+.subsection-features li::before {
+  content: '→' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--primary-red) !important;
+  font-weight: bold !important;
+}
+
+.subsection-image {
+  flex: 0 0 350px !important;
+  max-width: 350px !important;
+}
+
+@media (max-width: 768px) {
+  .subsection-image {
+    flex: 1 !important;
+    max-width: 100% !important;
+  }
+}
+
+.subsection-img {
+  width: 100% !important;
+  height: 250px !important;
+  object-fit: cover !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.subsection-img:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Responsive adjustments for subsections */
+@media (max-width: 768px) {
+  .subsection-card {
+    padding: 1.5rem !important;
+  }
+
+  .subsection-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .subsections-title {
+    font-size: 1.5rem !important;
+  }
+
+  .subsection-title {
+    font-size: 1.5rem !important;
+  }
+}
+

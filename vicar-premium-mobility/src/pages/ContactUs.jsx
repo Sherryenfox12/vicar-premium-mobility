@@ -245,53 +245,122 @@ function ContactUs() {
       {/* Main Content */}
       <main className="py-20">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+          <div className="contact-intro">
+            <p className="contact-kicker">{t('contact.kicker')}</p>
+            <h2 className="contact-section-title">{t('contact.getInTouchTitle')}</h2>
+            <p className="contact-section-subtitle">{t('contact.getInTouchSubtitle')}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start contact-main-grid">
             {/* Contact Information */}
-            <div>
+            <div className="contact-left">
               <h2 className="text-3xl font-bold mb-6">{t('contact.contactInfo')}</h2>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <span className="material-icons contact-icon mt-1">phone</span>
+
+              <div className="contact-cards">
+                <div className="contact-card">
+                  <div className="contact-card-icon material-icons" aria-hidden="true">phone</div>
                   <div>
-                    <h3 className="font-semibold text-lg">{t('contact.phone')}</h3>
-                    <p className="text-gray-400">+60-11 5557 2999</p>
+                    <h3 className="contact-card-title">{t('contact.phone')}</h3>
+                    <p className="contact-card-value">
+                      <a className="contact-link" href="tel:+601155572999">+60-11 5557 2999</a>
+                    </p>
+                    <p className="contact-card-muted">{t('contact.phoneHint')}</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-4">
-                  <span className="material-icons contact-icon mt-1">email</span>
+
+                <div className="contact-card">
+                  <div className="contact-card-icon material-icons" aria-hidden="true">email</div>
                   <div>
-                    <h3 className="font-semibold text-lg">{t('contact.email')}</h3>
-                    <p className="text-gray-400">enquiries@kw99.com.my</p>
+                    <h3 className="contact-card-title">{t('contact.email')}</h3>
+                    <p className="contact-card-value">
+                      <a className="contact-link" href="mailto:enquiries@kw99.com.my">enquiries@kw99.com.my</a>
+                    </p>
+                    <p className="contact-card-muted">{t('contact.responseTime')}</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-4">
-                  <span className="material-icons contact-icon mt-1">location_on</span>
+
+                <div className="contact-card contact-card--wide">
+                  <div className="contact-card-icon material-icons" aria-hidden="true">location_on</div>
                   <div>
-                    <h3 className="font-semibold text-lg">{t('contact.penangOffice')}</h3>
-                    <p className="text-gray-400">148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang</p>
+                    <h3 className="contact-card-title">{t('contact.penangOffice')}</h3>
+                    <p className="contact-card-value text-gray-400">
+                      148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang
+                    </p>
+                    <div className="contact-chip-row">
+                      <span className="contact-chip">{t('contact.nearby1')}</span>
+                      <span className="contact-chip">{t('contact.nearby2')}</span>
+                      <span className="contact-chip">{t('contact.parking')}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-start space-x-4">
-                  <span className="material-icons contact-icon mt-1">schedule</span>
+
+                <div className="contact-card contact-card--wide">
+                  <div className="contact-card-icon material-icons" aria-hidden="true">schedule</div>
                   <div>
-                    <h3 className="font-semibold text-lg">{t('contact.openingHours')}</h3>
-                    <p className="text-gray-400">{t('contact.monFri')}</p>
-                    <p className="text-gray-400">{t('contact.sat')}</p>
-                    <p className="text-gray-400">{t('contact.sun')}</p>
+                    <h3 className="contact-card-title">{t('contact.openingHours')}</h3>
+                    <p className="contact-card-value text-gray-400">{t('contact.monFri')}</p>
+                    <p className="contact-card-value text-gray-400">{t('contact.sat')}</p>
+                    <p className="contact-card-value text-gray-400">{t('contact.sun')}</p>
                   </div>
                 </div>
               </div>
-              <div className="mt-10 rounded-lg overflow-hidden">
-                <img 
-                  alt="Beacon Executive Suite building exterior" 
-                  className="w-full h-64 object-cover" 
-                  src="/vicar.png"
-                />
+
+              <div className="contact-actions">
+                <h3 className="contact-subtitle">{t('contact.quickActions')}</h3>
+                <div className="contact-action-grid">
+                  <a className="contact-action-btn" href="tel:+601155572999">
+                    <span className="material-icons" aria-hidden="true">call</span>
+                    <span>{t('contact.callNow')}</span>
+                  </a>
+                  <a className="contact-action-btn" href="mailto:enquiries@kw99.com.my">
+                    <span className="material-icons" aria-hidden="true">mail</span>
+                    <span>{t('contact.emailUs')}</span>
+                  </a>
+                  <a
+                    className="contact-action-btn"
+                    href="https://wa.me/601155572999"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="material-icons" aria-hidden="true">chat</span>
+                    <span>{t('contact.whatsapp')}</span>
+                  </a>
+                  <a
+                    className="contact-action-btn"
+                    href="https://www.google.com/maps/dir/?api=1&destination=148+Jalan+Sungai+Pinang%2C+Taman+Cemerlang%2C+10150+George+Town%2C+Pulau+Pinang"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="material-icons" aria-hidden="true">directions</span>
+                    <span>{t('contact.getDirections')}</span>
+                  </a>
+                </div>
               </div>
+
+              <div className="contact-faq">
+                <h3 className="contact-subtitle">{t('contact.faqTitle')}</h3>
+                <div className="contact-faq-list">
+                  <details className="contact-faq-item">
+                    <summary className="contact-faq-summary">{t('contact.faqQ1')}</summary>
+                    <div className="contact-faq-body">{t('contact.faqA1')}</div>
+                  </details>
+                  <details className="contact-faq-item">
+                    <summary className="contact-faq-summary">{t('contact.faqQ2')}</summary>
+                    <div className="contact-faq-body">{t('contact.faqA2')}</div>
+                  </details>
+                  <details className="contact-faq-item">
+                    <summary className="contact-faq-summary">{t('contact.faqQ3')}</summary>
+                    <div className="contact-faq-body">{t('contact.faqA3')}</div>
+                  </details>
+                </div>
+              </div>
+
+             
+           
             </div>
 
             {/* Contact Form */}
-            <div>
+            <div className="contact-right">
               <StarBorder as="div" className="w-full" color="#D32F2F" speed="5s" thickness={1} style={{margin: '20px 0', position: 'relative', zIndex: 10}}>
                 <div className="bg-black p-8 rounded-lg shadow-lg">
                   <h2 className="text-3xl font-bold mb-6">{t('contact.sendMessage')}</h2>
@@ -359,12 +428,12 @@ function ContactUs() {
                       </div>
                       <div>
                         <button 
-                          className={`w-full py-3 transition-all duration-300 ${
+                          className={`w-full transition-all duration-300 ${
                             isSuccess 
                               ? 'btn-success' 
                               : isSubmitting 
                                 ? 'btn-loading' 
-                                : 'btn-primary'
+                                : 'contact-search-btn'
                           }`} 
                           type="submit"
                           disabled={isSubmitting || isSuccess}
@@ -388,6 +457,16 @@ function ContactUs() {
                   </form>
                 </div>
               </StarBorder>
+
+              <div className="contact-after-form">
+                <div className="contact-vicar-image-wrap">
+                  <img
+                    alt="Vicar"
+                    className="contact-vicar-image"
+                    src="/kw99.png"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -414,7 +493,7 @@ function ContactUs() {
             </div>
             <div className="text-center mt-8">
               <a 
-                className="inline-block btn-secondary" 
+                className="inline-block btn-secondary contact-get-direction-btn" 
                 href="https://www.google.com/maps/dir/?api=1&destination=148+Jalan+Sungai+Pinang%2C+Taman+Cemerlang%2C+10150+George+Town%2C+Pulau+Pinang" 
                 rel="noopener noreferrer" 
                 target="_blank"
