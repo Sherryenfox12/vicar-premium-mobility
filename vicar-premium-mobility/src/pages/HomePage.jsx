@@ -1250,6 +1250,7 @@ function HomePage() {
             )}
           </div>
         </section>
+        
 
         {/* Red Line Separator */}
         <RedLine />
@@ -1264,7 +1265,7 @@ function HomePage() {
                   {t('home.reservedRefinedEffortless').split('.').slice(0, 2).join('. ')}. <span className="lux-gold">{(t('home.reservedRefinedEffortless').split('.')[2] ?? '').trim()}{t('home.reservedRefinedEffortless').split('.')[2] ? '.' : ''}</span>
                 </h2>
                 <p className="lux-cta-subtitle">
-                  Tell us where you’re headed — we’ll curate the vehicle, chauffeur, and timing with quiet precision.
+                  {t('home.ctaSubtitle')}
                 </p>
               </div>
               <div className="lux-cta-actions">
