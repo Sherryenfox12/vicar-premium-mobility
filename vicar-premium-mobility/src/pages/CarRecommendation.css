@@ -1,4 +1,6 @@
 .car-recommendation-page {
+  --lux-redblack-gradient: linear-gradient(90deg, #670000 0%, #F20000 100%);
+  --lux-redblack-gradient-hover: linear-gradient(90deg, #5a0000 0%, #d40000 100%);
   background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
   color: #f5f5f5;
   min-height: 100vh;
@@ -47,7 +49,7 @@
 }
 
 .start-quiz-btn {
-  background: #d41111;
+  background: var(--lux-redblack-gradient);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -62,6 +64,7 @@
 .start-quiz-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(212, 17, 17, 0.4);
+  background: var(--lux-redblack-gradient-hover);
 }
 
 /* Question Styles */
@@ -263,7 +266,7 @@
 }
 
 .browse-btn {
-  background: #d41111;
+  background: var(--lux-redblack-gradient);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -281,6 +284,7 @@
 .browse-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 35px rgba(212, 17, 17, 0.4);
+  background: var(--lux-redblack-gradient-hover);
 }
 
 .browse-btn:active {
@@ -381,8 +385,12 @@
 }
 
 .action-btn.primary {
-  background: #d41111;
+  background: var(--lux-redblack-gradient);
   color: white;
+}
+
+.action-btn.primary:hover {
+  background: var(--lux-redblack-gradient-hover);
 }
 
 .action-btn.secondary {

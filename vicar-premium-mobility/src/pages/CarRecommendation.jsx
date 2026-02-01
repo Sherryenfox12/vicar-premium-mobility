@@ -131,6 +131,11 @@ function CarRecommendation() {
     setUserTags([]);
   }, []);
 
+  // Scroll to top with smooth animation when page loads (e.g. when navigating from recon car)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const handleAnswer = (questionId, selectedTags) => {
     setUserAnswers(prev => ({
       ...prev,
