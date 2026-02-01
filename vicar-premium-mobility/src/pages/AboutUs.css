@@ -8,6 +8,8 @@
   --text-light: #f5f5f5;
   --text-muted: #a3a3a3;
   --border-color: #392828;
+  --lux-gold: #d4af37;
+  --lux-gold-soft: #b98a33;
 }
 
 /* Banner Media Loading States */
@@ -375,6 +377,293 @@
   color: var(--primary-red) !important;
 }
 
+/* The Five Pillars of ViCAR (AboutUs) */
+.about-pillars-section {
+  padding: 3.5rem 1rem !important;
+  background: var(--card-bg) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.about-pillars-header {
+  text-align: center !important;
+  margin-bottom: 2.5rem !important;
+}
+
+.about-pillars-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.8rem !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.1em !important;
+  color: var(--text-light) !important;
+}
+
+@media (min-width: 768px) {
+  .about-pillars-title {
+    font-size: 3rem !important;
+  }
+}
+
+.about-pillars-subtitle {
+  font-size: 1.1rem !important;
+  color: var(--text-muted) !important;
+  max-width: 760px !important;
+  margin: 0 auto !important;
+}
+
+/* Layout: rail (left) + detail (right) on desktop */
+.about-pillars-layout {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.4rem !important;
+  align-items: start !important;
+}
+
+@media (min-width: 1024px) {
+  .about-pillars-layout {
+    grid-template-columns: 320px minmax(0, 1fr) !important;
+    gap: 1.6rem !important;
+  }
+}
+
+.about-pillars-rail {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.8rem !important;
+}
+
+@media (min-width: 768px) {
+  .about-pillars-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-pillars-rail {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.about-pillar-tile {
+  appearance: none !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--dark-bg) !important;
+  border-radius: 18px !important;
+  padding: 0.9rem 0.9rem !important;
+  color: var(--text-light) !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 120px !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+.about-pillar-tile::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, #670000 0%, #F20000 100%) !important;
+  opacity: 0.9 !important;
+}
+
+.about-pillar-tile:hover,
+.about-pillar-tile.active {
+  transform: translateY(-6px) !important;
+  border-color: var(--primary-red) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.about-pillar-tile:focus-visible {
+  outline: 2px solid rgba(212, 17, 17, 0.95) !important;
+  outline-offset: 3px !important;
+}
+
+.about-pillars-rail .about-pillar-tile {
+  min-height: 98px !important;
+}
+
+@media (min-width: 1024px) {
+  .about-pillars-rail .about-pillar-tile {
+    min-height: 74px !important;
+    padding: 0.85rem 1rem !important;
+    text-align: left !important;
+    display: grid !important;
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+}
+
+.about-pillar-letter {
+  font-size: 3.2rem !important;
+  font-weight: 700 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  margin: 0.2rem 0 0.6rem 0 !important;
+  color: rgba(216, 195, 154, 0.92) !important;
+}
+
+@media (min-width: 1024px) {
+  .about-pillars-rail .about-pillar-letter {
+    margin: 0 !important;
+    font-size: 2.6rem !important;
+    text-align: center !important;
+  }
+}
+
+.about-pillar-title {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  color: rgba(245, 245, 245, 0.95) !important;
+  opacity: 0.92 !important;
+}
+
+.about-pillars-rail .about-pillar-title {
+  font-size: 0.98rem !important;
+}
+
+.about-pillars-detail {
+  margin-top: 0 !important;
+}
+
+.about-pillar-detail-card {
+  background: var(--dark-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 18px !important;
+  padding: 1.7rem 1.25rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+@media (min-width: 768px) {
+  .about-pillar-detail-card {
+    padding: 2rem 1.8rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-pillar-detail-card {
+    /* Keep it compact without internal scrolling */
+    padding: 2rem 2rem !important;
+  }
+}
+
+.about-pillar-detail-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, #670000 0%, #F20000 100%) !important;
+  opacity: 0.9 !important;
+}
+
+.about-pillar-detail-letter {
+  font-size: 3.2rem !important;
+  font-weight: 700 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.1em !important;
+  margin-bottom: 0.8rem !important;
+  text-align: center !important;
+  color: rgba(216, 195, 154, 0.92) !important;
+}
+
+.about-pillar-detail-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-align: center !important;
+  margin: 0 0 1rem 0 !important;
+  color: var(--text-light) !important;
+}
+
+.about-pillar-detail-description {
+  font-size: 1.02rem !important;
+  line-height: 1.85 !important;
+  color: rgba(245, 245, 245, 0.88) !important;
+  text-align: center !important;
+  margin: 0 auto 1.6rem auto !important;
+  max-width: 860px !important;
+}
+
+.about-pillar-detail-section {
+  margin-top: 1.1rem !important;
+}
+
+.about-pillar-detail-section-title {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  color: var(--primary-red) !important;
+  margin: 0 0 0.9rem 0 !important;
+  text-align: center !important;
+}
+
+.about-pillar-detail-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid !important;
+  gap: 0.75rem !important;
+}
+
+@media (min-width: 768px) {
+  .about-pillar-detail-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.9rem 1.4rem !important;
+  }
+}
+
+.about-pillar-detail-list li {
+  position: relative !important;
+  padding-left: 1.25rem !important;
+  color: rgba(245, 245, 245, 0.92) !important;
+  line-height: 1.7 !important;
+}
+
+.about-pillar-detail-list li::before {
+  content: '◆' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0.15rem !important;
+  color: rgba(216, 195, 154, 0.85) !important;
+  opacity: 0.95 !important;
+  font-size: 0.95rem !important;
+}
+
+.about-pillar-detail-bullet-title {
+  color: rgba(216, 195, 154, 0.92) !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+}
+
+.about-pillar-detail-bullet-text {
+  color: rgba(245, 245, 245, 0.92) !important;
+}
+
+.about-pillar-detail-footer {
+  margin-top: 1.6rem !important;
+  text-align: center !important;
+  color: var(--text-muted) !important;
+  font-style: italic !important;
+  line-height: 1.7 !important;
+}
+
 /* Gradient Bars Section */
 .gradient-bars-section {
   padding: 2rem 1rem !important;
@@ -409,6 +698,158 @@
   margin: 0 !important;
   font-family: 'OPPO Sans', sans-serif !important;
   letter-spacing: 0.05em !important;
+}
+
+/* AboutUs - Core Values (BrandStory, redesigned like HomePage cards) */
+.about-core-values-section {
+  padding: 3.5rem 1rem !important;
+  background: var(--dark-bg) !important;
+}
+
+.about-values-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .about-values-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.1rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-values-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1.2rem !important;
+  }
+}
+
+.about-value-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 18px !important;
+  padding: 1.4rem 1.35rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.about-value-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: var(--primary-red) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+.about-value-top {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 0.85rem !important;
+}
+
+.about-value-num {
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.12em !important;
+  color: rgba(216, 195, 154, 0.88) !important;
+  font-size: 1.2rem !important;
+}
+
+.about-value-hairline {
+  flex: 1 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, rgba(216, 195, 154, 0.45), rgba(212, 17, 17, 0.7)) !important;
+  opacity: 0.9 !important;
+}
+
+.about-value-title {
+  margin: 0 0 0.55rem 0 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: rgba(245, 245, 245, 0.95) !important;
+  font-size: 1.6rem !important;
+}
+
+.about-value-desc {
+  margin: 0 !important;
+  color: var(--text-muted) !important;
+  line-height: 1.65 !important;
+}
+
+/* AboutUs - Platform (BrandStory, redesigned like HomePage card) */
+.about-platform-section {
+  padding: 0 1rem 3.5rem 1rem !important;
+  background: var(--dark-bg) !important;
+}
+
+.about-platform-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 18px !important;
+  padding: 1.7rem 1.35rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+@media (min-width: 768px) {
+  .about-platform-card {
+    padding: 2rem 2rem !important;
+  }
+}
+
+.about-platform-title {
+  margin: 0 0 1.2rem 0 !important;
+  font-family: 'Bebas', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  color: rgba(245, 245, 245, 0.95) !important;
+  font-size: 2rem !important;
+  text-align: center !important;
+}
+
+@media (min-width: 768px) {
+  .about-platform-title {
+    font-size: 2.4rem !important;
+  }
+}
+
+.about-platform-services {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.85rem !important;
+}
+
+@media (min-width: 768px) {
+  .about-platform-services {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.95rem 1.1rem !important;
+  }
+}
+
+.about-platform-service {
+  padding: 1rem 1.1rem !important;
+  border-radius: 14px !important;
+  background: var(--dark-bg) !important;
+  border: 1px solid rgba(57, 40, 40, 0.8) !important;
+  color: rgba(245, 245, 245, 0.88) !important;
+  line-height: 1.6 !important;
+  position: relative !important;
+}
+
+.about-platform-service::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 3px !important;
+  background: linear-gradient(180deg, #670000 0%, #F20000 100%) !important;
+  border-radius: 14px 0 0 14px !important;
+  opacity: 0.9 !important;
+}
+
+.about-platform-service:hover {
+  border-color: var(--primary-red) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
 }
 
 @media (min-width: 768px) {

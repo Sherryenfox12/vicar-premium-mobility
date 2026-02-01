@@ -11,7 +11,6 @@ function VicarHeader({ currentPage = 'home' }) {
   const navItems = useMemo(() => ([
     { to: '/', key: 'home', label: t('nav.home') },
     { to: '/about', key: 'about', label: t('nav.about') },
-    { to: '/brand-story', key: 'brandStory', label: t('nav.brandStory') },
     { to: '/service', key: 'service', label: t('nav.services') },
     { to: '/discover', key: 'discover', label: t('nav.discover') },
     { to: '/contact-us', key: 'contact', label: t('nav.contact') },

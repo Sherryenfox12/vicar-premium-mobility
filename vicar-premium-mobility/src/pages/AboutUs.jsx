@@ -8,6 +8,7 @@ import ContactUsButton from '../components/ContactUsButton';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RotatingText from '../animation/RotatingText';
 import AnimatedContent from '../animation/AnimatedContent';
+import RedLine from '../components/RedLine';
 import './AboutUs.css';
 
 function AboutUs() {
@@ -17,9 +18,147 @@ function AboutUs() {
   const [bannerMedia, setBannerMedia] = useState(null);
   const [bannerLoading, setBannerLoading] = useState(true);
   const [bannerError, setBannerError] = useState(null);
+  const [activePillarIndex, setActivePillarIndex] = useState(0);
 
   
   const API_BASE_URL = `${import.meta.env.VITE_VICAR_BACKEND}/api`;
+
+  const pillars = [
+    { id: 'v', letter: 'V', titleKey: 'brandStory.vTitle' },
+    { id: 'i', letter: 'i', titleKey: 'brandStory.iTitle' },
+    { id: 'c', letter: 'C', titleKey: 'brandStory.cTitle' },
+    { id: 'a', letter: 'A', titleKey: 'brandStory.aTitle' },
+    { id: 'r', letter: 'R', titleKey: 'brandStory.rTitle' },
+  ];
+
+  const activePillar = pillars[activePillarIndex] ?? pillars[0];
+
+  const renderPillarDetails = (pillarId) => {
+    if (pillarId === 'v') {
+      return (
+        <div className="about-pillar-detail-card">
+          <div className="about-pillar-detail-letter">V</div>
+          <h3 className="about-pillar-detail-title">{t('brandStory.vTitle')}</h3>
+          <p className="about-pillar-detail-description">{t('brandStory.vDescription')}</p>
+
+          <div className="about-pillar-detail-section">
+            <h4 className="about-pillar-detail-section-title">{t('brandStory.vServicesTitle')}</h4>
+            <ul className="about-pillar-detail-list">
+              <li>{t('brandStory.vService1')}</li>
+              <li>{t('brandStory.vService2')}</li>
+              <li>{t('brandStory.vService3')}</li>
+              <li>{t('brandStory.vService4')}</li>
+              <li>{t('brandStory.vService5')}</li>
+            </ul>
+          </div>
+
+          <p className="about-pillar-detail-footer">{t('brandStory.vFooter')}</p>
+        </div>
+      );
+    }
+
+    if (pillarId === 'i') {
+      return (
+        <div className="about-pillar-detail-card">
+          <div className="about-pillar-detail-letter">i</div>
+          <h3 className="about-pillar-detail-title">{t('brandStory.iTitle')}</h3>
+          <p className="about-pillar-detail-description">{t('brandStory.iDescription')}</p>
+
+          <div className="about-pillar-detail-section">
+            <ul className="about-pillar-detail-list">
+              <li>
+                <strong className="about-pillar-detail-bullet-title">{t('brandStory.iPoint1Label')}</strong>
+                <span className="about-pillar-detail-bullet-text"> — {t('brandStory.iPoint1Text')}</span>
+              </li>
+              <li>
+                <strong className="about-pillar-detail-bullet-title">{t('brandStory.iPoint2Label')}</strong>
+                <span className="about-pillar-detail-bullet-text"> — {t('brandStory.iPoint2Text')}</span>
+              </li>
+              <li>
+                <strong className="about-pillar-detail-bullet-title">{t('brandStory.iPoint3Label')}</strong>
+                <span className="about-pillar-detail-bullet-text"> — {t('brandStory.iPoint3Text')}</span>
+              </li>
+              <li>
+                <strong className="about-pillar-detail-bullet-title">{t('brandStory.iPoint4Label')}</strong>
+                <span className="about-pillar-detail-bullet-text"> — {t('brandStory.iPoint4Text')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      );
+    }
+
+    if (pillarId === 'c') {
+      return (
+        <div className="about-pillar-detail-card">
+          <div className="about-pillar-detail-letter">C</div>
+          <h3 className="about-pillar-detail-title">{t('brandStory.cTitle')}</h3>
+          <p className="about-pillar-detail-description">{t('brandStory.cDescription')}</p>
+
+          <div className="about-pillar-detail-section">
+            <h4 className="about-pillar-detail-section-title">{t('brandStory.cStandardsTitle')}</h4>
+            <ul className="about-pillar-detail-list">
+              <li>{t('brandStory.cStandard1')}</li>
+              <li>{t('brandStory.cStandard2')}</li>
+              <li>{t('brandStory.cStandard3')}</li>
+              <li>{t('brandStory.cStandard4')}</li>
+              <li>{t('brandStory.cStandard5')}</li>
+            </ul>
+          </div>
+
+          <p className="about-pillar-detail-footer">{t('brandStory.cFooter')}</p>
+        </div>
+      );
+    }
+
+    if (pillarId === 'a') {
+      return (
+        <div className="about-pillar-detail-card">
+          <div className="about-pillar-detail-letter">A</div>
+          <h3 className="about-pillar-detail-title">{t('brandStory.aTitle')}</h3>
+          <p className="about-pillar-detail-description">{t('brandStory.aDescription')}</p>
+
+          <div className="about-pillar-detail-section">
+            <ul className="about-pillar-detail-list">
+              <li>{t('brandStory.aFeature1')}</li>
+              <li>{t('brandStory.aFeature2')}</li>
+              <li>{t('brandStory.aFeature3')}</li>
+              <li>{t('brandStory.aFeature4')}</li>
+              <li>{t('brandStory.aFeature5')}</li>
+              <li>{t('brandStory.aFeature6')}</li>
+            </ul>
+          </div>
+
+          <p className="about-pillar-detail-footer">{t('brandStory.aFooter')}</p>
+        </div>
+      );
+    }
+
+    if (pillarId === 'r') {
+      return (
+        <div className="about-pillar-detail-card">
+          <div className="about-pillar-detail-letter">R</div>
+          <h3 className="about-pillar-detail-title">{t('brandStory.rTitle')}</h3>
+          <p className="about-pillar-detail-description">{t('brandStory.rDescription')}</p>
+
+          <div className="about-pillar-detail-section">
+            <h4 className="about-pillar-detail-section-title">{t('brandStory.rScenariosTitle')}</h4>
+            <ul className="about-pillar-detail-list">
+              <li>{t('brandStory.rScenario1')}</li>
+              <li>{t('brandStory.rScenario2')}</li>
+              <li>{t('brandStory.rScenario3')}</li>
+              <li>{t('brandStory.rScenario4')}</li>
+              <li>{t('brandStory.rScenario5')}</li>
+            </ul>
+          </div>
+
+          <p className="about-pillar-detail-footer">{t('brandStory.rFooter')}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   // Helper function to standardize media URLs
   const standardizeMediaUrl = (url) => {
@@ -231,29 +370,110 @@ function AboutUs() {
           </div>
         </section>
 
-        {/* Tagline Section */}
-        <section className="tagline-section">
+        {/* The Five Pillars of ViCAR (cloned from BrandStory, redesigned) */}
+        <section className="about-pillars-section">
           <div className="container">
-            <div className="tagline-content">
-              <h2 className="tagline-line-1">{t('about.tagline1')}</h2>
-              <h2 className="tagline-line-2">{t('about.tagline2')}</h2>
+            <div className="about-pillars-header">
+              <h2 className="about-pillars-title">{t('brandStory.coreConceptsTitle')}</h2>
+              <p className="about-pillars-subtitle">{t('brandStory.coreConceptsSubtitle')}</p>
+            </div>
+
+            <div className="about-pillars-layout">
+              <div className="about-pillars-rail" aria-label={t('brandStory.coreConceptsTitle')}>
+                {pillars.map((pillar, idx) => {
+                  const isActive = idx === activePillarIndex;
+
+                  return (
+                    <button
+                      key={pillar.id}
+                      type="button"
+                      className={`about-pillar-tile ${isActive ? 'active' : ''}`}
+                      onClick={() => setActivePillarIndex(idx)}
+                      aria-pressed={isActive}
+                    >
+                      <div className="about-pillar-letter">{pillar.letter}</div>
+                      <div className="about-pillar-title">{t(pillar.titleKey)}</div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="about-pillars-detail" aria-live="polite">
+                {renderPillarDetails(activePillar?.id)}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Gradient Bars Section */}
-        <section className="gradient-bars-section">
+        <RedLine />
+
+        {/* Our Core Values + One Platform (from Brand Story, redesigned) */}
+        <section className="about-core-values-section">
           <div className="container">
-            <div className="gradient-bars-container">
-              <div className="gradient-bar gradient-bar-1">
-                <p className="gradient-bar-text">{t('about.gradientBar1')}</p>
-              </div>
-              <div className="gradient-bar gradient-bar-2">
-                <p className="gradient-bar-text">{t('about.gradientBar2')}</p>
-              </div>
+            <div className="section-header">
+              <h2 className="section-title">{t('brandStory.coreValuesTitle')}</h2>
+            </div>
+
+            <div className="about-values-grid">
+              {[1, 2, 3, 4, 5].map((n, idx) => (
+                <AnimatedContent
+                  key={n}
+                  distance={40}
+                  direction="vertical"
+                  reverse={false}
+                  duration={1.2}
+                  ease="power2.out"
+                  initialOpacity={0}
+                  animateOpacity
+                  scale={0.98}
+                  threshold={0.25}
+                  delay={0.06 + idx * 0.06}
+                >
+                  <div className="about-value-card">
+                    <div className="about-value-top">
+                      <span className="about-value-num">{String(n).padStart(2, '0')}</span>
+                      <span className="about-value-hairline" aria-hidden="true"></span>
+                    </div>
+                    <h3 className="about-value-title">{t(`brandStory.value${n}Title`)}</h3>
+                    <p className="about-value-desc">{t(`brandStory.value${n}Desc`)}</p>
+                  </div>
+                </AnimatedContent>
+              ))}
             </div>
           </div>
         </section>
+
+    
+        <section className="about-platform-section">
+          <div className="container">
+            <AnimatedContent
+              distance={40}
+              direction="vertical"
+              reverse={false}
+              duration={1.2}
+              ease="power2.out"
+              initialOpacity={0}
+              animateOpacity
+              scale={0.99}
+              threshold={0.2}
+            >
+              <div className="about-platform-card">
+                <h2 className="about-platform-title">{t('brandStory.platformTitle')}</h2>
+                <div className="about-platform-services">
+                  <div className="about-platform-service">{t('brandStory.platformService1')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService2')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService3')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService4')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService5')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService6')}</div>
+                  <div className="about-platform-service">{t('brandStory.platformService7')}</div>
+                </div>
+              </div>
+            </AnimatedContent>
+          </div>
+        </section>
+
+        <RedLine />
 
         {/* Why Choose Us Section */}
         <section className="features-section" style={{ padding: '2rem 0' }}>
