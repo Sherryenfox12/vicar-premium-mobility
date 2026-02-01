@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { renderWithVicar } from './VicarWord';
 import './VicarFooter.css';
 
 function VicarFooter() {
@@ -82,7 +83,7 @@ function VicarFooter() {
 
         <div className="vicar-footerLux__bottom">
           <div className="vicar-footerLux__bottomInner">
-            <p className="vicar-footerLux__copyright">{t('footer.copyright')}</p>
+            <p className="vicar-footerLux__copyright">{renderWithVicar(t('footer.copyright'))}</p>
             <p className="vicar-footerLux__signature">{t('footer.designedFor')}</p>
           </div>
         </div>

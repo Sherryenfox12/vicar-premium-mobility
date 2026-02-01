@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import './Discover.css';
 
@@ -153,7 +154,7 @@ function Discover() {
             </div>
             <div className="hero-content">
               <h1 className="hero-title">{t('discover.heroTitle')}</h1>
-              <p className="hero-subtitle">{t('discover.heroSubtitle')}</p>
+              <p className="hero-subtitle">{renderWithVicar(t('discover.heroSubtitle'))}</p>
             </div>
           </section>
           <div className="loading-state">
@@ -190,7 +191,7 @@ function Discover() {
           </div>
           <div className="hero-content">
             <h1 className="hero-title">{t('discover.heroTitle')}</h1>
-            <p className="hero-subtitle">{t('discover.heroSubtitle')}</p>
+            <p className="hero-subtitle">{renderWithVicar(t('discover.heroSubtitle'))}</p>
           </div>
         </section>
 

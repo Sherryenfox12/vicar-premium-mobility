@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import AnimatedContent from '../animation/AnimatedContent';
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RedLine from '../components/RedLine';
 import MobileAppPromotion from '../components/MobileAppPromotion';
@@ -532,7 +533,7 @@ function HomePage() {
             </video>
 
             <div className={`home-video-text-overlay ${!showText ? 'fade-out' : ''}`}>
-              <p className="home-video-eyebrow">{t('home.vicarPremiumMobility')}</p>
+              <p className="home-video-eyebrow">{renderWithVicar(t('home.vicarPremiumMobility'))}</p>
               <h1 className="home-video-title">
                 {t('home.arriveInQuietLuxury').split(' ').slice(0, 2).join(' ')}<br />
                 <span className="lux-gold">{t('home.arriveInQuietLuxury').split(' ').slice(2).join(' ')}</span>
@@ -721,7 +722,7 @@ function HomePage() {
             <div className="lux-servicesMosaic" aria-label="Our services">
               {/* Tile A – text panel (like the left block in the reference) */}
               <div className="lux-servicesTile lux-servicesTile--intro">
-                <p className="lux-servicesKicker">{t('home.vicarPremiumMobilityShort')}</p>
+                <p className="lux-servicesKicker">{renderWithVicar(t('home.vicarPremiumMobilityShort'))}</p>
                 <h3 className="lux-servicesIntroTitle">
                   {t('home.chauffeurLedTravel')}
                 </h3>

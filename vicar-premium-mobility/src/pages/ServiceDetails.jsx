@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import ContactUsButton from '../components/ContactUsButton';
 import FloatingCarButton from '../components/FloatingCarButton';
 import MobileAppPromotion from '../components/MobileAppPromotion';
@@ -319,7 +320,7 @@ function ServiceDetails() {
         {/* Additional Information Section */}
         <section className="additional-info-section">
           <div className="container">
-            <h2>{t('serviceDetails.whyChooseKW99')} {currentService.title.split(' ')[0]} {t('serviceDetails.services')}</h2>
+            <h2>{renderWithVicar(t('serviceDetails.whyChooseKW99'))} {currentService.title.split(' ')[0]} {t('serviceDetails.services')}</h2>
             <div className="info-grid">
               <div className="info-card">
                 <span className="material-icons">verified</span>

@@ -4,6 +4,7 @@ import { FaCar, FaCarSide, FaTools, FaThumbsUp, FaUserCheck, FaUsers, FaHeadset 
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import ContactUsButton from '../components/ContactUsButton';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RotatingText from '../animation/RotatingText';
@@ -54,7 +55,7 @@ function AboutUs() {
     if (pillarId === 'i') {
       return (
         <div className="about-pillar-detail-card">
-          <div className="about-pillar-detail-letter">i</div>
+          <div className="about-pillar-detail-letter"><span className="vicar-i">i</span></div>
           <h3 className="about-pillar-detail-title">{t('brandStory.iTitle')}</h3>
           <p className="about-pillar-detail-description">{t('brandStory.iDescription')}</p>
 
@@ -244,7 +245,7 @@ function AboutUs() {
         <section className="about-pillars-section">
           <div className="container">
             <div className="about-pillars-header">
-              <h2 className="about-pillars-title">{t('brandStory.coreConceptsTitle')}</h2>
+              <h2 className="about-pillars-title">{renderWithVicar(t('brandStory.coreConceptsTitle'))}</h2>
               <p className="about-pillars-subtitle">{t('brandStory.coreConceptsSubtitle')}</p>
             </div>
 
@@ -262,7 +263,7 @@ function AboutUs() {
                       onMouseEnter={() => setActivePillarIndex(idx)}
                       aria-pressed={isActive}
                     >
-                      <div className="about-pillar-letter">{pillar.letter}</div>
+                      <div className="about-pillar-letter">{pillar.letter === 'i' ? <span className="vicar-i">i</span> : pillar.letter}</div>
                       <div className="about-pillar-title">{t(pillar.titleKey)}</div>
                     </button>
                   );
@@ -350,7 +351,7 @@ function AboutUs() {
         <section className="features-section" style={{ padding: '2rem 0' }}>
           <div className="container">
             <div className="section-header">
-              <h2 className="section-title">{t('about.whyChooseTitle')}</h2>
+              <h2 className="section-title">{renderWithVicar(t('about.whyChooseTitle'))}</h2>
               <p className="section-subtitle">{t('about.whyChooseSubtitle')}</p>
             </div>
             

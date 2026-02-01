@@ -1,4 +1,5 @@
 import React from 'react';
+import { renderWithVicar } from './VicarWord';
 import './NeedCarAdvice.css';
 
 function NeedCarAdvice() {
@@ -8,7 +9,7 @@ function NeedCarAdvice() {
         <div className="app-promotion-content">
           <div className="app-info">
             <h2 className="app-title">NEED CAR ADVICE?</h2>
-            <p className="app-subtitle">Contact Us or Download Vicar App Now!</p>
+            <p className="app-subtitle">{renderWithVicar('Contact Us or Download Vicar App Now!')}</p>
             <p className="app-description">
               Whether you're inquiring about our latest inventory, seeking expert advice, or have a general question, our dedicated team is ready to assist you.
             </p>

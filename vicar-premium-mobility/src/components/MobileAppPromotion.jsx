@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from "react-i18next";
+import { renderWithVicar } from './VicarWord';
 import './MobileAppPromotion.css';
 
 const MobileAppPromotion = () => {
@@ -11,7 +12,7 @@ const MobileAppPromotion = () => {
         <div className="app-promotion-content">
           <div className="app-info">
             <h2 className="app-title">{t('home.needCarAdvice')}</h2>
-            <p className="app-subtitle">{t('home.contactUsDownload')}</p>
+            <p className="app-subtitle">{renderWithVicar(t('home.contactUsDownload'))}</p>
             <p className="app-description">
               {t('home.appDescription')}
             </p>

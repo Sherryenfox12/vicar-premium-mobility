@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import AnimatedContent from '../animation/AnimatedContent';
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import ContactUsButton from '../components/ContactUsButton';
 import './HelpfulTools.css';
 
@@ -559,7 +560,7 @@ function HelpfulTools() {
                  <div className="fee-content">
                    <h3 className="fee-title">{t('tools.processingFeeTitle')}</h3>
                    <p className="fee-description">
-                     {t('tools.processingFeeDesc')}
+                     {renderWithVicar(t('tools.processingFeeDesc'))}
                    </p>
                  </div>
                </div>
@@ -586,7 +587,7 @@ function HelpfulTools() {
           <div className="section-content">
             <h1 className="section-title">{t('tools.heroTitle')}</h1>
             <p className="section-description">
-              {t('tools.heroDescription')}
+              {renderWithVicar(t('tools.heroDescription'))}
             </p>
             <div className="tools-overview">
               <Link to="/helpful-tools/insurance-estimate" className="tool-overview-card">

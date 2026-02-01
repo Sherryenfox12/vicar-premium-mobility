@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import AnimatedContent from '../animation/AnimatedContent';
 import Hyperspeed from '../animation/Hyperspeed';
@@ -216,7 +217,7 @@ function BrandStory() {
     if (text.includes('ViCAR delivers exceptional premium mobility experiences')) {
       return (
         <>
-          <span className="story-text-line">ViCAR delivers exceptional premium mobility experiences, combining luxury, innovation, and personalized service to create unforgettable journeys.</span>
+          <span className="story-text-line">{renderWithVicar('ViCAR delivers exceptional premium mobility experiences, combining luxury, innovation, and personalized service to create unforgettable journeys.')}</span>
           <br />
           <span className="story-text-line">Built on five core principles — <span className="story-letter-white">V</span> · <span className="story-letter-white">i</span> · <span className="story-letter-white">C</span> · <span className="story-letter-white">A</span> · <span className="story-letter-white">R</span> —</span>
           <br />
@@ -229,7 +230,7 @@ function BrandStory() {
     if (text.includes('ViCAR 致力于提供卓越的高端出行体验')) {
       return (
         <>
-          <span className="story-text-line">ViCAR 致力于提供卓越的高端出行体验，融合奢华、创新与个性化服务，为您打造难忘的旅程。</span>
+          <span className="story-text-line">{renderWithVicar('ViCAR 致力于提供卓越的高端出行体验，融合奢华、创新与个性化服务，为您打造难忘的旅程。')}</span>
           <br />
           <span className="story-text-line">品牌建立在五大核心理念之上 — <span className="story-letter-white">V</span> · <span className="story-letter-white">i</span> · <span className="story-letter-white">C</span> · <span className="story-letter-white">A</span> · <span className="story-letter-white">R</span> —</span>
           <br />
