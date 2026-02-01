@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCar, FaCalendarAlt, FaKey } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
-import Lottie from 'lottie-react';
 import AnimatedContent from '../animation/AnimatedContent';
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
@@ -11,6 +10,29 @@ import RedLine from '../components/RedLine';
 import MobileAppPromotion from '../components/MobileAppPromotion';
 import './HomePage.css';
 
+
+const VIDEO_TRIGGER_STORAGE_KEY = 'vicar_home_video_last_trigger';
+const VIDEO_TRIGGER_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+const shouldSkipVideo = () => {
+  try {
+    const lastTrigger = localStorage.getItem(VIDEO_TRIGGER_STORAGE_KEY);
+    if (!lastTrigger) return false;
+    const lastTime = parseInt(lastTrigger, 10);
+    const now = Date.now();
+    return (now - lastTime) < VIDEO_TRIGGER_COOLDOWN_MS;
+  } catch {
+    return false;
+  }
+};
+
+const saveVideoTrigger = () => {
+  try {
+    localStorage.setItem(VIDEO_TRIGGER_STORAGE_KEY, Date.now().toString());
+  } catch (e) {
+    console.warn('Failed to save video trigger to localStorage:', e);
+  }
+};
 
 function HomePage() {
   const { t } = useTranslation();
@@ -21,8 +43,7 @@ function HomePage() {
   const [showScrollPrompt, setShowScrollPrompt] = useState(false);
   const [showText, setShowText] = useState(true);
   const [videoFadeOut, setVideoFadeOut] = useState(false);
-  const [hideVideo, setHideVideo] = useState(false);
-  const [securityCarAnimation, setSecurityCarAnimation] = useState(null);
+  const [hideVideo, setHideVideo] = useState(shouldSkipVideo());
   const hasReachedFirstFrame = useRef(false);
   const hasScrolledFirst = useRef(false);
   const videoEnded = useRef(false);
@@ -55,19 +76,9 @@ function HomePage() {
     }
   };
 
-  // Load Security Car Black Lottie animation
-  useEffect(() => {
-    fetch('/lottie/Car safety edit.json')
-      .then(response => response.json())
-      .then(data => setSecurityCarAnimation(data))
-      .catch(error => {
-        console.log('Failed to load Car safety edit animation:', error);
-        setSecurityCarAnimation(null);
-      });
-  }, []);
-
   // Handle skip button click - ends video and scrolls to chauffeur section
   const handleSkipVideo = () => {
+    saveVideoTrigger();
     const video = videoRef.current;
     if (video) {
       video.pause();
@@ -83,6 +94,7 @@ function HomePage() {
     // Restore body scroll immediately
     document.body.style.overflow = 'auto';
     
+
     // Remove scroll event listeners
     if (scrollHandlersRef.current.handleScrollTrigger) {
       window.removeEventListener('wheel', scrollHandlersRef.current.handleScrollTrigger);
@@ -134,6 +146,7 @@ function HomePage() {
 
     // Handle video end
     const handleVideoEnd = () => {
+      saveVideoTrigger();
       videoEnded.current = true;
       // Start fade-out animation
       setVideoFadeOut(true);
@@ -550,29 +563,6 @@ function HomePage() {
               {t('home.skip')}
             </button>
 
-            {/* Lottie Loading Animation - appears during video fade-out */}
-            {videoFadeOut && securityCarAnimation && (
-              <div className="home-lottie-loading">
-                <Lottie 
-                  animationData={securityCarAnimation} 
-                  className="home-lottie-animation" 
-                  loop={true}
-                  autoplay={true}
-                  renderer="svg"
-                  rendererSettings={{
-                    preserveAspectRatio: 'xMidYMid meet',
-                    clearCanvas: true
-                  }}
-                  style={{ 
-                    background: 'transparent',
-                    backgroundColor: 'transparent'
-                  }}
-                  onError={(error) => {
-                    console.log('Security Car animation error:', error);
-                  }}
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -586,6 +576,9 @@ function HomePage() {
               <p className="chauffeur-subtitle">
                 {t('home.experienceLuxuryTransport')}
               </p>
+
+{/* 
+
               <div className="lux-trustbar" aria-label="Trusted partners">
                 <div className="lux-trust-item">
                   <img className="lux-trust-logo" src="/kw99.png" alt="KW99" loading="lazy" />
@@ -599,6 +592,10 @@ function HomePage() {
                   <span className="lux-trust-text">{t('home.premiumFleet')}</span>
                 </div>
               </div>
+              */}
+
+
+
               <div className="chauffeur-features">
                 <div className="feature-item">
                   <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -1085,12 +1082,7 @@ function HomePage() {
             </div>
 
             <div className="view-more-container">
-              <button className="view-more-btn" onClick={() => goToTownDetails('kuala-lumpur')}>
-                <span>{t('home.viewMore')}</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </button>
+             
             </div>
           </div>
         </section>
@@ -1270,17 +1262,14 @@ function HomePage() {
               <div className="lux-cta-copy">
                 <p className="lux-eyebrow">{t('home.privateConcierge')}</p>
                 <h2 className="lux-cta-title">
-                  {t('home.reservedRefinedEffortless').split('.').slice(0, 2).join('. ')}. <span className="lux-gold">{t('home.reservedRefinedEffortless').split('.')[2].trim()}.</span>
+                  {t('home.reservedRefinedEffortless').split('.').slice(0, 2).join('. ')}. <span className="lux-gold">{(t('home.reservedRefinedEffortless').split('.')[2] ?? '').trim()}{t('home.reservedRefinedEffortless').split('.')[2] ? '.' : ''}</span>
                 </h2>
                 <p className="lux-cta-subtitle">
                   Tell us where you’re headed — we’ll curate the vehicle, chauffeur, and timing with quiet precision.
                 </p>
               </div>
               <div className="lux-cta-actions">
-                <Link to="/contact-us" className="lux-btn lux-btn--primary lux-btnLink">
-                  {t('home.contactConcierge')}
-                </Link>
-                <Link to="/service" className="lux-btn lux-btn--secondary lux-btnLink">
+                <Link to="/service" className="lux-btn lux-btn--gold lux-btnLink">
                   {t('home.viewServices')}
                 </Link>
               </div>

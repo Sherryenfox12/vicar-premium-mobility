@@ -13,7 +13,7 @@ function OurService() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Service images - centralized for easy updates
+  // Service images - centralized for easy updates (used in detail sections)
   const serviceImages = {
     cityToCity: '/image/ourservice_mini_1.png',
     chauffeurHailing: '/image/ourservice_mini_2.png',
@@ -24,15 +24,15 @@ function OurService() {
     maintenance: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB923oaeb18SfR1gbA5Y7FfTTCQKTOVl2gdohdif5f-pMn1uXF70Rl5FLBtnWo9vCqyCRGvSKYJ54oWZ39t6L4xF7Hh99jjzABAX_-3qv7XcU_q_5D5Wu0lAxp0BO7_6OcswPvYyXbGK5rUXCAzOeCsc-xGAhI8K-cPCaYSEbtak0u39kMCN7iNCPbvWCi-AfuIrWIKMEOHr3ktF05ZbJNZ5qziZr5E6kfo4BUjo_jFadCw4ydpqkmFqxpAF_PhafrEmIUDABOqIEjz'
   };
 
-  // Service navigation data
+  // Service navigation data - icon + label for "Explore What we can do" section
   const services = [
-    { id: 'city-to-city', name: 'City-to-city rides', image: serviceImages.cityToCity },
-    { id: 'chauffeur-hailing', name: 'Chauffeur hailing', image: serviceImages.chauffeurHailing },
-    { id: 'airport-transfers', name: 'Airport transfers', image: serviceImages.airportTransfers },
-    { id: 'hourly-hire', name: 'Hourly and full day hire', image: serviceImages.hourlyHire },
-    { id: 'recon-car', name: t('service.reconCarTitle'), image: serviceImages.reconCar },
-    { id: 'car-rental', name: t('service.carRentalTitle'), image: serviceImages.carRental },
-    { id: 'maintenance', name: t('service.maintenanceTitle'), image: serviceImages.maintenance }
+    { id: 'city-to-city', nameKey: 'service.cityToCityRides', icon: 'route' },
+    { id: 'chauffeur-hailing', nameKey: 'service.chauffeurHailing', icon: 'local_taxi' },
+    { id: 'airport-transfers', nameKey: 'service.airportTransfers', icon: 'flight' },
+    { id: 'hourly-hire', nameKey: 'service.hourlyFullDayHire', icon: 'schedule' },
+    { id: 'recon-car', nameKey: 'service.reconCarTitle', icon: 'directions_car' },
+    { id: 'car-rental', nameKey: 'service.carRentalTitle', icon: 'car_rental' },
+    { id: 'maintenance', nameKey: 'service.maintenanceTitle', icon: 'build' }
   ];
 
   // Banner media state
@@ -249,19 +249,11 @@ function OurService() {
               {services.map((service) => (
                 <div
                   key={service.id}
-                  className="service-thumbnail"
+                  className="service-thumbnail-card"
                   onClick={() => scrollToService(service.id)}
                 >
-                  <div className="thumbnail-image-container">
-                    <img 
-                      src={service.image} 
-                      alt={service.name}
-                      className="thumbnail-image"
-                    />
-                    <div className="thumbnail-overlay">
-                      <span className="thumbnail-name">{service.name}</span>
-                    </div>
-                  </div>
+                  <span className="service-thumbnail-icon material-icons">{service.icon}</span>
+                  <span className="service-thumbnail-name">{t(service.nameKey)}</span>
                 </div>
               ))}
             </div>

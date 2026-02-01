@@ -169,7 +169,7 @@ function AboutUs() {
           </div>
         </section>
 
-        {/* Our Story Section */}
+        {/* Our Promise to You Section (from Brand Story) */}
         <section className="story-section">
           <div className="container">
             <div className="story-grid">
@@ -183,19 +183,20 @@ function AboutUs() {
               <div className="story-content">
                 <h2 className="story-title">
                   {(() => {
-                    const title = t('about.storyTitle');
-                    if (title === 'OUR STORY') {
+                    const title = t('brandStory.introTitle');
+                    if (title === 'Our Promise to You') {
                       return (
                         <>
-                          <span style={{ color: '#f5f5f5' }}>OUR </span>
-                          <span style={{ color: '#8E1B1E' }}>STORY</span>
+                          <span style={{ color: '#f5f5f5' }}>Our </span>
+                          <span style={{ color: '#8E1B1E' }}>Promise</span>
+                          <span style={{ color: '#f5f5f5' }}> to You</span>
                         </>
                       );
-                    } else if (title === '品牌故事') {
+                    } else if (title === '我们的承诺') {
                       return (
                         <>
-                          <span style={{ color: '#f5f5f5' }}>品牌</span>
-                          <span style={{ color: '#8E1B1E' }}>故事</span>
+                          <span style={{ color: '#f5f5f5' }}>我们的</span>
+                          <span style={{ color: '#8E1B1E' }}>承诺</span>
                         </>
                       );
                     }
@@ -203,7 +204,7 @@ function AboutUs() {
                   })()}
                 </h2>
                 <p className="story-text">
-                  {t('about.storyText')}
+                  {t('brandStory.introText')}
                 </p>
               </div>
             </div>

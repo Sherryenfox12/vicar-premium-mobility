@@ -621,8 +621,8 @@
   gap: 0.5rem;
   color: rgba(245, 245, 245, 0.92);
   background:
-    linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.20) 62%, rgba(0, 0, 0, 0.08) 100%),
-    radial-gradient(700px 260px at 15% 18%, rgba(216, 195, 154, 0.16), transparent 60%);
+    linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.35) 100%),
+    radial-gradient(700px 260px at 15% 18%, rgba(216, 195, 154, 0.12), transparent 60%);
 }
 
 .lux-servicesTitle {
@@ -3372,6 +3372,21 @@
   background: rgba(0, 0, 0, 0.42);
 }
 
+.lux-btn--gold {
+  border: 1px solid transparent;
+  background: linear-gradient(#28241D, #28241D) padding-box,
+    linear-gradient(135deg, #AA9168, #F8DFBB) border-box;
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+  color: #C6B28D;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+}
+
+.lux-btn--gold:hover {
+  color: #F8DFBB;
+  box-shadow: 0 26px 70px rgba(170, 145, 104, 0.35);
+}
+
 .lux-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
@@ -3814,8 +3829,8 @@
 }
 
 .home-form-tab.active {
-  background: var(--lux-redblack-gradient);
-  color: rgba(245, 245, 245, 0.95);
+  background: linear-gradient(135deg, #AA9168 0%, #F8DFBB 100%);
+  color: #28241D;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
 }
 
@@ -3824,7 +3839,7 @@
 }
 
 .home-form-tab.active:hover {
-  background: var(--lux-redblack-gradient-hover);
+  background: linear-gradient(135deg, #B89F70 0%, #F8E5C8 100%);
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.65);
 }
 
@@ -3911,14 +3926,17 @@
 .home-search-btn {
   width: 100%;
   padding: 1rem;
-  border: none;
+  border: 0.5px solid transparent;
   border-radius: 999px;
-  background: var(--lux-redblack-gradient);
-  color: rgba(245, 245, 245, 0.95);
+  background: linear-gradient(#28241D, #28241D) padding-box,
+    linear-gradient(135deg, #AA9168, #F8DFBB) border-box;
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+  color: #C6B28D;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   margin-top: 0.5rem;
@@ -3927,8 +3945,8 @@
 
 .home-search-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.65);
-  background: var(--lux-redblack-gradient-hover);
+  box-shadow: 0 26px 70px rgba(170, 145, 104, 0.35);
+  color: #F8DFBB;
 }
 
 .home-search-btn:active {
