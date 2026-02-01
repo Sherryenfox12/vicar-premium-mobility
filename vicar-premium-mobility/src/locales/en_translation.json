@@ -8,7 +8,7 @@
   "btn.carSales": "Car Sales",
   "btn.carRental": "Car Rental",
   "btn.language": "中文",
-  "footer.companyDescription": "Your trusted source for quality reconditioned cars with a low 3% processing fee in Malaysia.",
+  "footer.companyDescription": "Your trusted all-in-one mobility platform for premium vehicles and chauffeur services in Malaysia.",
   "footer.quickLinks": "Quick Links",
   "footer.ourServices": "Our Services",
   "footer.contactUs": "Contact Us",
@@ -278,6 +278,7 @@
   "tools.carRecommendationOverview": "Find your perfect car match",
   "carRec.introTitle": "Let's find your perfect ride!",
   "carRec.introSubtitle": "Answer a few fun questions and we'll match you with your dream car.",
+  
   "carRec.startQuiz": "Start Quiz",
   "carRec.questionNumber": "Question",
   "carRec.of": "of",
