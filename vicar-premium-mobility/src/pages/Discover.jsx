@@ -207,8 +207,8 @@ function Discover() {
                   <p>⚠️ Error loading banner media: {bannerError}</p>
                   <p>Using default image...</p>
                   <img 
-                    src="/BMW M4 Competition.jpg" 
-                    alt="BMW Luxury Car" 
+                              src="/image/page_background/discoverBg.jpeg" 
+                    alt="discoverBG" 
                     className="hero-bg-image"
                     crossOrigin="anonymous"
                   />
@@ -253,8 +253,8 @@ function Discover() {
                 )
               ) : (
                 <img 
-                  src="/BMW M4 Competition.jpg" 
-                  alt="BMW Luxury Car" 
+                src="/image/page_background/discoverBg.jpeg" 
+                  alt="discoverbg" 
                   className="hero-bg-image"
                   crossOrigin="anonymous"
                 />
@@ -263,8 +263,8 @@ function Discover() {
               {/* Fallback for failed media loads */}
               <div className="hero-fallback" style={{ display: 'none' }}>
                 <img 
-                  src="/BMW M4 Competition.jpg" 
-                  alt="BMW Luxury Car" 
+                  src="/image/page_background/discoverBg.jpeg" 
+                  alt="Discoverbg" 
                   className="hero-bg-image"
                   crossOrigin="anonymous"
                 />
@@ -311,7 +311,7 @@ function Discover() {
                 <p>⚠️ Error loading banner media: {bannerError}</p>
                 <p>Using default image...</p>
                 <img 
-                  src="/BMW M4 Competition.jpg" 
+                       src="/image/page_background/discoverBg.jpeg" 
                   alt="BMW Luxury Car" 
                   className="hero-bg-image"
                   crossOrigin="anonymous"
@@ -354,7 +354,7 @@ function Discover() {
               )
             ) : (
               <img 
-                src="/BMW M4 Competition.jpg" 
+              src="/image/page_background/discoverBg.jpeg" 
                 alt="BMW Luxury Car" 
                 className="hero-bg-image"
                 crossOrigin="anonymous"
@@ -364,7 +364,7 @@ function Discover() {
             {/* Fallback for failed media loads */}
             <div className="hero-fallback" style={{ display: 'none' }}>
               <img 
-                src="/BMW M4 Competition.jpg" 
+                    src="/image/page_background/discoverBg.jpeg" 
                 alt="BMW Luxury Car" 
                 className="hero-bg-image"
                 crossOrigin="anonymous"

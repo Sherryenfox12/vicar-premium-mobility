@@ -177,7 +177,7 @@ function ContactUs() {
               <p>⚠️ Error loading banner media: {bannerError}</p>
               <p>Using default image...</p>
               <img 
-                src="/Honda.jpg" 
+             src="/image/page_background/contactUsBg.jpeg" 
                 alt="Toyota Alphard 2024" 
                 className="hero-bg-image"
                 crossOrigin="anonymous"
@@ -216,7 +216,7 @@ function ContactUs() {
             )
           ) : (
             <img 
-              src="/Honda.jpg" 
+            src="/image/page_background/contactUsBg.jpeg" 
               alt="Toyota Alphard 2024" 
               className="hero-bg-image"
               crossOrigin="anonymous"
@@ -226,7 +226,7 @@ function ContactUs() {
           {/* Fallback for failed media loads */}
           <div className="hero-fallback" style={{ display: 'none' }}>
             <img 
-              src="/Honda.jpg" 
+            src="/image/page_background/contactUsBg.jpeg" 
               alt="Toyota Alphard 2024" 
               className="hero-bg-image"
               crossOrigin="anonymous"

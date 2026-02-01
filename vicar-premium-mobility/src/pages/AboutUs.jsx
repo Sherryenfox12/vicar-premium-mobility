@@ -243,8 +243,8 @@ function AboutUs() {
                 <p>⚠️ Error loading banner media: {bannerError}</p>
                 <p>Using default image...</p>
                 <img 
-                  src="/Toyota-Alphard-2024-17-1296x700.jpg" 
-                  alt="Toyota Alphard 2024" 
+                  src="/image/page_background/aboutUsBg.jpeg" 
+                  alt="aboutUsBg" 
                   className="hero-bg-image"
                   crossOrigin="anonymous"
                 />
@@ -282,8 +282,8 @@ function AboutUs() {
               )
             ) : (
               <img 
-                src="/Toyota-Alphard-2024-17-1296x700.jpg" 
-                alt="Toyota Alphard 2024" 
+              src="/image/page_background/aboutUsBg.jpeg" 
+                alt="aboutUsBg" 
                 className="hero-bg-image"
                 crossOrigin="anonymous"
               />
@@ -292,8 +292,8 @@ function AboutUs() {
             {/* Fallback for failed media loads */}
             <div className="hero-fallback" style={{ display: 'none' }}>
               <img 
-                src="/Toyota-Alphard-2024-17-1296x700.jpg" 
-                alt="Toyota Alphard 2024" 
+                src="/image/page_background/aboutUsBg.jpeg" 
+                alt="aboutUsBg" 
                 className="hero-bg-image"
                 crossOrigin="anonymous"
               />
