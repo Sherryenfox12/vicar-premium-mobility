@@ -8,6 +8,7 @@ import RedLine from '../components/RedLine';
 import './OurService.css';
 import ContactUsButton from '../components/ContactUsButton';
 
+const DEFAULT_HERO_IMAGE = '/image/benz_service.png';
 
 function OurService() {
   const navigate = useNavigate();
@@ -30,77 +31,6 @@ function OurService() {
     { id: 'recon-car', nameKey: 'service.reconCarTitle', icon: 'directions_car' },
     { id: 'maintenance', nameKey: 'service.maintenanceTitle', icon: 'build' }
   ];
-
-  // Banner media state
-  const [bannerMedia, setBannerMedia] = useState(null);
-  const [bannerLoading, setBannerLoading] = useState(true);
-  const [bannerError, setBannerError] = useState(null);
-
-  const API_BASE_URL = `${import.meta.env.VITE_VICAR_BACKEND}/api`;
-
-  // Helper function to standardize media URLs
-  const standardizeMediaUrl = (url) => {
-    if (!url) return null;
-    
-    // Find the index of 'vicar_data' in the URL
-    const vicarDataIndex = url.indexOf('vicar_data');
-    if (vicarDataIndex === -1) {
-      // If 'vicar_data' is not found, return the original URL
-      return url;
-    }
-    
-    // Crop everything before 'vicar_data' and prepend with environment variable
-    const pathFromVicarData = url.substring(vicarDataIndex);
-    return `${import.meta.env.VITE_VICAR_BACKEND}/${pathFromVicarData}`;
-  };
-
-  // Fetch banner media from API
-  const fetchBannerMedia = async () => {
-    try {
-      setBannerLoading(true);
-      setBannerError(null);
-      
-      const response = await fetch(`${API_BASE_URL}/get-banner-media`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ page: 'ourService' })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        // Get the first non-null media item
-        const mediaItem = result.data.find(media => media !== null);
-        if (mediaItem) {
-          console.log('Loaded banner media for Our Service:', mediaItem);
-          setBannerMedia(mediaItem);
-        } else {
-          console.log('No banner media found for Our Service, using default');
-          setBannerMedia(null);
-        }
-      } else {
-        console.log('API returned no data for Our Service, using default');
-        setBannerMedia(null);
-      }
-    } catch (error) {
-      console.error('Error fetching banner media for Our Service:', error);
-      setBannerError(error.message);
-      setBannerMedia(null);
-    } finally {
-      setBannerLoading(false);
-    }
-  };
-
-  // Fetch banner media on component mount
-  useEffect(() => {
-    fetchBannerMedia();
-  }, []);
 
   // Handle scroll to section when hash is present in URL
   useEffect(() => {
@@ -159,75 +89,15 @@ function OurService() {
       <VicarHeader currentPage="service" />
 
       <main className="main-content" style={{backgroundColor: '#111111', color: '#f5f5f5'}}>
-        {/* Hero Section */}
+        {/* Hero Section - default image only */}
         <section className="hero-section">
           <div className="hero-background">
-            {bannerLoading ? (
-              <div className="hero-loading">
-                <div className="loading-spinner"></div>
-                <p>{t('service.loadingBannerMedia')}</p>
-              </div>
-            ) : bannerError ? (
-              <div className="hero-error">
-                <p>{t('service.errorLoadingBanner')} {bannerError}</p>
-                <p>{t('service.usingDefaultImage')}</p>
-                <img 
-                  src="/image/benz_service.png" 
-                  alt="Our Service Banner" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                />
-              </div>
-            ) : bannerMedia ? (
-              bannerMedia.mimeType && bannerMedia.mimeType.startsWith('video/') ? (
-                <video
-                  src={standardizeMediaUrl(bannerMedia.url)}
-                  className="hero-bg-image"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('Video load error:', e.target.src);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                  onLoad={() => console.log('Video loaded successfully:', bannerMedia.url)}
-                />
-              ) : (
-                <img 
-                  src={standardizeMediaUrl(bannerMedia.url)} 
-                  alt="Our Service Banner" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('Image load error:', e.target.src, e.target.error);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                  onLoad={() => console.log('Image loaded successfully:', bannerMedia.url)}
-                />
-              )
-            ) : (
-              <img 
-              src="/image/benz_service.png" 
-                alt="Our Service Banner" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            )}
-            
-            {/* Fallback for failed media loads */}
-            <div className="hero-fallback" style={{ display: 'none' }}>
-              <img 
-              src="/image/benz_service.png" 
-                alt="Our Service Banner" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            </div>
-            
+            <img
+              src={DEFAULT_HERO_IMAGE}
+              alt="Our Service Banner"
+              className="hero-bg-image"
+              crossOrigin="anonymous"
+            />
             <div className="hero-overlay"></div>
             <div className="hero-black-overlay"></div>
           </div>

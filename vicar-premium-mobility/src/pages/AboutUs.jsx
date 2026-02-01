@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCar, FaCarSide, FaTools, FaThumbsUp, FaUserCheck, FaUsers, FaHeadset } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
@@ -11,17 +11,11 @@ import AnimatedContent from '../animation/AnimatedContent';
 import RedLine from '../components/RedLine';
 import './AboutUs.css';
 
+const DEFAULT_HERO_IMAGE = '/image/page_background/aboutUsBg.jpeg';
+
 function AboutUs() {
   const { t } = useTranslation();
-  
-  // Banner media state
-  const [bannerMedia, setBannerMedia] = useState(null);
-  const [bannerLoading, setBannerLoading] = useState(true);
-  const [bannerError, setBannerError] = useState(null);
   const [activePillarIndex, setActivePillarIndex] = useState(0);
-
-  
-  const API_BASE_URL = `${import.meta.env.VITE_VICAR_BACKEND}/api`;
 
   const pillars = [
     { id: 'v', letter: 'V', titleKey: 'brandStory.vTitle' },
@@ -160,145 +154,21 @@ function AboutUs() {
     return null;
   };
 
-  // Helper function to standardize media URLs
-  const standardizeMediaUrl = (url) => {
-    if (!url) return null;
-    
-    // Find the index of 'vicar_data' in the URL
-    const vicarDataIndex = url.indexOf('vicar_data');
-    if (vicarDataIndex === -1) {
-      // If 'vicar_data' is not found, return the original URL
-      return url;
-    }
-    
-    // Crop everything before 'vicar_data' and prepend with environment variable
-    const pathFromVicarData = url.substring(vicarDataIndex);
-    return `${import.meta.env.VITE_VICAR_BACKEND}/${pathFromVicarData}`;
-  };
-
-  // Fetch banner media from API
-  const fetchBannerMedia = async () => {
-    try {
-      setBannerLoading(true);
-      setBannerError(null);
-      
-      const response = await fetch(`${API_BASE_URL}/get-banner-media`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ page: 'aboutUs' })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        // Get the first non-null media item
-        const mediaItem = result.data.find(media => media !== null);
-        if (mediaItem) {
-          console.log('Loaded banner media for About Us:', mediaItem);
-          setBannerMedia(mediaItem);
-        } else {
-          console.log('No banner media found for About Us, using default');
-          setBannerMedia(null);
-        }
-      } else {
-        console.log('API returned no data for About Us, using default');
-        setBannerMedia(null);
-      }
-    } catch (error) {
-      console.error('Error fetching banner media for About Us:', error);
-      setBannerError(error.message);
-      setBannerMedia(null);
-    } finally {
-      setBannerLoading(false);
-    }
-  };
-
-  // Fetch banner media on component mount
-  useEffect(() => {
-    fetchBannerMedia();
-  }, []);
-  
   return (
     <div className="about-page" style={{backgroundColor: '#111111', color: '#f5f5f5', minHeight: '100vh'}}>
       {/* Header Component */}
       <VicarHeader currentPage="about" />
 
       <main className="main-content" style={{backgroundColor: '#111111', color: '#f5f5f5'}}>
-        {/* Hero Section */}
+        {/* Hero Section - default image only */}
         <section className="hero-section">
           <div className="hero-background">
-            {bannerLoading ? (
-              <div className="hero-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading banner media...</p>
-              </div>
-            ) : bannerError ? (
-              <div className="hero-error">
-                <p>⚠️ Error loading banner media: {bannerError}</p>
-                <p>Using default image...</p>
-                <img 
-                  src="/image/page_background/aboutUsBg.jpeg" 
-                  alt="aboutUsBg" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                />
-              </div>
-            ) : bannerMedia ? (
-              bannerMedia.mimeType && bannerMedia.mimeType.startsWith('video/') ? (
-                <video
-                  src={standardizeMediaUrl(bannerMedia.url)}
-                  className="hero-bg-image"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('Video load error:', e.target.src);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                  onLoad={() => console.log('Video loaded successfully:', bannerMedia.url)}
-                />
-              ) : (
-                <img 
-                  src={standardizeMediaUrl(bannerMedia.url)} 
-                  alt="About Us Banner" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('Image load error:', e.target.src, e.target.error);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                  onLoad={() => console.log('Image loaded successfully:', bannerMedia.url)}
-                />
-              )
-            ) : (
-              <img 
-              src="/image/page_background/aboutUsBg.jpeg" 
-                alt="aboutUsBg" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            )}
-            
-            {/* Fallback for failed media loads */}
-            <div className="hero-fallback" style={{ display: 'none' }}>
-              <img 
-                src="/image/page_background/aboutUsBg.jpeg" 
-                alt="aboutUsBg" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            </div>
-            
+            <img
+              src={DEFAULT_HERO_IMAGE}
+              alt="aboutUsBg"
+              className="hero-bg-image"
+              crossOrigin="anonymous"
+            />
             <div className="hero-overlay"></div>
             <div className="hero-black-overlay"></div>
           </div>
@@ -389,6 +259,7 @@ function AboutUs() {
                       type="button"
                       className={`about-pillar-tile ${isActive ? 'active' : ''}`}
                       onClick={() => setActivePillarIndex(idx)}
+                      onMouseEnter={() => setActivePillarIndex(idx)}
                       aria-pressed={isActive}
                     >
                       <div className="about-pillar-letter">{pillar.letter}</div>

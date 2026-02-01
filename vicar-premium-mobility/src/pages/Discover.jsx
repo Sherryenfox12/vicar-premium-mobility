@@ -13,62 +13,7 @@ function Discover() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Banner media state
-  const [bannerMedia, setBannerMedia] = useState(null);
-  const [bannerLoading, setBannerLoading] = useState(true);
-  const [bannerError, setBannerError] = useState(null);
-
-  const API_BASE_URL = `${import.meta.env.VITE_VICAR_BACKEND}/api`;
-  console.log('API_BASE_URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:', API_BASE_URL);
-
-  // Fetch banner media from API
-  const fetchBannerMedia = async () => {
-    try {
-      setBannerLoading(true);
-      setBannerError(null);
-      
-      const response = await fetch(`${API_BASE_URL}/get-banner-media`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ page: 'discover' })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        // Get the first non-null media item
-        const mediaItem = result.data.find(media => media !== null);
-        if (mediaItem) {
-          console.log('Loaded banner media for Discover:', mediaItem);
-          setBannerMedia(mediaItem);
-        } else {
-          console.log('No banner media found for Discover, using default');
-          setBannerMedia(null);
-        }
-      } else {
-        console.log('API returned no data for Discover, using default');
-        setBannerMedia(null);
-      }
-    } catch (error) {
-      console.error('Error fetching banner media for Discover:', error);
-      setBannerError(error.message);
-      setBannerMedia(null);
-    } finally {
-      setBannerLoading(false);
-    }
-  };
-
-  // Fetch banner media on component mount
-  useEffect(() => {
-    fetchBannerMedia();
-  }, []);
-
+  const DEFAULT_HERO_IMAGE = '/image/page_background/discoverBg.jpeg';
 
   // Helper function to get content in current language
   const getLocalizedContent = (content, fallback = '') => {
@@ -197,79 +142,12 @@ function Discover() {
         <main>
           <section className="hero-section">
             <div className="hero-background">
-              {bannerLoading ? (
-                <div className="hero-loading">
-                  <div className="loading-spinner"></div>
-                  <p>Loading banner media...</p>
-                </div>
-              ) : bannerError ? (
-                <div className="hero-error">
-                  <p>⚠️ Error loading banner media: {bannerError}</p>
-                  <p>Using default image...</p>
-                  <img 
-                              src="/image/page_background/discoverBg.jpeg" 
-                    alt="discoverBG" 
-                    className="hero-bg-image"
-                    crossOrigin="anonymous"
-                  />
-                </div>
-              ) : bannerMedia ? (
-                bannerMedia.mimeType && bannerMedia.mimeType.startsWith('video/') ? (
-                  <video
-                    src={standardizeMediaUrl(bannerMedia.url)}
-                    className="hero-bg-image"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    crossOrigin="anonymous"
-                    preload="metadata"
-                    onError={(e) => {
-                      console.error('Video load error:', e.target.src);
-                      e.target.style.display = 'none';
-                      const fallback = e.target.nextElementSibling;
-                      if (fallback) {
-                        fallback.style.display = 'block';
-                      }
-                    }}
-                    onLoad={() => console.log('Video loaded successfully:', bannerMedia.url)}
-                  />
-                ) : (
-                  <img 
-                    src={standardizeMediaUrl(bannerMedia.url)} 
-                    alt="Discover Banner" 
-                    className="hero-bg-image"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      console.error('Image load error:', e.target.src, e.target.error);
-                      e.target.style.display = 'none';
-                      const fallback = e.target.nextElementSibling;
-                      if (fallback) {
-                        fallback.style.display = 'block';
-                      }
-                    }}
-                    onLoad={() => console.log('Image loaded successfully:', bannerMedia.url)}
-                  />
-                )
-              ) : (
-                <img 
-                src="/image/page_background/discoverBg.jpeg" 
-                  alt="discoverbg" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                />
-              )}
-              
-              {/* Fallback for failed media loads */}
-              <div className="hero-fallback" style={{ display: 'none' }}>
-                <img 
-                  src="/image/page_background/discoverBg.jpeg" 
-                  alt="Discoverbg" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                />
-              </div>
-              
+              <img
+                src={DEFAULT_HERO_IMAGE}
+                alt="discoverBG"
+                className="hero-bg-image"
+                crossOrigin="anonymous"
+              />
               <div className="hero-overlay"></div>
               <div className="hero-black-overlay"></div>
             </div>
@@ -298,79 +176,15 @@ function Discover() {
 
       {/* Main Content */}
       <main>
-        {/* Hero Section */}
+        {/* Hero Section - default image only */}
         <section className="hero-section">
           <div className="hero-background">
-            {bannerLoading ? (
-              <div className="hero-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading banner media...</p>
-              </div>
-            ) : bannerError ? (
-              <div className="hero-error">
-                <p>⚠️ Error loading banner media: {bannerError}</p>
-                <p>Using default image...</p>
-                <img 
-                       src="/image/page_background/discoverBg.jpeg" 
-                  alt="BMW Luxury Car" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                />
-              </div>
-            ) : bannerMedia ? (
-              bannerMedia.mimeType && bannerMedia.mimeType.startsWith('video/') ? (
-                <video
-                  src={standardizeMediaUrl(bannerMedia.url)}
-                  className="hero-bg-image"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  crossOrigin="anonymous"
-                  preload="metadata"
-                  onError={(e) => {
-                    console.error('Video load error:', e.target.src);
-                    e.target.style.display = 'none';
-                    const fallback = e.target.nextElementSibling;
-                    if (fallback) {
-                      fallback.style.display = 'block';
-                    }
-                  }}
-                  onLoad={() => console.log('Video loaded successfully:', bannerMedia.url)}
-                />
-              ) : (
-                <img 
-                  src={standardizeMediaUrl(bannerMedia.url)} 
-                  alt="Discover Banner" 
-                  className="hero-bg-image"
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('Image load error:', e.target.src, e.target.error);
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                  onLoad={() => console.log('Image loaded successfully:', bannerMedia.url)}
-                />
-              )
-            ) : (
-              <img 
-              src="/image/page_background/discoverBg.jpeg" 
-                alt="BMW Luxury Car" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            )}
-            
-            {/* Fallback for failed media loads */}
-            <div className="hero-fallback" style={{ display: 'none' }}>
-              <img 
-                    src="/image/page_background/discoverBg.jpeg" 
-                alt="BMW Luxury Car" 
-                className="hero-bg-image"
-                crossOrigin="anonymous"
-              />
-            </div>
-            
+            <img
+              src={DEFAULT_HERO_IMAGE}
+              alt="BMW Luxury Car"
+              className="hero-bg-image"
+              crossOrigin="anonymous"
+            />
             <div className="hero-overlay"></div>
             <div className="hero-black-overlay"></div>
           </div>

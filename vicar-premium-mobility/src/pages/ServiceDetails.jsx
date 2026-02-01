@@ -6,6 +6,8 @@ import VicarFooter from '../components/VicarFooter';
 import ContactUsButton from '../components/ContactUsButton';
 import FloatingCarButton from '../components/FloatingCarButton';
 import MobileAppPromotion from '../components/MobileAppPromotion';
+import BestSellingCarViewer from '../components/BestSellingCarViewer';
+import HelpfulToolsSection from '../components/HelpfulToolsSection';
 import './ServiceDetails.css';
 
 
@@ -301,6 +303,18 @@ function ServiceDetails() {
             </div>
           </div>
         </section>
+
+        {/* Our Best Selling Car Models - 3D viewer (recon-car only) */}
+        {serviceType === 'recon-car' && (
+          <>
+            <BestSellingCarViewer
+              title={t('serviceDetails.bestSellingCarModels')}
+              description={t('serviceDetails.bestSellingCarModelsDesc')}
+              showDetails={true}
+            />
+            <HelpfulToolsSection />
+          </>
+        )}
 
         {/* Additional Information Section */}
         <section className="additional-info-section">

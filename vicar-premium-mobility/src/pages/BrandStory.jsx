@@ -10,18 +10,11 @@ import './BrandStory.css';
 
 function BrandStory() {
   const { t } = useTranslation();
-  
-  // Banner media state
-  const [bannerMedia, setBannerMedia] = useState(null);
-  const [bannerLoading, setBannerLoading] = useState(true);
-  const [bannerError, setBannerError] = useState(null);
   const [lockedConceptIndex, setLockedConceptIndex] = useState(null);
   const [hoverConceptIndex, setHoverConceptIndex] = useState(null);
   
   // Logo floating animation state
   const [logoPosition, setLogoPosition] = useState({ x: 0, y: 0 });
-
-  const API_BASE_URL = `${import.meta.env.VITE_VICAR_BACKEND}/api`;
 
   // Memoize effectOptions to prevent animation restart
   const hyperspeedOptions = useMemo(() => ({
@@ -247,66 +240,6 @@ function BrandStory() {
 
     return text;
   };
-
-  
-  // Helper function to standardize media URLs
-  const standardizeMediaUrl = (url) => {
-    if (!url) return null;
-    
-    const vicarDataIndex = url.indexOf('vicar_data');
-    if (vicarDataIndex === -1) {
-      return url;
-    }
-    
-    const pathFromVicarData = url.substring(vicarDataIndex);
-    return `${import.meta.env.VITE_VICAR_BACKEND}/${pathFromVicarData}`;
-  };
-
-  // Fetch banner media from API
-  const fetchBannerMedia = async () => {
-    try {
-      setBannerLoading(true);
-      setBannerError(null);
-      
-      const response = await fetch(`${API_BASE_URL}/get-banner-media`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ page: 'brandStory' })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        const mediaItem = result.data.find(media => media !== null);
-        if (mediaItem) {
-          console.log('Loaded banner media for Brand Story:', mediaItem);
-          setBannerMedia(mediaItem);
-        } else {
-          console.log('No banner media found for Brand Story, using default');
-          setBannerMedia(null);
-        }
-      } else {
-        console.log('API returned no data for Brand Story, using default');
-        setBannerMedia(null);
-      }
-    } catch (error) {
-      console.error('Error fetching banner media for Brand Story:', error);
-      setBannerError(error.message);
-      setBannerMedia(null);
-    } finally {
-      setBannerLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBannerMedia();
-  }, []);
 
   // Logo floating animation - continuous movement
   useEffect(() => {

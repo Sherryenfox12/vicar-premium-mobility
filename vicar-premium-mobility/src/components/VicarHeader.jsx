@@ -47,21 +47,6 @@ function VicarHeader({ currentPage = 'home' }) {
 
   return (
     <header className={`vicar-header ${isScrolled ? 'is-scrolled' : ''}`}>
-      <div className="vicar-header__top">
-        <div className="vicar-header__topInner">
-          <div className="vicar-header__topLeft">
-            <a className="vicar-header__topLink" href="tel:+601155572999">011-55572999</a>
-            <span className="vicar-header__dot" aria-hidden="true"></span>
-            <a className="vicar-header__topLink" href="mailto:enquiries@kw99.com.my">enquiries@kw99.com.my</a>
-          </div>
-          <div className="vicar-header__topRight">
-            <button className="vicar-header__lang" type="button" onClick={toggleLanguage} aria-label="Toggle language">
-              EN / 中文
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="vicar-header__main">
         <div className="vicar-header__mainInner">
           <Link to="/" className="vicar-header__brand" aria-label="ViCAR Home" onClick={closeMenu}>
@@ -85,8 +70,11 @@ function VicarHeader({ currentPage = 'home' }) {
           </nav>
 
           <div className="vicar-header__actions">
+            <button className="vicar-header__lang vicar-header__lang--main" type="button" onClick={toggleLanguage} aria-label="Toggle language">
+              EN / 中文
+            </button>
             <Link to="/contact-us" className="vicar-header__cta">
-              {t('header.concierge')}
+              {t('header.bookNow')}
             </Link>
 
             <button
@@ -134,8 +122,11 @@ function VicarHeader({ currentPage = 'home' }) {
         </div>
 
         <div className="vicar-drawer__footer">
+          <button className="vicar-header__lang vicar-drawer__lang" type="button" onClick={toggleLanguage} aria-label="Toggle language">
+            EN / 中文
+          </button>
           <Link to="/contact-us" className="vicar-drawer__cta" onClick={closeMenu}>
-            {t('header.contactConcierge')}
+            {t('header.bookNow')}
           </Link>
           <p className="vicar-drawer__hint">{t('header.tagline')}</p>
         </div>
