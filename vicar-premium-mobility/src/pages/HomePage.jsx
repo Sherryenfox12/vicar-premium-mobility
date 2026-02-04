@@ -739,7 +739,7 @@ function HomePage() {
               {/* Tile B – Airport transfers */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.05}>
                 <a href="/service-details/chauffeur-service#airport" className="lux-servicesTile lux-servicesTile--hero" aria-label="Airport transfers">
-                  <img src="/image/ourservice_mini_3.png" alt="Airport transfers" className="lux-servicesMedia" loading="lazy" />
+                  <img src="/image/kwpic/DSC07584.png" alt="Airport transfers" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.airportTransfers')}</h3>
                     <p className="lux-servicesDesc">{t('home.flightMonitoring')}</p>
@@ -763,7 +763,7 @@ function HomePage() {
               {/* Tile D – Chauffeur hailing */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.15}>
                 <a href="/service-details/chauffeur-service#chauffeur-hailing" className="lux-servicesTile lux-servicesTile--wide" aria-label="Chauffeur hailing">
-                  <img src="/image/ourservice_mini_2.png" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
+                  <img src="/image/kwpic/DSC07653.jpg.jpeg" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.chauffeurHailing')}</h3>
                     <p className="lux-servicesDesc">{t('home.onDemandBooking')}</p>
@@ -775,7 +775,7 @@ function HomePage() {
               {/* Tile E – Car Rental */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
                 <a href="/service#car-rental" className="lux-servicesTile lux-servicesTile--small2" aria-label="Car Rental">
-                  <img src="/image/carRental.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
+                  <img src="/image/kwpic/DSC07659.jpg.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('btn.carRental')}</h3>
                     <p className="lux-servicesDesc">{t('home.carRentalDesc')}</p>

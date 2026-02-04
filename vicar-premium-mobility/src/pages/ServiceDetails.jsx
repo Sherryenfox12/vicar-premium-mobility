@@ -89,7 +89,7 @@ function ServiceDetails() {
             t('serviceDetails.airportFeature3'),
             t('serviceDetails.airportFeature4')
           ],
-          image: '/image/ourservice_mini_3.png'
+          image: '/image/kwpic/DSC07584.png'
         },
         {
           id: 'chauffeur-hailing',
@@ -102,7 +102,7 @@ function ServiceDetails() {
             t('serviceDetails.hailingFeature3'),
             t('serviceDetails.hailingFeature4')
           ],
-          image: '/image/ourservice_mini_2.png'
+          image: '/image/kwpic/DSC07653.jpg.jpeg'
         },
         {
           id: 'city-to-city',
@@ -170,7 +170,7 @@ function ServiceDetails() {
         t('serviceDetails.carRentalFeature4'),
         t('serviceDetails.carRentalFeature5')
       ],
-      image: '/image/carRental.jpeg',
+      image: '/image/kwpic/DSC07659.jpg.jpeg',
       ctaText: t('serviceDetails.rentNow'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     },

@@ -16,9 +16,9 @@ function OurService() {
 
   // Service images - centralized for easy updates (used in detail sections)
   const serviceImages = {
-    pointToPoint: '/image/ourservice_mini_2.png',
+    pointToPoint: '/image/kwpic/DSC07653.jpg.jpeg',
     chauffeurService: '/image/ourservice_mini_1.png',
-    carRental: '/image/carRental.jpeg',
+    carRental: '/image/kwpic/DSC07659.jpg.jpeg',
     reconCar: 'toyota harrierz.png',
     maintenance: '/maintainence.jpeg'
   };

@@ -3955,6 +3955,10 @@
 
 /* Responsive Design for Chauffeur Section */
 @media (max-width: 1024px) {
+  .chauffeur-service-section {
+    padding-top: 6rem;
+  }
+
   .chauffeur-content {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -3980,7 +3984,7 @@
 
 @media (max-width: 768px) {
   .chauffeur-service-section {
-    padding: 3rem 1.5rem;
+    padding: 4.5rem 1.5rem 3rem 1.5rem;
   }
 
   .chauffeur-title {
@@ -4003,7 +4007,7 @@
 
 @media (max-width: 480px) {
   .chauffeur-service-section {
-    padding: 2rem 1rem;
+    padding: 5rem 1.25rem 2.5rem 1.25rem;
   }
 
   .chauffeur-title {

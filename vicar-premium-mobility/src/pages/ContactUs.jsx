@@ -7,7 +7,9 @@ import StarBorder from '../animation/StarBorder';
 import '../animation/StarBorder.css';
 import './ContactUs.css';
 
-const DEFAULT_HERO_IMAGE = '/image/page_background/contactUsBg.jpeg';
+
+//const DEFAULT_HERO_IMAGE = '/image/page_background/contactUsBg.jpeg';
+const DEFAULT_HERO_IMAGE = '/image/kwpic/DSC07664.jpg.jpeg';
 
 function ContactUs() {
   const { t } = useTranslation();
@@ -301,7 +303,7 @@ function ContactUs() {
                   <img
                     alt="Vicar"
                     className="contact-vicar-image"
-                    src="/kw99.png"
+                    src="/image/kwpic/DSC07662.jpg.jpeg"
                   />
                 </div>
               </div>
