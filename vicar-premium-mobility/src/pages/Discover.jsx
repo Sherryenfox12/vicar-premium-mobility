@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import SEO from '../components/SEO';
 import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import './Discover.css';
@@ -139,6 +140,7 @@ function Discover() {
   if (loading) {
     return (
       <div className="discover-page">
+        <SEO title="Discover" description="Discover articles, guides, and insights from Vicar - Premium Mobility. Stay updated on car rental, chauffeur services, and mobility tips in Malaysia." path="/discover" priority={0.8} />
         <VicarHeader currentPage="discover" />
         <main>
           <section className="hero-section">
@@ -172,6 +174,12 @@ function Discover() {
 
   return (
     <div className="discover-page">
+      <SEO
+        title="Discover"
+        description="Discover articles, guides, and insights from Vicar - Premium Mobility. Stay updated on car rental, chauffeur services, and mobility tips in Malaysia."
+        path="/discover"
+        priority={0.8}
+      />
       {/* Header Component */}
       <VicarHeader currentPage="discover" />
 

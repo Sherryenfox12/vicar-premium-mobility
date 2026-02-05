@@ -4,6 +4,7 @@ import { FaCar, FaCarSide, FaTools, FaThumbsUp, FaUserCheck, FaUsers, FaHeadset 
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import SEO from '../components/SEO';
 import { renderWithVicar } from '../components/VicarWord';
 import ContactUsButton from '../components/ContactUsButton';
 import FloatingCarButton from '../components/FloatingCarButton';
@@ -157,6 +158,12 @@ function AboutUs() {
 
   return (
     <div className="about-page" style={{backgroundColor: '#111111', color: '#f5f5f5', minHeight: '100vh'}}>
+      <SEO
+        title="About Us"
+        description="Learn about Vicar - Premium Mobility. Our VICAR pillars: Vehicle services, Innovation, Customer focus, Assurance, and Reliability in Malaysia."
+        path="/about"
+        priority={0.8}
+      />
       {/* Header Component */}
       <VicarHeader currentPage="about" />
 

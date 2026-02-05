@@ -6,6 +6,7 @@ import axios from 'axios';
 import AnimatedContent from '../animation/AnimatedContent';
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import SEO from '../components/SEO';
 import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RedLine from '../components/RedLine';
@@ -763,6 +764,12 @@ function HomePage() {
 
   return (
     <div className="home-page">
+      <SEO
+        title="Home"
+        description="Your trusted all-in-one mobility platform for premium vehicles and chauffeur services in Malaysia. Car rental, chauffeur service, and reconditioned cars."
+        path="/"
+        priority={1.0}
+      />
       {/* Header Component */}
       <VicarHeader currentPage="home" />
 

@@ -4,6 +4,12 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-i18next', 'i18next'],
+  },
   assetsInclude: ['**/*.glb'],
   server: {
     host: true, // Allow external connections

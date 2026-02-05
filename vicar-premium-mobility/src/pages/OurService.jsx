@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import SEO from '../components/SEO';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RedLine from '../components/RedLine';
 import './OurService.css';
@@ -85,6 +86,12 @@ function OurService() {
 
   return (
     <div className="service-page" style={{backgroundColor: '#111111', color: '#f5f5f5', minHeight: '100vh'}}>
+      <SEO
+        title="Our Services"
+        description="Explore Vicar's premium mobility services: point-to-point transport, chauffeur service, car rental, reconditioned cars, and maintenance in Malaysia."
+        path="/service"
+        priority={0.8}
+      />
       {/* Header Component */}
       <VicarHeader currentPage="service" />
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
+import SEO from '../components/SEO';
 import FloatingCarButton from '../components/FloatingCarButton';
 import StarBorder from '../animation/StarBorder';
 import '../animation/StarBorder.css';
@@ -93,6 +94,12 @@ function ContactUs() {
 
   return (
     <div className="contact-page">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Vicar - Premium Mobility. Contact us for car rental, chauffeur services, or reconditioned vehicle enquiries in Malaysia."
+        path="/contact-us"
+        priority={0.8}
+      />
       {/* Header Component */}
       <VicarHeader currentPage="contact" />
 
