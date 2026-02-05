@@ -2864,6 +2864,102 @@
   overflow: hidden;
 }
 
+/* Car Specs Info */
+.car-specs-info {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.spec-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(201, 169, 97, 0.1);
+  border: 1px solid rgba(201, 169, 97, 0.3);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.spec-badge svg {
+  color: #c9a961;
+  flex-shrink: 0;
+}
+
+/* Car Info Text */
+.car-info-text {
+  margin-bottom: 12px;
+}
+
+.car-description {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Car Hire Pricing */
+.car-hire-pricing {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pricing-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pricing-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.pricing-value {
+  font-size: 0.95rem;
+  color: #c9a961;
+  font-weight: 700;
+}
+
+.pricing-details {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pricing-details:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.service-details-text {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.highlight-text {
+  font-size: 0.75rem;
+  color: #c9a961;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 /* Car Action Button */
 .car-action {
   margin-top: 16px;
@@ -2876,22 +2972,21 @@
   justify-content: center;
   width: 100%;
   padding: 12px 24px;
-  background: linear-gradient(90deg, #670000 0%, #F20000 100%);
-  color: white;
+  background: var(--lux-redblack-gradient);
+  color: rgba(245, 245, 245, 0.95);
   border: none;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.3s ease;
 }
 
 .car-enquiry-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
-  background: linear-gradient(90deg, #5a0000 0%, #d40000 100%);
+  background: var(--lux-redblack-gradient-hover);
 }
 
 /* Pricing */
@@ -3094,6 +3189,27 @@
 
   .car-title {
     font-size: 0.9rem;
+  }
+
+  .spec-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  .pricing-label {
+    font-size: 0.8rem;
+  }
+
+  .pricing-value {
+    font-size: 0.85rem;
+  }
+
+  .service-details-text {
+    font-size: 0.75rem;
+  }
+
+  .highlight-text {
+    font-size: 0.7rem;
   }
 
   .price-amount {

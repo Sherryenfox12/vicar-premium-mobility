@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCar, FaCalendarAlt, FaKey } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
+import axios from 'axios';
 import AnimatedContent from '../animation/AnimatedContent';
 import VicarHeader from '../components/VicarHeader';
 import VicarFooter from '../components/VicarFooter';
@@ -9,6 +10,8 @@ import { renderWithVicar } from '../components/VicarWord';
 import FloatingCarButton from '../components/FloatingCarButton';
 import RedLine from '../components/RedLine';
 import MobileAppPromotion from '../components/MobileAppPromotion';
+import CarSearchResultsModal from '../components/CarSearchResultsModal';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 import './HomePage.css';
 
 
@@ -50,11 +53,39 @@ function HomePage() {
   const videoEnded = useRef(false);
   const chauffeurSectionRef = useRef(null);
   const newArrivalsSectionRef = useRef(null);
+  const mobileAppSectionRef = useRef(null);
   const postVideoScrollTargetRef = useRef('chauffeur');
   const scrollHandlersRef = useRef({ handleScrollTrigger: null, preventScroll: null });
   const [animatedSections, setAnimatedSections] = useState({
     rentalFlow: false
   });
+
+  // Form state for car search
+  const [formData, setFormData] = useState({
+    serviceType: 'hire',
+    pickupAddress: '',
+    pickupLat: null,
+    pickupLng: null,
+    dropoffAddress: '',
+    dropoffLat: null,
+    dropoffLng: null,
+    pickupDate: '',
+    pickupTime: '',
+    dropoffDate: '',
+    dropoffTime: ''
+  });
+
+  // Get today's date in YYYY-MM-DD format for min date validation
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
 
   // New Arrivals state
   const [vehicles, setVehicles] = useState([]);
@@ -68,6 +99,186 @@ function HomePage() {
 
   const goToTownDetails = (id) => {
     navigate(`/town-details/${id}`);
+  };
+
+  // Handle pickup place selection
+  const handlePickupPlaceSelect = (place) => {
+    if (place.geometry && place.geometry.location) {
+      setFormData(prev => ({
+        ...prev,
+        pickupAddress: place.formatted_address || '',
+        pickupLat: place.geometry.location.lat(),
+        pickupLng: place.geometry.location.lng()
+      }));
+    }
+  };
+
+  // Handle dropoff place selection
+  const handleDropoffPlaceSelect = (place) => {
+    if (place.geometry && place.geometry.location) {
+      setFormData(prev => ({
+        ...prev,
+        dropoffAddress: place.formatted_address || '',
+        dropoffLat: place.geometry.location.lat(),
+        dropoffLng: place.geometry.location.lng()
+      }));
+    }
+  };
+
+  // Calculate distance between two coordinates (Haversine formula)
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance;
+  };
+
+  // Calculate rental duration in hours and minutes
+  const calculateRentalDuration = (pickupDate, pickupTime, dropoffDate, dropoffTime) => {
+    if (!pickupDate || !pickupTime || !dropoffDate || !dropoffTime) {
+      return { hours: 0, minutes: 0, totalMinutes: 0, days: 0 };
+    }
+
+    const pickupDateTime = new Date(`${pickupDate}T${pickupTime}`);
+    const dropoffDateTime = new Date(`${dropoffDate}T${dropoffTime}`);
+    
+    const diffMs = dropoffDateTime - pickupDateTime;
+    const totalMinutes = Math.floor(diffMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const days = Math.floor(hours / 24);
+
+    return { hours, minutes, totalMinutes, days };
+  };
+
+  // Handle form submission
+  const handleSearchCars = async (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    if (!formData.pickupAddress || !formData.pickupLat || !formData.pickupLng) {
+      alert(t('home.pleaseEnterPickup'));
+      return;
+    }
+
+    if (!formData.dropoffAddress || !formData.dropoffLat || !formData.dropoffLng) {
+      alert(t('home.pleaseEnterDropoff'));
+      return;
+    }
+
+    if (!formData.pickupDate || !formData.pickupTime) {
+      alert(t('home.pleaseEnterPickupDateTime'));
+      return;
+    }
+
+    if (!formData.dropoffDate || !formData.dropoffTime) {
+      alert(t('home.pleaseEnterDropoffDateTime'));
+      return;
+    }
+
+    // Validate dropoff is not before pickup
+    const pickupDateTime = new Date(`${formData.pickupDate}T${formData.pickupTime}`);
+    const dropoffDateTime = new Date(`${formData.dropoffDate}T${formData.dropoffTime}`);
+    
+    if (dropoffDateTime <= pickupDateTime) {
+      alert(t('home.dropoffMustBeAfterPickup'));
+      return;
+    }
+
+    try {
+      setSearchLoading(true);
+      setSearchError(null);
+      setShowModal(true);
+
+      // Fetch all available vehicles
+      const response = await axios.get(KW99_LANDING_API_URL, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data && response.data.result && response.data.status_code === 100) {
+        // Calculate distance between pickup and dropoff
+        const distance = calculateDistance(
+          formData.pickupLat,
+          formData.pickupLng,
+          formData.dropoffLat,
+          formData.dropoffLng
+        );
+
+        // Estimate travel duration (assuming average speed of 60 km/h)
+        const travelDuration = Math.round((distance / 60) * 60); // in minutes
+
+        // Calculate rental duration
+        const rentalDuration = calculateRentalDuration(
+          formData.pickupDate,
+          formData.pickupTime,
+          formData.dropoffDate,
+          formData.dropoffTime
+        );
+
+        // Transform the data to match the expected format
+        const transformedData = {
+          success: true,
+          currency: 'MYR',
+          distance_km: Math.round(distance * 10) / 10, // Round to 1 decimal
+          estimated_duration_min: travelDuration,
+          rental_duration: rentalDuration,
+          pickup_datetime: `${formData.pickupDate} ${formData.pickupTime}`,
+          dropoff_datetime: `${formData.dropoffDate} ${formData.dropoffTime}`,
+          cars: response.data.data.map(vehicle => ({
+            car_id: vehicle.vehicle_id.toString(),
+            car_name: vehicle.title,
+            max_passenger: 7, // Default for most luxury vehicles
+            luggage_size: 3,
+            service_details: `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`,
+            price_per_km: 2.50, // Default price, adjust as needed
+            car_type: vehicle.vehicle_type_text,
+            car_picture: vehicle.img_path,
+            car_highlight: `${vehicle.transmission_text} • ${vehicle.cc}cc • ${vehicle.exterior_color}`
+          }))
+        };
+
+        setSearchResults(transformedData);
+      } else {
+        setSearchError(response.data.msg || t('home.failedToFetchCars'));
+      }
+    } catch (error) {
+      console.error('Error fetching car details:', error);
+      setSearchError(error.response?.data?.msg || error.message || t('home.errorFetchingCars'));
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  // Close modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSearchResults(null);
+    setSearchError(null);
+  };
+
+  // Handle book now - close modal and scroll to mobile app section
+  const handleBookNow = () => {
+    setShowModal(false);
+    setSearchResults(null);
+    setSearchError(null);
+    
+    // Scroll to mobile app section
+    setTimeout(() => {
+      if (mobileAppSectionRef.current) {
+        mobileAppSectionRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 300); // Small delay to ensure smooth transition
   };
 
   const handleCityKeyDown = (e, id) => {
@@ -411,7 +622,10 @@ function HomePage() {
       title,
       brand,
       model,
-      img_path
+      img_path,
+      transmission_text,
+      cc,
+      max_passenger
     } = vehicle;
 
     const handleImageError = () => {
@@ -452,6 +666,40 @@ function HomePage() {
         <div className="car-details">
           <div className="car-header">
             <h3 className="car-title">{title}</h3>
+          </div>
+
+          <div className="car-specs-info">
+            <div className="spec-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>{transmission_text || 'AT'}</span>
+            </div>
+            <div className="spec-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                <path d="M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+              <span>7 {t('home.seats')}</span>
+            </div>
+            {cc && (
+              <div className="spec-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>{cc}cc</span>
+              </div>
+            )}
+          </div>
+
+          <div className="car-info-text">
+            <p className="car-description">
+              {manufacturing_year} {brand.toUpperCase()} {model}
+            </p>
           </div>
 
           <div className="car-action">
@@ -622,11 +870,23 @@ function HomePage() {
             <div className="chauffeur-form-side">
               <div className="chauffeur-form-card">
                 <div className="home-form-tabs">
-                  <button className="home-form-tab active">{t('home.oneWay')}</button>
-                  <button className="home-form-tab">{t('home.byTheHour')}</button>
+                  <button 
+                    className={`home-form-tab ${formData.serviceType === 'hire' ? 'active' : ''}`}
+                    onClick={() => setFormData(prev => ({ ...prev, serviceType: 'hire' }))}
+                    type="button"
+                  >
+                    {t('home.chauffeurService')}
+                  </button>
+                  <button 
+                    className={`home-form-tab ${formData.serviceType === 'rent' ? 'active' : ''}`}
+                    onClick={() => setFormData(prev => ({ ...prev, serviceType: 'rent' }))}
+                    type="button"
+                  >
+                    {t('home.carRental')}
+                  </button>
                 </div>
                 
-                <form className="home-booking-form" onSubmit={(e) => e.preventDefault()}>
+                <form className="home-booking-form" onSubmit={handleSearchCars}>
                   <div className="home-form-group">
                     <label className="home-form-label">{t('home.from')}</label>
                     <div className="home-input-with-icon">
@@ -634,10 +894,12 @@ function HomePage() {
                         <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      <input 
-                        type="text" 
-                        className="home-form-input" 
+                      <AddressAutocomplete
+                        value={formData.pickupAddress}
+                        onChange={(e) => setFormData(prev => ({ ...prev, pickupAddress: e.target.value }))}
+                        onPlaceSelect={handlePickupPlaceSelect}
                         placeholder={t('home.addressPlaceholder')}
+                        className="home-form-input"
                       />
                     </div>
                   </div>
@@ -649,25 +911,29 @@ function HomePage() {
                         <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      <input 
-                        type="text" 
-                        className="home-form-input" 
+                      <AddressAutocomplete
+                        value={formData.dropoffAddress}
+                        onChange={(e) => setFormData(prev => ({ ...prev, dropoffAddress: e.target.value }))}
+                        onPlaceSelect={handleDropoffPlaceSelect}
                         placeholder={t('home.addressPlaceholder')}
+                        className="home-form-input"
                       />
                     </div>
                   </div>
 
                   <div className="home-form-row">
                     <div className="home-form-group flex-1">
-                      <label className="home-form-label">{t('home.date')}</label>
+                      <label className="home-form-label">{t('home.pickupDate')}</label>
                       <div className="home-input-with-icon">
                         <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         <input 
                           type="date" 
-                          className="home-form-input" 
-                          defaultValue="2026-01-19"
+                          className="home-form-input"
+                          value={formData.pickupDate}
+                          min={getTodayDate()}
+                          onChange={(e) => setFormData(prev => ({ ...prev, pickupDate: e.target.value }))}
                         />
                       </div>
                     </div>
@@ -680,14 +946,54 @@ function HomePage() {
                         </svg>
                         <input 
                           type="time" 
-                          className="home-form-input" 
-                          defaultValue="13:15"
+                          className="home-form-input"
+                          value={formData.pickupTime}
+                          onChange={(e) => setFormData(prev => ({ ...prev, pickupTime: e.target.value }))}
                         />
                       </div>
                     </div>
                   </div>
 
-                  <p className="home-form-note">{t('home.chauffeurWaitNote')}</p>
+                  <div className="home-form-row">
+                    <div className="home-form-group flex-1">
+                      <label className="home-form-label">{t('home.dropoffDate')}</label>
+                      <div className="home-input-with-icon">
+                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <input 
+                          type="date" 
+                          className="home-form-input"
+                          value={formData.dropoffDate}
+                          min={formData.pickupDate || getTodayDate()}
+                          onChange={(e) => setFormData(prev => ({ ...prev, dropoffDate: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="home-form-group flex-1">
+                      <label className="home-form-label">{t('home.dropoffTime')}</label>
+                      <div className="home-input-with-icon">
+                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <input 
+                          type="time" 
+                          className="home-form-input"
+                          value={formData.dropoffTime}
+                          min={formData.pickupDate === formData.dropoffDate ? formData.pickupTime : undefined}
+                          onChange={(e) => setFormData(prev => ({ ...prev, dropoffTime: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="home-form-note">
+                    {formData.serviceType === 'hire' 
+                      ? t('home.chauffeurWaitNote')
+                      : t('home.rentalNote')
+                    }
+                  </p>
 
                   <button type="submit" className="home-search-btn">
                     {t('home.search')}
@@ -775,7 +1081,7 @@ function HomePage() {
               {/* Tile E – Car Rental */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
                 <a href="/service#car-rental" className="lux-servicesTile lux-servicesTile--small2" aria-label="Car Rental">
-                  <img src="/image/kwpic/DSC07659.jpg.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
+                  <img src="/image/kwpic/DSC07603.jpg.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('btn.carRental')}</h3>
                     <p className="lux-servicesDesc">{t('home.carRentalDesc')}</p>
@@ -1278,7 +1584,9 @@ function HomePage() {
         </section>
 
         {/* Mobile App Promotion */}
-        <MobileAppPromotion />
+        <div ref={mobileAppSectionRef}>
+          <MobileAppPromotion />
+        </div>
       </main>
 
       {/* Footer Component */}
@@ -1286,6 +1594,16 @@ function HomePage() {
 
       {/* Floating Car Button */}
       <FloatingCarButton />
+
+      {/* Car Search Results Modal */}
+      <CarSearchResultsModal 
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onBookNow={handleBookNow}
+        results={searchResults}
+        loading={searchLoading}
+        error={searchError}
+      />
    
     </div>
   );

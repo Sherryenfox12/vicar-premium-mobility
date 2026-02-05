@@ -18,8 +18,8 @@ function OurService() {
   const serviceImages = {
     pointToPoint: '/image/kwpic/DSC07653.jpg.jpeg',
     chauffeurService: '/image/ourservice_mini_1.png',
-    carRental: '/image/kwpic/DSC07659.jpg.jpeg',
-    reconCar: 'toyota harrierz.png',
+    carRental: '/image/kwpic/DSC07603.jpg.jpeg',
+    reconCar: '/image/kwpic/DSC07659.jpg.jpeg',
     maintenance: '/maintainence.jpeg'
   };
 

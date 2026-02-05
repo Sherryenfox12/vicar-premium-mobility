@@ -154,7 +154,7 @@ function ServiceDetails() {
         t('serviceDetails.reconCarFeature4'),
         t('serviceDetails.reconCarFeature5')
       ],
-      image: '/toyota harrierz.png',
+      image: '/image/kwpic/DSC07659.jpg.jpeg',
       ctaText: t('serviceDetails.viewInventory'),
       ctaAction: scrollToMobileApp
     },
@@ -170,7 +170,7 @@ function ServiceDetails() {
         t('serviceDetails.carRentalFeature4'),
         t('serviceDetails.carRentalFeature5')
       ],
-      image: '/image/kwpic/DSC07659.jpg.jpeg',
+      image: '/image/kwpic/DSC07603.jpg.jpeg',
       ctaText: t('serviceDetails.rentNow'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     },
