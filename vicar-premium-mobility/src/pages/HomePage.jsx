@@ -204,7 +204,12 @@ function HomePage() {
         }
       });
 
-      if (response.data && response.data.result && response.data.status_code === 100) {
+      // Support both API formats: user's format { success, cars } or KW99 format { result, data }
+      const apiData = response.data;
+      const isUserFormat = apiData.success && Array.isArray(apiData.cars);
+      const isKw99Format = apiData.result && apiData.status_code === 100 && apiData.data;
+
+      if (isUserFormat || isKw99Format) {
         // Calculate distance between pickup and dropoff
         const distance = calculateDistance(
           formData.pickupLat,
@@ -224,26 +229,52 @@ function HomePage() {
           formData.dropoffTime
         );
 
-        // Transform the data to match the expected format
+        let cars;
+
+        if (isUserFormat) {
+          // User's API format: cars already have max_passenger, luggage_size, etc.
+          cars = apiData.cars.map(car => ({
+            car_id: car.car_id,
+            car_name: car.car_name,
+            max_passenger: car.max_passenger ?? 5,
+            luggage_size: car.luggage_size ?? 0,
+            service_type: car.service_type,
+            service_details: Array.isArray(car.service_details)
+              ? car.service_details.map(s => s.title).join(' • ')
+              : car.service_details,
+            price_per_km: car.estimate_price_per_km ?? car.price_per_km,
+            car_type: car.car_type,
+            car_picture: car.car_picture,
+            car_highlight: car.car_highlight
+          }));
+        } else {
+          // KW99 format: transform vehicles, use API values when available
+          cars = apiData.data.map(vehicle => ({
+            car_id: vehicle.vehicle_id?.toString() ?? vehicle.car_id,
+            car_name: vehicle.title ?? vehicle.car_name,
+            max_passenger: vehicle.max_passenger ?? vehicle.max_pax ?? 5,
+            luggage_size: vehicle.luggage_size ?? vehicle.luggage ?? 0,
+            service_details: vehicle.brand
+              ? `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`
+              : vehicle.service_details,
+            price_per_km: vehicle.price_per_km ?? vehicle.estimate_price_per_km ?? 2.50,
+            car_type: vehicle.vehicle_type_text ?? vehicle.car_type,
+            car_picture: vehicle.img_path ?? vehicle.car_picture,
+            car_highlight: vehicle.transmission_text
+              ? `${vehicle.transmission_text} • ${vehicle.cc}cc • ${vehicle.exterior_color}`
+              : vehicle.car_highlight
+          }));
+        }
+
         const transformedData = {
           success: true,
-          currency: 'MYR',
-          distance_km: Math.round(distance * 10) / 10, // Round to 1 decimal
+          currency: apiData.currency ?? 'MYR',
+          distance_km: Math.round(distance * 10) / 10,
           estimated_duration_min: travelDuration,
           rental_duration: rentalDuration,
           pickup_datetime: `${formData.pickupDate} ${formData.pickupTime}`,
           dropoff_datetime: `${formData.dropoffDate} ${formData.dropoffTime}`,
-          cars: response.data.data.map(vehicle => ({
-            car_id: vehicle.vehicle_id.toString(),
-            car_name: vehicle.title,
-            max_passenger: 7, // Default for most luxury vehicles
-            luggage_size: 3,
-            service_details: `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`,
-            price_per_km: 2.50, // Default price, adjust as needed
-            car_type: vehicle.vehicle_type_text,
-            car_picture: vehicle.img_path,
-            car_highlight: `${vehicle.transmission_text} • ${vehicle.cc}cc • ${vehicle.exterior_color}`
-          }))
+          cars
         };
 
         setSearchResults(transformedData);
@@ -442,10 +473,9 @@ function HomePage() {
     };
   }, []);
 
-  // New Arrivals functions
+  // New Arrivals functions - supports both API formats
   const fetchVehiclesData = async () => {
     try {
-      console.log('fetch KW99_LANDING_API_URL');
       const response = await fetch(KW99_LANDING_API_URL, {
         method: 'GET',
         headers: {
@@ -458,16 +488,48 @@ function HomePage() {
       }
 
       const data = await response.json();
-      
-      if (data.result && data.status_code === 100 && data.data) {
-        return {
-          success: true,
-          vehicles: data.data,
-          message: data.msg
-        };
-      } else {
-        throw new Error(data.msg || 'Failed to fetch vehicles data');
+
+      // User's API format: { success, cars }
+      if (data.success && Array.isArray(data.cars)) {
+        // Deduplicate by car_id (same car may appear as hire + rent)
+        const seen = new Set();
+        const uniqueCars = data.cars.filter(car => {
+          const key = car.car_id;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        const vehicles = uniqueCars.map(car => ({
+          vehicle_id: car.car_id,
+          car_id: car.car_id,
+          title: car.car_name,
+          car_name: car.car_name,
+          manufacturing_year: '',
+          brand: (car.car_name || '').split(' ')[0] || '',
+          model: (car.car_name || '').split(' ').slice(1).join(' ') || car.car_name,
+          img_path: car.car_picture,
+          car_picture: car.car_picture,
+          transmission_text: null,
+          cc: null,
+          max_passenger: car.max_passenger ?? 5,
+          luggage_size: car.luggage_size ?? 0,
+          vehicle_type_text: car.car_type,
+          car_type: car.car_type
+        }));
+        return { success: true, vehicles, message: data.msg };
       }
+
+      // KW99 format: { result, data }
+      if (data.result && data.status_code === 100 && data.data) {
+        const vehicles = data.data.map(v => ({
+          ...v,
+          max_passenger: v.max_passenger ?? v.max_pax ?? 5,
+          luggage_size: v.luggage_size ?? v.luggage ?? 0
+        }));
+        return { success: true, vehicles, message: data.msg };
+      }
+
+      throw new Error(data.msg || 'Failed to fetch vehicles data');
     } catch (error) {
       console.error('Error fetching vehicles data:', error);
       return {
@@ -610,7 +672,7 @@ function HomePage() {
     }
   };
 
-  // Inline CarCard Component for New Arrivals
+  // Inline CarCard Component for New Arrivals - uses API data
   const CarCard = ({ vehicle }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -619,15 +681,28 @@ function HomePage() {
 
     const {
       vehicle_id,
+      car_id,
       manufacturing_year,
       title,
+      car_name,
       brand,
       model,
       img_path,
+      car_picture,
       transmission_text,
       cc,
-      max_passenger
+      max_passenger,
+      luggage_size,
+      vehicle_type_text,
+      car_type
     } = vehicle;
+
+    const displayName = title || car_name;
+    const imageSrc = img_path || car_picture;
+    const passengerCount = max_passenger ?? 5;
+    const description = manufacturing_year && brand && model
+      ? `${manufacturing_year} ${brand.toUpperCase()} ${model}`
+      : (car_type || vehicle_type_text || displayName);
 
     const handleImageError = () => {
       setImageError(true);
@@ -655,8 +730,8 @@ function HomePage() {
             </div>
           ) : (
             <img
-              src={img_path}
-              alt={title}
+              src={imageSrc}
+              alt={displayName}
               className={`car-image ${imageLoaded ? 'loaded' : ''}`}
               onLoad={handleImageLoad}
               onError={handleImageError}
@@ -666,17 +741,19 @@ function HomePage() {
 
         <div className="car-details">
           <div className="car-header">
-            <h3 className="car-title">{title}</h3>
+            <h3 className="car-title">{displayName}</h3>
           </div>
 
           <div className="car-specs-info">
-            <div className="spec-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              <span>{transmission_text || 'AT'}</span>
-            </div>
+            {transmission_text && (
+              <div className="spec-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>{transmission_text}</span>
+              </div>
+            )}
             <div className="spec-badge">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
@@ -684,8 +761,16 @@ function HomePage() {
                 <path d="M23 21v-2a4 4 0 00-3-3.87"/>
                 <path d="M16 3.13a4 4 0 010 7.75"/>
               </svg>
-              <span>7 {t('home.seats')}</span>
+              <span>{passengerCount} {t('home.seats')}</span>
             </div>
+            {luggage_size != null && luggage_size > 0 && (
+              <div className="spec-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span>{luggage_size}L</span>
+              </div>
+            )}
             {cc && (
               <div className="spec-badge">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -699,7 +784,7 @@ function HomePage() {
 
           <div className="car-info-text">
             <p className="car-description">
-              {manufacturing_year} {brand.toUpperCase()} {model}
+              {description}
             </p>
           </div>
 
@@ -1043,58 +1128,54 @@ function HomePage() {
                   {t('home.discreetService')}
                 </p>
                 <div className="lux-servicesIntroActions">
-                  <a href="/service#chauffeur-service" className="lux-btn lux-btn--primary lux-btnLink">
+                  <a href="#mobile-app-promotion" className="lux-btn lux-btn--primary lux-btnLink">
                     {t('home.bookChauffeur')}
                   </a>
                 </div>
               </div>
 
-              {/* Tile B – Airport transfers */}
+              {/* Tile 1 – Airport transfers */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.05}>
-                <a href="/service-details/chauffeur-service#airport" className="lux-servicesTile lux-servicesTile--hero" aria-label="Airport transfers">
+                <div className="lux-servicesTile lux-servicesTile--tile1 lux-servicesTile--noClick" aria-label="Airport transfers">
                   <img src="/image/kwpic/DSC07584.png" alt="Airport transfers" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.airportTransfers')}</h3>
                     <p className="lux-servicesDesc">{t('home.flightMonitoring')}</p>
-                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
-                </a>
+                </div>
               </AnimatedContent>
 
-              {/* Tile C – City-to-city rides */}
+              {/* Tile 2 – City-to-city rides */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
-                <a href="/service-details/chauffeur-service#city-to-city" className="lux-servicesTile lux-servicesTile--small2" aria-label="City-to-city rides">
+                <div className="lux-servicesTile lux-servicesTile--tile2 lux-servicesTile--noClick" aria-label="City-to-city rides">
                   <img src="/image/ourservice_mini_1.png" alt="City-to-city rides" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.cityToCityRides')}</h3>
                     <p className="lux-servicesDesc">{t('home.longDistanceTravel')}</p>
-                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
-                </a>
+                </div>
               </AnimatedContent>
 
-              {/* Tile D – Chauffeur hailing */}
+              {/* Tile 3 – Chauffeur hailing */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.15}>
-                <a href="/service-details/chauffeur-service#chauffeur-hailing" className="lux-servicesTile lux-servicesTile--wide" aria-label="Chauffeur hailing">
-                  <img src="/image/kwpic/DSC07653.jpg.jpeg" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
+                <div className="lux-servicesTile lux-servicesTile--tile3 lux-servicesTile--noClick" aria-label="Chauffeur hailing">
+                  <img src="/image/kwpic/DSC07603.jpg.jpeg" alt="Chauffeur hailing" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
                     <h3 className="lux-servicesTitle">{t('home.chauffeurHailing')}</h3>
                     <p className="lux-servicesDesc">{t('home.onDemandBooking')}</p>
-                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
                   </div>
-                </a>
+                </div>
               </AnimatedContent>
 
-              {/* Tile E – Car Rental */}
+              {/* Tile 4 – Hourly and full day hire */}
               <AnimatedContent distance={40} direction="vertical" duration={1.1} ease="power2.out" initialOpacity={0} animateOpacity scale={0.98} threshold={0.2} delay={0.2}>
-                <a href="/service#car-rental" className="lux-servicesTile lux-servicesTile--small2" aria-label="Car Rental">
-                  <img src="/image/kwpic/DSC07603.jpg.jpeg" alt="Car Rental" className="lux-servicesMedia" loading="lazy" />
+                <div className="lux-servicesTile lux-servicesTile--tile4 lux-servicesTile--noClick" aria-label="Hourly and full day hire">
+                  <img src="/image/ourservice_mini_4.png" alt="Hourly and full day hire" className="lux-servicesMedia" loading="lazy" />
                   <div className="lux-servicesOverlay">
-                    <h3 className="lux-servicesTitle">{t('btn.carRental')}</h3>
-                    <p className="lux-servicesDesc">{t('home.carRentalDesc')}</p>
-                    <span className="lux-servicesLink">{t('home.learnMore')}</span>
+                    <h3 className="lux-servicesTitle">{t('home.hourlyFullDayHire')}</h3>
+                    <p className="lux-servicesDesc">{t('serviceDetails.hourlyFeature1')}</p>
                   </div>
-                </a>
+                </div>
               </AnimatedContent>
             </div>
           </div>
@@ -1528,17 +1609,17 @@ function HomePage() {
                     ref={arrivalsScrollContainerRef}
                   >
                     <div className="arrivals-cards">
-                      {vehicles.map((vehicle) => (
+                      {vehicles.map((vehicle, index) => (
                         <CarCard 
-                          key={`${vehicle.vehicle_id}-${vehicle.updated_date}`}
+                          key={`${vehicle.vehicle_id ?? vehicle.car_id ?? index}`}
                           vehicle={vehicle}
                         />
                       ))}
                       
                       {/* Duplicate cards for infinite scroll effect */}
-                      {vehicles.length > 0 && vehicles.map((vehicle) => (
+                      {vehicles.length > 0 && vehicles.map((vehicle, index) => (
                         <CarCard 
-                          key={`duplicate-${vehicle.vehicle_id}-${vehicle.updated_date}`}
+                          key={`duplicate-${vehicle.vehicle_id ?? vehicle.car_id ?? index}`}
                           vehicle={vehicle}
                         />
                       ))}

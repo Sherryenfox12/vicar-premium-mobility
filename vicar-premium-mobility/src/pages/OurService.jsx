@@ -9,7 +9,7 @@ import RedLine from '../components/RedLine';
 import './OurService.css';
 import ContactUsButton from '../components/ContactUsButton';
 
-const DEFAULT_HERO_IMAGE = '/image/benz_service.png';
+const DEFAULT_HERO_IMAGE = '/image/carRental.jpeg';
 
 function OurService() {
   const navigate = useNavigate();
@@ -18,16 +18,16 @@ function OurService() {
   // Service images - centralized for easy updates (used in detail sections)
   const serviceImages = {
     pointToPoint: '/image/kwpic/DSC07653.jpg.jpeg',
-    chauffeurService: '/image/ourservice_mini_1.png',
-    carRental: '/image/kwpic/DSC07603.jpg.jpeg',
+    chauffeurService: '/image/kwpic/DSC07603.jpg.jpeg',
+    carRental: '/image/car-rental-passkey.jpeg',
     reconCar: '/image/kwpic/DSC07659.jpg.jpeg',
     maintenance: '/maintainence.jpeg'
   };
 
   // Service navigation data - icon + label for "Explore What we can do" section
   const services = [
-    { id: 'point-to-point', nameKey: 'service.pointToPointTransport', icon: 'alt_route' },
     { id: 'chauffeur-service', nameKey: 'service.chauffeurService', icon: 'local_taxi' },
+    { id: 'point-to-point', nameKey: 'service.pointToPointTransport', icon: 'alt_route' },
     { id: 'car-rental', nameKey: 'service.carRentalTitle', icon: 'car_rental' },
     { id: 'recon-car', nameKey: 'service.reconCarTitle', icon: 'directions_car' },
     { id: 'maintenance', nameKey: 'service.maintenanceTitle', icon: 'build' }
@@ -136,41 +136,10 @@ function OurService() {
         {/* Red Line Separator */}
         <RedLine />
 
-        {/* Point to Point Transport Section */}
-        <section className="py-20" id="point-to-point">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row items-center gap-12">
-              <div className="md:w-1/2">
-                <span className="material-icons text-red-500 text-4xl mb-4">alt_route</span>
-                <h3 className="text-4xl font-bold mb-4">{t('service.pointToPointTransport')}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  {t('service.pointToPointTransportDesc')}
-                </p>
-                <button 
-                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-                  onClick={() => navigate('/service-details/point-to-point')}
-                >
-                  {t('home.learnMore')}
-                </button>
-              </div>
-              <div className="md:w-1/2">
-                <img 
-                  src={serviceImages.pointToPoint} 
-                  alt="Point to Point Transport" 
-                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Red Line Separator */}
-        <RedLine />
-
         {/* Chauffeur Service Section */}
         <section className="py-20" id="chauffeur-service">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+            <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
                 <span className="material-icons text-red-500 text-4xl mb-4">local_taxi</span>
                 <h3 className="text-4xl font-bold mb-4">{t('service.chauffeurService')}</h3>
@@ -188,6 +157,37 @@ function OurService() {
                 <img 
                   src={serviceImages.chauffeurService} 
                   alt="Chauffeur Service" 
+                  className="w-full h-80 object-cover rounded-lg shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Red Line Separator */}
+        <RedLine />
+
+        {/* Point to Point Transport Section */}
+        <section className="py-20" id="point-to-point">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+              <div className="md:w-1/2">
+                <span className="material-icons text-red-500 text-4xl mb-4">alt_route</span>
+                <h3 className="text-4xl font-bold mb-4">{t('service.pointToPointTransport')}</h3>
+                <p className="text-gray-300 mb-6 leading-relaxed">
+                  {t('service.pointToPointTransportDesc')}
+                </p>
+                <button 
+                  className="gradient-btn text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+                  onClick={() => navigate('/service-details/point-to-point')}
+                >
+                  {t('home.learnMore')}
+                </button>
+              </div>
+              <div className="md:w-1/2">
+                <img 
+                  src={serviceImages.pointToPoint} 
+                  alt="Point to Point Transport" 
                   className="w-full h-80 object-cover rounded-lg shadow-2xl"
                 />
               </div>

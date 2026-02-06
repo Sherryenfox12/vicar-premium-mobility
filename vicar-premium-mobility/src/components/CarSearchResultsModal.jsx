@@ -79,8 +79,8 @@ const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, e
 
               <div className="cars-list">
                 {results.cars && results.cars.length > 0 ? (
-                  results.cars.map((car) => (
-                    <div key={car.car_id} className="car-result-card">
+                  results.cars.map((car, index) => (
+                    <div key={`${car.car_id}-${car.service_type || index}`} className="car-result-card">
                       <div className="car-image-section">
                         {car.car_picture ? (
                           <img 

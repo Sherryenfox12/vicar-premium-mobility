@@ -68,7 +68,7 @@ function ServiceDetails() {
         t('serviceDetails.pointToPointFeature4'),
         t('serviceDetails.pointToPointFeature5')
       ],
-      image: '/image/inside_car.jpeg',
+      image: '/image/kwpic/DSC07653.jpg.jpeg',
       ctaText: t('serviceDetails.bookNow'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+point-to-point+transport.&type=phone_number&app_absent=0', '_blank')
     },
@@ -78,6 +78,19 @@ function ServiceDetails() {
       icon: 'local_taxi',
       description: t('serviceDetails.chauffeurServiceDesc'),
       subsections: [
+        {
+          id: 'chauffeur-hailing',
+          title: t('service.chauffeurHailing'),
+          icon: 'hail',
+          description: t('service.chauffeurHailingDesc'),
+          features: [
+            t('serviceDetails.hailingFeature1'),
+            t('serviceDetails.hailingFeature2'),
+            t('serviceDetails.hailingFeature3'),
+            t('serviceDetails.hailingFeature4')
+          ],
+          image: '/image/kwpic/DSC07603.jpg.jpeg'
+        },
         {
           id: 'airport',
           title: t('service.airportTransfers'),
@@ -90,19 +103,6 @@ function ServiceDetails() {
             t('serviceDetails.airportFeature4')
           ],
           image: '/image/kwpic/DSC07584.png'
-        },
-        {
-          id: 'chauffeur-hailing',
-          title: t('service.chauffeurHailing'),
-          icon: 'hail',
-          description: t('service.chauffeurHailingDesc'),
-          features: [
-            t('serviceDetails.hailingFeature1'),
-            t('serviceDetails.hailingFeature2'),
-            t('serviceDetails.hailingFeature3'),
-            t('serviceDetails.hailingFeature4')
-          ],
-          image: '/image/kwpic/DSC07653.jpg.jpeg'
         },
         {
           id: 'city-to-city',
@@ -138,7 +138,7 @@ function ServiceDetails() {
         t('serviceDetails.chauffeurServiceFeature4'),
         t('serviceDetails.chauffeurServiceFeature5')
       ],
-      image: '/image/ourservice_mini_1.png',
+      image: '/image/kwpic/DSC07603.jpg.jpeg',
       ctaText: t('serviceDetails.bookChauffeur'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+chauffeur+service.&type=phone_number&app_absent=0', '_blank')
     },
@@ -170,7 +170,7 @@ function ServiceDetails() {
         t('serviceDetails.carRentalFeature4'),
         t('serviceDetails.carRentalFeature5')
       ],
-      image: '/image/kwpic/DSC07603.jpg.jpeg',
+      image: '/image/car-rental-passkey.jpeg',
       ctaText: t('serviceDetails.rentNow'),
       ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     },

@@ -517,10 +517,10 @@
   display: grid;
   gap: 1.1rem;
   grid-template-columns: 1.1fr 1fr 1fr;
-  grid-template-rows: 260px 220px;
+  grid-template-rows: 240px 240px;
   grid-template-areas:
-    "intro hero hero"
-    "intro wide small2";
+    "intro tile1 tile2"
+    "intro tile3 tile4";
 }
 
 .lux-servicesTile {
@@ -578,23 +578,54 @@
   margin-top: 0.25rem;
 }
 
-.lux-servicesTile--hero {
-  grid-area: hero;
+.lux-servicesTile--tile1 {
+  grid-area: tile1;
   display: block;
+  height: 240px;
+  min-height: 240px;
 }
 
-.lux-servicesTile--wide {
-  grid-area: wide;
+.lux-servicesTile--tile2 {
+  grid-area: tile2;
   display: block;
+  height: 240px;
+  min-height: 240px;
 }
 
-.lux-servicesTile--small {
-  /* Not used in current grid areas, but kept for future */
+.lux-servicesTile--tile3 {
+  grid-area: tile3;
+  display: block;
+  height: 240px;
+  min-height: 240px;
 }
 
-.lux-servicesTile--small2 {
-  grid-area: small2;
+.lux-servicesTile--tile4 {
+  grid-area: tile4;
   display: block;
+  height: 240px;
+  min-height: 240px;
+}
+
+/* Uniform image size for all 4 service tiles */
+.lux-servicesTile--tile1 .lux-servicesMedia,
+.lux-servicesTile--tile2 .lux-servicesMedia,
+.lux-servicesTile--tile3 .lux-servicesMedia,
+.lux-servicesTile--tile4 .lux-servicesMedia {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Disable click on image tiles - display only */
+.lux-servicesTile--noClick {
+  cursor: default;
+  pointer-events: none;
+}
+
+.lux-servicesTile--noClick:hover .lux-servicesMedia {
+  transform: scale(1.02);
 }
 
 .lux-servicesMedia {
@@ -669,12 +700,11 @@
 @media (max-width: 1024px) {
   .lux-servicesMosaic {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+    grid-template-rows: auto 240px 240px;
     grid-template-areas:
       "intro intro"
-      "hero hero"
-      "wide wide"
-      "small2 small2";
+      "tile1 tile2"
+      "tile3 tile4";
   }
 
   .lux-servicesTile--intro {
@@ -685,12 +715,29 @@
 @media (max-width: 640px) {
   .lux-servicesMosaic {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 200px 200px 200px 200px;
     grid-template-areas:
       "intro"
-      "hero"
-      "wide"
-      "small2";
+      "tile1"
+      "tile2"
+      "tile3"
+      "tile4";
     gap: 0.9rem;
+  }
+
+  .lux-servicesTile--tile1,
+  .lux-servicesTile--tile2,
+  .lux-servicesTile--tile3,
+  .lux-servicesTile--tile4 {
+    height: 200px;
+    min-height: 200px;
+  }
+
+  .lux-servicesTile--tile1 .lux-servicesMedia,
+  .lux-servicesTile--tile2 .lux-servicesMedia,
+  .lux-servicesTile--tile3 .lux-servicesMedia,
+  .lux-servicesTile--tile4 .lux-servicesMedia {
+    min-height: 200px;
   }
 
   .lux-servicesTile {
