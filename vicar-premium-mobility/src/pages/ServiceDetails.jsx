@@ -70,7 +70,7 @@ function ServiceDetails() {
       ],
       image: '/image/kwpic/DSC07653.jpg.jpeg',
       ctaText: t('serviceDetails.bookNow'),
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+point-to-point+transport.&type=phone_number&app_absent=0', '_blank')
+      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155532999&text=Hello%21+I+would+like+to+book+a+point-to-point+transport.&type=phone_number&app_absent=0', '_blank')
     },
     'chauffeur-service': {
       title: t('serviceDetails.chauffeurServiceTitle'),
@@ -140,7 +140,7 @@ function ServiceDetails() {
       ],
       image: '/image/kwpic/DSC07603.jpg.jpeg',
       ctaText: t('serviceDetails.bookChauffeur'),
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+book+a+chauffeur+service.&type=phone_number&app_absent=0', '_blank')
+      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155532999&text=Hello%21+I+would+like+to+book+a+chauffeur+service.&type=phone_number&app_absent=0', '_blank')
     },
     'recon-car': {
       title: t('serviceDetails.reconCarTitle'),
@@ -172,7 +172,7 @@ function ServiceDetails() {
       ],
       image: '/image/car-rental-passkey.jpeg',
       ctaText: t('serviceDetails.rentNow'),
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
+      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155532999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     },
     'maintenance': {
       title: t('serviceDetails.maintenanceTitle'),
@@ -188,7 +188,7 @@ function ServiceDetails() {
       ],
       image: '/maintainence.jpeg',
       ctaText: t('serviceDetails.scheduleService'),
-      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155572999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
+      ctaAction: () => window.open('https://api.whatsapp.com/send/?phone=%2B601155532999&text=Hello%21+I+would+like+to+inquire+about+your+services.&type=phone_number&app_absent=0', '_blank')
     }
   };
 

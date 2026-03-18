@@ -6,7 +6,7 @@ function ContactUsButton() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleWhatsApp = () => {
-    const phoneNumber = '+601155572999';
+    const phoneNumber = '+601155532999';
     const message = 'Hello! I would like to inquire about your services.';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -14,13 +14,13 @@ function ContactUsButton() {
   };
 
   const handleCall = () => {
-    const phoneNumber = '+601155572999';
+    const phoneNumber = '+601155532999';
     window.open(`tel:${phoneNumber}`, '_self');
     setIsOpen(false);
   };
 
   const handleEmail = () => {
-    const email = 'enquiries@kw99.com.my';
+    const email = 'enquiry@vicar.com.my';
     const subject = 'Inquiry about Vicar Services';
     const body = 'Hello! I would like to inquire about your services.';
     const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

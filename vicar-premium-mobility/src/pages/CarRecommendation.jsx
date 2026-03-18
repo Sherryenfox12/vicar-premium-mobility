@@ -322,7 +322,7 @@ function CarRecommendation() {
                   const [brand, ...modelParts] = topMatch.model.split(' ');
                   const model = modelParts.join(' ').toLowerCase();
                  // const url = `https://app.kw99.com.my/app-browse?brand=${brand.toLowerCase()}&model=${model}`;
-                 const url = `https://api.whatsapp.com/send/?phone=601155572999&text&type=phone_number&app_absent=0`;
+                 const url = `https://api.whatsapp.com/send/?phone=601155532999&text&type=phone_number&app_absent=0`;
                   
                  window.open(url, '_blank', 'noopener,noreferrer');
                 }}

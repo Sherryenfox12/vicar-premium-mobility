@@ -142,10 +142,6 @@ const AddressAutocomplete = ({
                 <circle cx="12" cy="10" r="3"/>
               </svg>
               <div className="suggestion-content">
-                <div className="suggestion-main">
-                  {suggestion.address?.city || suggestion.address?.town || suggestion.address?.village || 
-                   suggestion.address?.county || suggestion.name}
-                </div>
                 <div className="suggestion-secondary">
                   {suggestion.display_name}
                 </div>

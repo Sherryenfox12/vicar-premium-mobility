@@ -141,7 +141,7 @@ function ContactUs() {
                   <div>
                     <h3 className="contact-card-title">{t('contact.phone')}</h3>
                     <p className="contact-card-value">
-                      <a className="contact-link" href="tel:+601155572999">+60-11 5557 2999</a>
+                      <a className="contact-link" href="tel:+601155532999">+60-11 5553 2999</a>
                     </p>
                     <p className="contact-card-muted">{t('contact.phoneHint')}</p>
                   </div>
@@ -152,7 +152,7 @@ function ContactUs() {
                   <div>
                     <h3 className="contact-card-title">{t('contact.email')}</h3>
                     <p className="contact-card-value">
-                      <a className="contact-link" href="mailto:enquiries@kw99.com.my">enquiries@kw99.com.my</a>
+                      <a className="contact-link" href="mailto:enquiry@vicar.com.my">enquiry@vicar.com.my</a>
                     </p>
                     <p className="contact-card-muted">{t('contact.responseTime')}</p>
                   </div>

@@ -45,7 +45,7 @@ function TownDetails() {
   const handlePlanRide = () => {
     const msg = encodeURIComponent(t('townDetails.whatsAppMessage', { place: title }));
     window.open(
-      `https://api.whatsapp.com/send/?phone=%2B601155572999&text=${msg}&type=phone_number&app_absent=0`,
+      `https://api.whatsapp.com/send/?phone=%2B601155532999&text=${msg}&type=phone_number&app_absent=0`,
       '_blank'
     );
   };

@@ -18,6 +18,7 @@ import './HomePage.css';
 
 const VIDEO_TRIGGER_STORAGE_KEY = 'vicar_home_video_last_trigger';
 const VIDEO_TRIGGER_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+const SEARCH_FORM_STORAGE_KEY = 'vicar_home_search_form_v1';
 
 const shouldSkipVideo = () => {
   try {
@@ -62,7 +63,7 @@ function HomePage() {
   });
 
   // Form state for car search
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     serviceType: 'hire',
     pickupAddress: '',
     pickupLat: null,
@@ -74,7 +75,35 @@ function HomePage() {
     pickupTime: '',
     dropoffDate: '',
     dropoffTime: ''
+  };
+
+  const [formData, setFormData] = useState(() => {
+    try {
+      const raw = localStorage.getItem(SEARCH_FORM_STORAGE_KEY);
+      if (!raw) return defaultFormData;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return defaultFormData;
+
+      const merged = { ...defaultFormData, ...parsed };
+      if (typeof merged.pickupLat === 'string') merged.pickupLat = Number(merged.pickupLat);
+      if (typeof merged.pickupLng === 'string') merged.pickupLng = Number(merged.pickupLng);
+      if (typeof merged.dropoffLat === 'string') merged.dropoffLat = Number(merged.dropoffLat);
+      if (typeof merged.dropoffLng === 'string') merged.dropoffLng = Number(merged.dropoffLng);
+
+      return merged;
+    } catch {
+      return defaultFormData;
+    }
   });
+
+  // Persist search form state so navigating away/back keeps values
+  useEffect(() => {
+    try {
+      localStorage.setItem(SEARCH_FORM_STORAGE_KEY, JSON.stringify(formData));
+    } catch {
+      // ignore storage failures (private mode, quota, etc.)
+    }
+  }, [formData]);
 
   // Get today's date in YYYY-MM-DD format for min date validation
   const getTodayDate = () => {
@@ -254,6 +283,7 @@ function HomePage() {
             car_name: vehicle.title ?? vehicle.car_name,
             max_passenger: vehicle.max_passenger ?? vehicle.max_pax ?? 5,
             luggage_size: vehicle.luggage_size ?? vehicle.luggage ?? 0,
+            service_type: vehicle.service_type ?? vehicle.serviceType ?? vehicle.service,
             service_details: vehicle.brand
               ? `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`
               : vehicle.service_details,
@@ -265,6 +295,23 @@ function HomePage() {
               : vehicle.car_highlight
           }));
         }
+
+        // Client-side filter: API returns all cars; filter by service_type for selected tab
+        const allowedServiceTypes = formData.serviceType === 'rent'
+          ? new Set(['rent'])
+          : new Set(['hire', 'hailing', 'airport_transfer']);
+
+        cars = (cars || []).filter(car => allowedServiceTypes.has(car.service_type));
+
+        // Deduplicate by car_id (API may return duplicates)
+        const seenCars = new Set();
+        cars = cars.filter(car => {
+          const key = String(car.car_id ?? '');
+          if (!key) return false;
+          if (seenCars.has(key)) return false;
+          seenCars.add(key);
+          return true;
+        });
 
         const transformedData = {
           success: true,
@@ -959,6 +1006,14 @@ function HomePage() {
               </div>
             </div>
             
+            {/*
+              TEMP: search box hidden (restore later)
+              - Chauffeur Service / Car Rental tabs
+              - From/To address inputs
+              - Pickup/Dropoff date & time
+              - Wait-time note + Search button
+            */}
+            {/*
             <div className="chauffeur-form-side">
               <div className="chauffeur-form-card">
                 <div className="home-form-tabs">
@@ -1093,6 +1148,7 @@ function HomePage() {
                 </form>
               </div>
             </div>
+            */}
           </div>
         </section>
 
@@ -1661,11 +1717,6 @@ function HomePage() {
                 <p className="lux-cta-subtitle">
                   {t('home.ctaSubtitle')}
                 </p>
-              </div>
-              <div className="lux-cta-actions">
-                <Link to="/service" className="lux-btn lux-btn--gold lux-btnLink">
-                  {t('home.viewServices')}
-                </Link>
               </div>
             </div>
           </div>

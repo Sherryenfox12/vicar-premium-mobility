@@ -662,7 +662,7 @@ function BrandStory() {
             <h2 className="cta-title">{t('brandStory.ctaTitle')}</h2>
             <p className="cta-subtitle">{t('brandStory.ctaSubtitle')}</p>
             <div className="cta-buttons">
-              <a href="https://api.whatsapp.com/send/?phone=601155572999&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="cta-btn secondary">{t('brandStory.contactUs')}</a>
+              <a href="https://api.whatsapp.com/send/?phone=601155532999&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="cta-btn secondary">{t('brandStory.contactUs')}</a>
             </div>
           </div>
         </section>
