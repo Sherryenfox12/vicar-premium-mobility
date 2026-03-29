@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 require('dotenv').config();
 
 
@@ -943,6 +944,143 @@ app.use((error, req, res, next) => {
   }
   next(error);
 });
+
+///////////////////////////////////////-----Car Booking Enquiry (Telegram)-----///////////////////////////////////////
+
+const sendTelegramMessage = (message) => {
+  return new Promise((resolve, reject) => {
+    // Telegram URLs are /bot<token>/...; env may store "bot123456:AA..." from BotFather copy-paste
+    let token = Buffer.from(process.env.TELE_TOKEN, 'base64').toString('utf-8').trim();
+    token = token.replace(/^bot/i, '');
+    const chatId = Buffer.from(process.env.TELE_GROUP_ID, 'base64').toString('utf-8').trim();
+
+    const body = JSON.stringify({
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'HTML'
+    });
+
+    const options = {
+      hostname: 'api.telegram.org',
+      path: `/bot${token}/sendMessage`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        const parsed = JSON.parse(data);
+        if (parsed.ok) {
+          resolve(parsed);
+        } else {
+          reject(new Error(`Telegram API error: ${parsed.description}`));
+        }
+      });
+    });
+
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+};
+
+app.post('/api/car-booking/send-telegram-car-booking-enquiry-message', async (req, res) => {
+
+
+  try {
+    const {
+      timestamp,
+      customer,
+      selected_car,
+      pickup_datetime,
+      dropoff_datetime,
+      pickup_address,
+      pickup_lat,
+      pickup_lng,
+      dropoff_address,
+      dropoff_lat,
+      dropoff_lng,
+      service_type
+    } = req.body;
+
+    if (!customer || !customer.name || !customer.phone || !customer.email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required customer details'
+      });
+    }
+
+    const carName    = selected_car?.car_name        || 'N/A';
+    const carId      = selected_car?.car_id          || 'N/A';
+    const carType    = selected_car?.car_type        || 'N/A';
+    const carPax     = selected_car?.max_passenger   ?? 'N/A';
+    const carLuggage = selected_car?.luggage_size    ?? 'N/A';
+    const carPriceKm = selected_car?.price_per_km    ?? 'N/A';
+    const carHighlight  = selected_car?.car_highlight   || '';
+    const carServiceDetails = selected_car?.service_details || '';
+
+    const pickupCoords  = (pickup_lat  && pickup_lng)  ? `${pickup_lat}, ${pickup_lng}`  : 'N/A';
+    const dropoffCoords = (dropoff_lat && dropoff_lng) ? `${dropoff_lat}, ${dropoff_lng}` : 'N/A';
+
+    const message = [
+      `🚗 <b>New Car Booking Enquiry</b>`,
+      ``,
+      `📅 <b>Submitted:</b> ${timestamp || new Date().toLocaleString('en-MY', { timeZone: 'Asia/Kuala_Lumpur' })}`,
+      `🌐 <b>Source:</b> vicar-website`,
+      ``,
+      `👤 <b>Customer Details</b>`,
+      `  Name: ${customer.prefix || ''} ${customer.name}`,
+      `  Phone: +${customer.phone}`,
+      `  Email: ${customer.email}`,
+      `  Passengers (pax): ${customer.pax ?? 'N/A'}`,
+      ``,
+      `🚘 <b>Selected Vehicle</b>`,
+      `  ID: ${carId}`,
+      `  Name: ${carName}`,
+      `  Type: ${carType}`,
+      `  Passengers: ${carPax}`,
+      `  Luggage: ${carLuggage}`,
+      `  Price/km: RM ${carPriceKm}`,
+      ...(carHighlight      ? [`  Highlight: ${carHighlight}`]      : []),
+      ...(carServiceDetails ? [`  Details: ${carServiceDetails}`]   : []),
+      ``,
+      `📍 <b>Trip Details</b>`,
+      `  Service: ${service_type || 'N/A'}`,
+      `  Pickup: ${pickup_datetime || 'N/A'}`,
+      `  Drop-off: ${dropoff_datetime || 'N/A'}`,
+      ``,
+      `  Pickup Address: ${pickup_address || 'N/A'}`,
+      `  Pickup Coords: ${pickupCoords}`,
+      ``,
+      `  Drop-off Address: ${dropoff_address || 'N/A'}`,
+      `  Drop-off Coords: ${dropoffCoords}`
+    ].join('\n');
+
+
+    console.log(message);
+
+    await sendTelegramMessage(message);
+    console.log(`✅ Booking enquiry sent to Telegram for customer: ${customer.name}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Booking enquiry submitted successfully. We will get back to you shortly!'
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending booking enquiry to Telegram:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to submit booking enquiry. Please try again later.'
+    });
+  }
+});
+
 
 ///////////////////////////////////////-----Email Enquiry Form-----///////////////////////////////////////
 

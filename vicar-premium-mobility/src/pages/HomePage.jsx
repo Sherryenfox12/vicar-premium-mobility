@@ -13,6 +13,8 @@ import RedLine from '../components/RedLine';
 import MobileAppPromotion from '../components/MobileAppPromotion';
 import CarSearchResultsModal from '../components/CarSearchResultsModal';
 import AddressAutocomplete from '../components/AddressAutocomplete';
+import CustomerBookingModal from '../components/CustomerBookingModal';
+import '../components/CustomerBookingModal.css';
 import './HomePage.css';
 
 
@@ -117,6 +119,11 @@ function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
 
+  // Booking form state
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+
   // New Arrivals state
   const [vehicles, setVehicles] = useState([]);
   const [vehiclesLoading, setVehiclesLoading] = useState(true);
@@ -187,6 +194,27 @@ function HomePage() {
     return { hours, minutes, totalMinutes, days };
   };
 
+  /** For chauffeur (hire), drop-off is not user-selected; estimate arrival from route distance. */
+  const computeEstimatedDropoffFromRoute = (data) => {
+    const distance = calculateDistance(
+      data.pickupLat,
+      data.pickupLng,
+      data.dropoffLat,
+      data.dropoffLng
+    );
+    const travelDurationMin = Math.round((distance / 60) * 60);
+    const pickup = new Date(`${data.pickupDate}T${data.pickupTime}`);
+    if (Number.isNaN(pickup.getTime())) {
+      return { dropoffDate: '', dropoffTime: '', travelDurationMin: 0 };
+    }
+    const arrival = new Date(pickup.getTime());
+    arrival.setMinutes(arrival.getMinutes() + travelDurationMin);
+    const pad = (n) => String(n).padStart(2, '0');
+    const dropoffDate = `${arrival.getFullYear()}-${pad(arrival.getMonth() + 1)}-${pad(arrival.getDate())}`;
+    const dropoffTime = `${pad(arrival.getHours())}:${pad(arrival.getMinutes())}`;
+    return { dropoffDate, dropoffTime, travelDurationMin };
+  };
+
   // Handle form submission
   const handleSearchCars = async (e) => {
     e.preventDefault();
@@ -207,18 +235,26 @@ function HomePage() {
       return;
     }
 
-    if (!formData.dropoffDate || !formData.dropoffTime) {
-      alert(t('home.pleaseEnterDropoffDateTime'));
-      return;
-    }
+    let effectiveDropoffDate = formData.dropoffDate;
+    let effectiveDropoffTime = formData.dropoffTime;
 
-    // Validate dropoff is not before pickup
-    const pickupDateTime = new Date(`${formData.pickupDate}T${formData.pickupTime}`);
-    const dropoffDateTime = new Date(`${formData.dropoffDate}T${formData.dropoffTime}`);
-    
-    if (dropoffDateTime <= pickupDateTime) {
-      alert(t('home.dropoffMustBeAfterPickup'));
-      return;
+    if (formData.serviceType === 'hire') {
+      const est = computeEstimatedDropoffFromRoute(formData);
+      effectiveDropoffDate = est.dropoffDate;
+      effectiveDropoffTime = est.dropoffTime;
+    } else {
+      if (!formData.dropoffDate || !formData.dropoffTime) {
+        alert(t('home.pleaseEnterDropoffDateTime'));
+        return;
+      }
+
+      const pickupDateTime = new Date(`${formData.pickupDate}T${formData.pickupTime}`);
+      const dropoffDateTime = new Date(`${formData.dropoffDate}T${formData.dropoffTime}`);
+
+      if (dropoffDateTime <= pickupDateTime) {
+        alert(t('home.dropoffMustBeAfterPickup'));
+        return;
+      }
     }
 
     try {
@@ -232,6 +268,8 @@ function HomePage() {
           'Content-Type': 'application/json'
         }
       });
+
+      console.log('[Landing car list API] raw response:', response.data);
 
       // Support both API formats: user's format { success, cars } or KW99 format { result, data }
       const apiData = response.data;
@@ -254,8 +292,8 @@ function HomePage() {
         const rentalDuration = calculateRentalDuration(
           formData.pickupDate,
           formData.pickupTime,
-          formData.dropoffDate,
-          formData.dropoffTime
+          effectiveDropoffDate,
+          effectiveDropoffTime
         );
 
         let cars;
@@ -265,13 +303,13 @@ function HomePage() {
           cars = apiData.cars.map(car => ({
             car_id: car.car_id,
             car_name: car.car_name,
-            max_passenger: car.max_passenger ?? 5,
+            max_passenger: car.max_passenger ?? 4,
             luggage_size: car.luggage_size ?? 0,
             service_type: car.service_type,
             service_details: Array.isArray(car.service_details)
               ? car.service_details.map(s => s.title).join(' • ')
               : car.service_details,
-            price_per_km: car.estimate_price_per_km ?? car.price_per_km,
+            price_per_km: car.price_per_km ?? car.estimate_price_per_km,
             car_type: car.car_type,
             car_picture: car.car_picture,
             car_highlight: car.car_highlight
@@ -281,13 +319,13 @@ function HomePage() {
           cars = apiData.data.map(vehicle => ({
             car_id: vehicle.vehicle_id?.toString() ?? vehicle.car_id,
             car_name: vehicle.title ?? vehicle.car_name,
-            max_passenger: vehicle.max_passenger ?? vehicle.max_pax ?? 5,
+            max_passenger: vehicle.max_passenger ?? vehicle.max_pax ?? 4,
             luggage_size: vehicle.luggage_size ?? vehicle.luggage ?? 0,
             service_type: vehicle.service_type ?? vehicle.serviceType ?? vehicle.service,
             service_details: vehicle.brand
               ? `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`
               : vehicle.service_details,
-            price_per_km: vehicle.price_per_km ?? vehicle.estimate_price_per_km ?? 2.50,
+            price_per_km: vehicle.price_per_km ?? vehicle.estimate_price_per_km ?? 0.00,
             car_type: vehicle.vehicle_type_text ?? vehicle.car_type,
             car_picture: vehicle.img_path ?? vehicle.car_picture,
             car_highlight: vehicle.transmission_text
@@ -315,12 +353,13 @@ function HomePage() {
 
         const transformedData = {
           success: true,
+          service_type: formData.serviceType,
           currency: apiData.currency ?? 'MYR',
           distance_km: Math.round(distance * 10) / 10,
           estimated_duration_min: travelDuration,
           rental_duration: rentalDuration,
           pickup_datetime: `${formData.pickupDate} ${formData.pickupTime}`,
-          dropoff_datetime: `${formData.dropoffDate} ${formData.dropoffTime}`,
+          dropoff_datetime: `${effectiveDropoffDate} ${effectiveDropoffTime}`,
           cars
         };
 
@@ -343,21 +382,86 @@ function HomePage() {
     setSearchError(null);
   };
 
-  // Handle book now - close modal and scroll to mobile app section
-  const handleBookNow = () => {
+  // Handle book now - open customer details form
+  const handleBookNow = (car) => {
+    setSelectedCar(car);
     setShowModal(false);
-    setSearchResults(null);
-    setSearchError(null);
-    
-    // Scroll to mobile app section
-    setTimeout(() => {
-      if (mobileAppSectionRef.current) {
-        mobileAppSectionRef.current.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
+    setShowBookingForm(true);
+  };
+
+  // Handle booking form submission
+  const handleBookingSubmit = async (customerData) => {
+    const MY_LOCALE = 'en-MY';
+    const MY_TZ = 'Asia/Kuala_Lumpur';
+
+    const toMyDateTimeString = (date) =>
+      date.toLocaleString(MY_LOCALE, {
+        timeZone: MY_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+
+    const formatPickupDropoff = (dateStr, timeStr) => {
+      if (!dateStr || !timeStr) return null;
+      const dt = new Date(`${dateStr}T${timeStr}`);
+      return dt.toLocaleString(MY_LOCALE, {
+        timeZone: MY_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    };
+
+    const dropoffForBooking =
+      formData.serviceType === 'hire'
+        ? computeEstimatedDropoffFromRoute(formData)
+        : { dropoffDate: formData.dropoffDate, dropoffTime: formData.dropoffTime };
+
+    const bookingData = {
+      timestamp: toMyDateTimeString(new Date()),
+      customer: {
+        prefix: customerData.prefix,
+        name: customerData.name,
+        email: customerData.email,
+        phone: customerData.phone,
+        pax: customerData.pax
+      },
+      selected_car: selectedCar,
+      pickup_datetime: formatPickupDropoff(formData.pickupDate, formData.pickupTime),
+      dropoff_datetime: formatPickupDropoff(dropoffForBooking.dropoffDate, dropoffForBooking.dropoffTime),
+      pickup_address: formData.pickupAddress,
+      pickup_lat: formData.pickupLat,
+      pickup_lng: formData.pickupLng,
+      dropoff_address: formData.dropoffAddress,
+      dropoff_lat: formData.dropoffLat,
+      dropoff_lng: formData.dropoffLng,
+      service_type: formData.serviceType
+    };
+
+    const backendUrl = import.meta.env.VITE_VICAR_BACKEND || 'http://localhost:82/api';
+    try {
+      const response = await fetch(`${backendUrl}/car-booking/send-telegram-car-booking-enquiry-message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData)
+      });
+      if (!response.ok) {
+        console.error('Booking submission failed:', await response.text());
       }
-    }, 300); // Small delay to ensure smooth transition
+    } catch (err) {
+      console.error('Error submitting booking:', err);
+    }
+
+    setShowBookingForm(false);
+    setShowBookingConfirmation(true);
   };
 
   const handleCityKeyDown = (e, id) => {
@@ -558,7 +662,7 @@ function HomePage() {
           car_picture: car.car_picture,
           transmission_text: null,
           cc: null,
-          max_passenger: car.max_passenger ?? 5,
+          max_passenger: car.max_passenger ?? 4,
           luggage_size: car.luggage_size ?? 0,
           vehicle_type_text: car.car_type,
           car_type: car.car_type
@@ -570,7 +674,7 @@ function HomePage() {
       if (data.result && data.status_code === 100 && data.data) {
         const vehicles = data.data.map(v => ({
           ...v,
-          max_passenger: v.max_passenger ?? v.max_pax ?? 5,
+          max_passenger: v.max_passenger ?? v.max_pax ?? 4,
           luggage_size: v.luggage_size ?? v.luggage ?? 0
         }));
         return { success: true, vehicles, message: data.msg };
@@ -746,7 +850,7 @@ function HomePage() {
 
     const displayName = title || car_name;
     const imageSrc = img_path || car_picture;
-    const passengerCount = max_passenger ?? 5;
+    const passengerCount = max_passenger ?? 4;
     const description = manufacturing_year && brand && model
       ? `${manufacturing_year} ${brand.toUpperCase()} ${model}`
       : (car_type || vehicle_type_text || displayName);
@@ -1006,20 +1110,19 @@ function HomePage() {
               </div>
             </div>
             
-            {/*
-              TEMP: search box hidden (restore later)
-              - Chauffeur Service / Car Rental tabs
-              - From/To address inputs
-              - Pickup/Dropoff date & time
-              - Wait-time note + Search button
-            */}
-            {/*
             <div className="chauffeur-form-side">
               <div className="chauffeur-form-card">
                 <div className="home-form-tabs">
                   <button 
                     className={`home-form-tab ${formData.serviceType === 'hire' ? 'active' : ''}`}
-                    onClick={() => setFormData(prev => ({ ...prev, serviceType: 'hire' }))}
+                    onClick={() =>
+                      setFormData(prev => ({
+                        ...prev,
+                        serviceType: 'hire',
+                        dropoffDate: '',
+                        dropoffTime: ''
+                      }))
+                    }
                     type="button"
                   >
                     {t('home.chauffeurService')}
@@ -1101,46 +1204,41 @@ function HomePage() {
                     </div>
                   </div>
 
-                  <div className="home-form-row">
-                    <div className="home-form-group flex-1">
-                      <label className="home-form-label">{t('home.dropoffDate')}</label>
-                      <div className="home-input-with-icon">
-                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        <input 
-                          type="date" 
-                          className="home-form-input"
-                          value={formData.dropoffDate}
-                          min={formData.pickupDate || getTodayDate()}
-                          onChange={(e) => setFormData(prev => ({ ...prev, dropoffDate: e.target.value }))}
-                        />
+                  {formData.serviceType === 'rent' && (
+                    <div className="home-form-row">
+                      <div className="home-form-group flex-1">
+                        <label className="home-form-label">{t('home.dropoffDate')}</label>
+                        <div className="home-input-with-icon">
+                          <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <input 
+                            type="date" 
+                            className="home-form-input"
+                            value={formData.dropoffDate}
+                            min={formData.pickupDate || getTodayDate()}
+                            onChange={(e) => setFormData(prev => ({ ...prev, dropoffDate: e.target.value }))}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="home-form-group flex-1">
+                        <label className="home-form-label">{t('home.dropoffTime')}</label>
+                        <div className="home-input-with-icon">
+                          <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <input 
+                            type="time" 
+                            className="home-form-input"
+                            value={formData.dropoffTime}
+                            min={formData.pickupDate === formData.dropoffDate ? formData.pickupTime : undefined}
+                            onChange={(e) => setFormData(prev => ({ ...prev, dropoffTime: e.target.value }))}
+                          />
+                        </div>
                       </div>
                     </div>
-
-                    <div className="home-form-group flex-1">
-                      <label className="home-form-label">{t('home.dropoffTime')}</label>
-                      <div className="home-input-with-icon">
-                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        <input 
-                          type="time" 
-                          className="home-form-input"
-                          value={formData.dropoffTime}
-                          min={formData.pickupDate === formData.dropoffDate ? formData.pickupTime : undefined}
-                          onChange={(e) => setFormData(prev => ({ ...prev, dropoffTime: e.target.value }))}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="home-form-note">
-                    {formData.serviceType === 'hire' 
-                      ? t('home.chauffeurWaitNote')
-                      : t('home.rentalNote')
-                    }
-                  </p>
+                  )}
 
                   <button type="submit" className="home-search-btn">
                     {t('home.search')}
@@ -1148,7 +1246,6 @@ function HomePage() {
                 </form>
               </div>
             </div>
-            */}
           </div>
         </section>
 
@@ -1743,6 +1840,45 @@ function HomePage() {
         loading={searchLoading}
         error={searchError}
       />
+
+      {/* Customer Booking Form Modal */}
+      <CustomerBookingModal
+        isOpen={showBookingForm}
+        onClose={() => setShowBookingForm(false)}
+        onSubmit={handleBookingSubmit}
+        selectedCar={selectedCar}
+        pickupDatetime={
+          formData.pickupDate && formData.pickupTime
+            ? `${formData.pickupDate} ${formData.pickupTime}`
+            : null
+        }
+      />
+
+      {/* Booking Confirmation Popup */}
+      {showBookingConfirmation && (
+        <div className="cbm-confirm-overlay">
+          <div className="cbm-confirm-modal">
+            <div className="cbm-confirm-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <h2 className="cbm-confirm-title">Request Received!</h2>
+            <p className="cbm-confirm-msg">
+              Thank you for your interest. Your booking request is being processed and our team will contact you shortly.
+            </p>
+            <button
+              className="cbm-confirm-close-btn"
+              onClick={() => {
+                setShowBookingConfirmation(false);
+                setSelectedCar(null);
+              }}
+            >
+              Got It
+            </button>
+          </div>
+        </div>
+      )}
    
     </div>
   );

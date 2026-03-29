@@ -1,0 +1,412 @@
+/* CustomerBookingModal */
+.cbm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10100;
+  padding: 20px;
+  animation: cbm-fadeIn 0.25s ease-out;
+}
+
+@keyframes cbm-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cbm-modal {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 32px 28px 28px;
+  position: relative;
+  animation: cbm-slideUp 0.28s ease-out;
+}
+
+@keyframes cbm-slideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Header */
+.cbm-header {
+  margin-bottom: 24px;
+  padding-right: 32px;
+}
+
+.cbm-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px;
+}
+
+.cbm-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+}
+
+.cbm-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.cbm-close-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* Car summary strip */
+.cbm-car-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 24px;
+}
+
+.cbm-car-img {
+  width: 72px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.cbm-car-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cbm-car-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cbm-car-type {
+  font-size: 0.75rem;
+  color: #c9a84c;
+  font-weight: 500;
+}
+
+.cbm-pickup-time {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+}
+
+/* Form */
+.cbm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cbm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cbm-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cbm-required {
+  color: #c9a84c;
+  margin-left: 2px;
+}
+
+.cbm-name-row {
+  display: flex;
+  gap: 8px;
+}
+
+.cbm-prefix-select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.92rem;
+  padding: 10px 10px;
+  flex-shrink: 0;
+  width: 82px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  appearance: auto;
+}
+
+.cbm-prefix-select option {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.cbm-prefix-select:focus {
+  outline: none;
+  border-color: #c9a84c;
+}
+
+.cbm-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.92rem;
+  padding: 10px 14px;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.cbm-input--name {
+  flex: 1;
+}
+
+.cbm-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.cbm-input:focus {
+  outline: none;
+  border-color: #c9a84c;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.cbm-input--error {
+  border-color: #e05252 !important;
+}
+
+.cbm-error {
+  font-size: 0.78rem;
+  color: #e07070;
+}
+
+/* Actions */
+.cbm-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.cbm-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.cbm-btn:active {
+  transform: scale(0.97);
+}
+
+.cbm-btn--primary {
+  background: linear-gradient(135deg, #c9a84c, #e5c76b);
+  color: #1a1a1a;
+}
+
+.cbm-btn--primary:hover {
+  opacity: 0.9;
+}
+
+.cbm-btn--secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cbm-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+}
+
+/* ── Phone Input (react-phone-input-2 dark overrides) ── */
+.cbm-phone-container {
+  width: 100% !important;
+}
+
+.cbm-phone-container .cbm-phone-input {
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 0.92rem !important;
+  padding: 10px 14px 10px 52px !important;
+  height: auto !important;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.cbm-phone-container .cbm-phone-input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.cbm-phone-container .cbm-phone-input:focus {
+  outline: none !important;
+  border-color: #c9a84c !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: none !important;
+}
+
+.cbm-phone-container .cbm-phone-input.cbm-input--error {
+  border-color: #e05252 !important;
+}
+
+.cbm-phone-flag-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-right: none !important;
+  border-radius: 8px 0 0 8px !important;
+  padding: 0 8px !important;
+}
+
+.cbm-phone-flag-btn:hover,
+.cbm-phone-flag-btn.open {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.cbm-phone-dropdown {
+  background: #1e1e1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+.cbm-phone-dropdown .country {
+  color: #ffffff !important;
+}
+
+.cbm-phone-dropdown .country:hover,
+.cbm-phone-dropdown .country.highlight {
+  background: rgba(201, 168, 76, 0.15) !important;
+}
+
+.cbm-phone-dropdown .search {
+  background: #1e1e1e !important;
+  padding: 8px !important;
+}
+
+.cbm-phone-dropdown .search-box {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 6px !important;
+  color: #ffffff !important;
+  width: 100% !important;
+  padding: 6px 10px !important;
+}
+
+.cbm-phone-dropdown .search-box::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.cbm-phone-dropdown .divider {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Confirmation Popup ── */
+.cbm-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10200;
+  padding: 20px;
+  animation: cbm-fadeIn 0.25s ease-out;
+}
+
+.cbm-confirm-modal {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 32px 32px;
+  text-align: center;
+  animation: cbm-slideUp 0.28s ease-out;
+}
+
+.cbm-confirm-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(201, 168, 76, 0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.cbm-confirm-icon svg {
+  color: #c9a84c;
+}
+
+.cbm-confirm-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px;
+}
+
+.cbm-confirm-msg {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+.cbm-confirm-close-btn {
+  background: linear-gradient(135deg, #c9a84c, #e5c76b);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 12px 36px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.cbm-confirm-close-btn:hover {
+  opacity: 0.9;
+}
+
+.cbm-hint {
+  display: block;
+  font-size: 0.78rem;
+  color: #a0a0a0;
+  margin-top: 4px;
+}

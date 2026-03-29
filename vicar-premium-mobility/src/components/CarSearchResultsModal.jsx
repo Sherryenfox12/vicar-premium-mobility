@@ -38,43 +38,60 @@ const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, e
           {!loading && !error && results && (
             <>
               <div className="trip-info">
-                {results.distance_km > 0 && (
+                {results.service_type === 'hire' ? (
                   <>
+                    {results.distance_km > 0 && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.distance')}:</span>
+                        <span className="trip-value">{results.distance_km} km</span>
+                      </div>
+                    )}
+                    {results.pickup_datetime && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.pickupDateTime')}:</span>
+                        <span className="trip-value">{results.pickup_datetime}</span>
+                      </div>
+                    )}
                     <div className="trip-info-item">
-                      <span className="trip-label">{t('home.distance')}:</span>
-                      <span className="trip-value">{results.distance_km} km</span>
+                      <span className="trip-label">{t('home.currency')}:</span>
+                      <span className="trip-value">{results.currency}</span>
                     </div>
+                  </>
+                ) : (
+                  <>
+                    {results.distance_km > 0 && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.distance')}:</span>
+                        <span className="trip-value">{results.distance_km} km</span>
+                      </div>
+                    )}
+                    {results.rental_duration && results.rental_duration.totalMinutes > 0 && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.rentalDuration')}:</span>
+                        <span className="trip-value">
+                          {results.rental_duration.days > 0 && `${results.rental_duration.days}d `}
+                          {results.rental_duration.hours % 24}h {results.rental_duration.minutes}m
+                        </span>
+                      </div>
+                    )}
+                    {results.pickup_datetime && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.pickupDateTime')}:</span>
+                        <span className="trip-value">{results.pickup_datetime}</span>
+                      </div>
+                    )}
+                    {results.dropoff_datetime && (
+                      <div className="trip-info-item">
+                        <span className="trip-label">{t('home.dropoffDateTime')}:</span>
+                        <span className="trip-value">{results.dropoff_datetime}</span>
+                      </div>
+                    )}
                     <div className="trip-info-item">
-                      <span className="trip-label">{t('home.travelTime')}:</span>
-                      <span className="trip-value">{results.estimated_duration_min} {t('home.minutes')}</span>
+                      <span className="trip-label">{t('home.currency')}:</span>
+                      <span className="trip-value">{results.currency}</span>
                     </div>
                   </>
                 )}
-                {results.rental_duration && results.rental_duration.totalMinutes > 0 && (
-                  <div className="trip-info-item">
-                    <span className="trip-label">{t('home.rentalDuration')}:</span>
-                    <span className="trip-value">
-                      {results.rental_duration.days > 0 && `${results.rental_duration.days}d `}
-                      {results.rental_duration.hours % 24}h {results.rental_duration.minutes}m
-                    </span>
-                  </div>
-                )}
-                {results.pickup_datetime && (
-                  <div className="trip-info-item">
-                    <span className="trip-label">{t('home.pickupDateTime')}:</span>
-                    <span className="trip-value">{results.pickup_datetime}</span>
-                  </div>
-                )}
-                {results.dropoff_datetime && (
-                  <div className="trip-info-item">
-                    <span className="trip-label">{t('home.dropoffDateTime')}:</span>
-                    <span className="trip-value">{results.dropoff_datetime}</span>
-                  </div>
-                )}
-                <div className="trip-info-item">
-                  <span className="trip-label">{t('home.currency')}:</span>
-                  <span className="trip-value">{results.currency}</span>
-                </div>
               </div>
 
               <div className="cars-list">
@@ -117,7 +134,7 @@ const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, e
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
-                            <span>{car.luggage_size} {t('home.luggage')}</span>
+                            <span>{car.luggage_size}L</span>
                           </div>
                         </div>
 
@@ -134,14 +151,14 @@ const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, e
                           </div>
                         )}
 
-                        {car.price_per_km && (
+                        {Number(car.price_per_km) > 0 && (
                           <div className="car-price">
                             <span className="price-label">{t('home.pricePerKm')}:</span>
                             <span className="price-value">{results.currency} {car.price_per_km}</span>
                           </div>
                         )}
 
-                        <button className="book-car-btn" onClick={onBookNow}>
+                        <button className="book-car-btn" onClick={() => onBookNow(car)}>
                           {t('home.bookNow')}
                         </button>
                       </div>

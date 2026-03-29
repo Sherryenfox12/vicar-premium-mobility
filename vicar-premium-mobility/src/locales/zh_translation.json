@@ -584,7 +584,7 @@
   "home.date": "日期",
   "home.pickupTime": "接送时间",
   "home.addressPlaceholder": "地址、机场、酒店...",
-  "home.chauffeurWaitNote": "专车司机将免费等候15分钟",
+  "home.chauffeurWaitNote": "",
   "home.search": "搜索",
   "home.signatureServices": "特色服务",
   "home.ourServices": "我们的服务",
