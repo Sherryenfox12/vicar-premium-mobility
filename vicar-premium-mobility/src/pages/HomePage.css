@@ -3872,6 +3872,7 @@
 
 .chauffeur-text-side {
   color: white;
+  align-self: flex-start;
 }
 
 .chauffeur-title {

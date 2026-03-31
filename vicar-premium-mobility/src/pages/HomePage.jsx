@@ -76,7 +76,8 @@ function HomePage() {
     pickupDate: '',
     pickupTime: '',
     dropoffDate: '',
-    dropoffTime: ''
+    dropoffTime: '',
+    deliveryMode: 'store_pickup'
   };
 
   const [formData, setFormData] = useState(() => {
@@ -124,6 +125,11 @@ function HomePage() {
   const [selectedCar, setSelectedCar] = useState(null);
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
 
+  // Hire packages state: { [car_id]: { list, loading, error } }
+  const [hirePackages, setHirePackages] = useState({});
+  // Selected hire package: { carId, id, title } | null
+  const [selectedHirePackage, setSelectedHirePackage] = useState(null);
+
   // New Arrivals state
   const [vehicles, setVehicles] = useState([]);
   const [vehiclesLoading, setVehiclesLoading] = useState(true);
@@ -133,6 +139,10 @@ function HomePage() {
   const [canScrollArrivalsRight, setCanScrollArrivalsRight] = useState(true);
 
   const KW99_LANDING_API_URL = `${import.meta.env.VITE_LANDING_PAGE_CAR_LIST_URL}`;
+  const RENT_DETAIL_API_URL = `${import.meta.env.VITE_LANDING_PAGE_CAR_DETAIL_URL}`;
+  const HIRE_DURATION_OPTIONS_API_URL = RENT_DETAIL_API_URL
+    ? RENT_DETAIL_API_URL.replace(/\/[^/]+$/, '/getHireDurationOptionsAPI')
+    : '';
 
   const goToTownDetails = (id) => {
     navigate(`/town-details/${id}`);
@@ -220,14 +230,17 @@ function HomePage() {
     e.preventDefault();
     
     // Validate form
-    if (!formData.pickupAddress || !formData.pickupLat || !formData.pickupLng) {
-      alert(t('home.pleaseEnterPickup'));
-      return;
-    }
+    const isStorePickup = formData.serviceType === 'rent' && formData.deliveryMode === 'store_pickup';
 
-    if (!formData.dropoffAddress || !formData.dropoffLat || !formData.dropoffLng) {
-      alert(t('home.pleaseEnterDropoff'));
-      return;
+    if (!isStorePickup) {
+      if (!formData.pickupAddress || !formData.pickupLat || !formData.pickupLng) {
+        alert(t('home.pleaseEnterPickup'));
+        return;
+      }
+      if (!formData.dropoffAddress || !formData.dropoffLat || !formData.dropoffLng) {
+        alert(t('home.pleaseEnterDropoff'));
+        return;
+      }
     }
 
     if (!formData.pickupDate || !formData.pickupTime) {
@@ -257,116 +270,168 @@ function HomePage() {
       }
     }
 
+    // Shared distance / duration calculation (coords may be null for store_pickup)
+    const hasCoords = formData.pickupLat != null && formData.dropoffLat != null;
+    const distance = hasCoords
+      ? calculateDistance(formData.pickupLat, formData.pickupLng, formData.dropoffLat, formData.dropoffLng)
+      : 0;
+    const distanceKm = Math.round(distance * 10) / 10;
+    const travelDuration = Math.round((distance / 60) * 60);
+    const rentalDuration = calculateRentalDuration(
+      formData.pickupDate,
+      formData.pickupTime,
+      effectiveDropoffDate,
+      effectiveDropoffTime
+    );
+
     try {
       setSearchLoading(true);
       setSearchError(null);
       setShowModal(true);
 
-      // Fetch all available vehicles
-      const response = await axios.get(KW99_LANDING_API_URL, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      // ── RENT: use car detail API with full payload ──────────────────────────
+      if (formData.serviceType === 'rent') {
+        const rentPayload = {
+          landingPageCarDetailAPI: {
+            service_type: 'rent',
+            delivery_mode: formData.deliveryMode,
+            pickup_date: `${formData.pickupDate} ${formData.pickupTime}:00`,
+            return_date: `${effectiveDropoffDate} ${effectiveDropoffTime}:00`,
+            pickup: { lat: formData.pickupLat, lng: formData.pickupLng },
+            dropoff: { lat: formData.dropoffLat, lng: formData.dropoffLng },
+            distance_km: distanceKm,
+            estimated_duration_min: travelDuration,
+          },
+        };
 
-      console.log('[Landing car list API] raw response:', response.data);
+        console.log('[Rent Detail API] payload:', rentPayload);
 
-      // Support both API formats: user's format { success, cars } or KW99 format { result, data }
-      const apiData = response.data;
-      const isUserFormat = apiData.success && Array.isArray(apiData.cars);
-      const isKw99Format = apiData.result && apiData.status_code === 100 && apiData.data;
-
-      if (isUserFormat || isKw99Format) {
-        // Calculate distance between pickup and dropoff
-        const distance = calculateDistance(
-          formData.pickupLat,
-          formData.pickupLng,
-          formData.dropoffLat,
-          formData.dropoffLng
-        );
-
-        // Estimate travel duration (assuming average speed of 60 km/h)
-        const travelDuration = Math.round((distance / 60) * 60); // in minutes
-
-        // Calculate rental duration
-        const rentalDuration = calculateRentalDuration(
-          formData.pickupDate,
-          formData.pickupTime,
-          effectiveDropoffDate,
-          effectiveDropoffTime
-        );
-
-        let cars;
-
-        if (isUserFormat) {
-          // User's API format: cars already have max_passenger, luggage_size, etc.
-          cars = apiData.cars.map(car => ({
-            car_id: car.car_id,
-            car_name: car.car_name,
-            max_passenger: car.max_passenger ?? 4,
-            luggage_size: car.luggage_size ?? 0,
-            service_type: car.service_type,
-            service_details: Array.isArray(car.service_details)
-              ? car.service_details.map(s => s.title).join(' • ')
-              : car.service_details,
-            price_per_km: car.price_per_km ?? car.estimate_price_per_km,
-            car_type: car.car_type,
-            car_picture: car.car_picture,
-            car_highlight: car.car_highlight
-          }));
-        } else {
-          // KW99 format: transform vehicles, use API values when available
-          cars = apiData.data.map(vehicle => ({
-            car_id: vehicle.vehicle_id?.toString() ?? vehicle.car_id,
-            car_name: vehicle.title ?? vehicle.car_name,
-            max_passenger: vehicle.max_passenger ?? vehicle.max_pax ?? 4,
-            luggage_size: vehicle.luggage_size ?? vehicle.luggage ?? 0,
-            service_type: vehicle.service_type ?? vehicle.serviceType ?? vehicle.service,
-            service_details: vehicle.brand
-              ? `${vehicle.brand.toUpperCase()} ${vehicle.model} - ${vehicle.manufacturing_year}`
-              : vehicle.service_details,
-            price_per_km: vehicle.price_per_km ?? vehicle.estimate_price_per_km ?? 0.00,
-            car_type: vehicle.vehicle_type_text ?? vehicle.car_type,
-            car_picture: vehicle.img_path ?? vehicle.car_picture,
-            car_highlight: vehicle.transmission_text
-              ? `${vehicle.transmission_text} • ${vehicle.cc}cc • ${vehicle.exterior_color}`
-              : vehicle.car_highlight
-          }));
-        }
-
-        // Client-side filter: API returns all cars; filter by service_type for selected tab
-        const allowedServiceTypes = formData.serviceType === 'rent'
-          ? new Set(['rent'])
-          : new Set(['hire', 'hailing', 'airport_transfer']);
-
-        cars = (cars || []).filter(car => allowedServiceTypes.has(car.service_type));
-
-        // Deduplicate by car_id (API may return duplicates)
-        const seenCars = new Set();
-        cars = cars.filter(car => {
-          const key = String(car.car_id ?? '');
-          if (!key) return false;
-          if (seenCars.has(key)) return false;
-          seenCars.add(key);
-          return true;
+        const rentResponse = await axios.post(RENT_DETAIL_API_URL, rentPayload, {
+          headers: { 'Content-Type': 'application/json' },
         });
 
-        const transformedData = {
+        console.log('[Rent Detail API] raw response:', rentResponse.data);
+
+        const rentData = rentResponse.data;
+
+        // Normalise car list: API may return array directly, or { cars: [...] }, or { data: [...] }
+        const rawCars = Array.isArray(rentData)
+          ? rentData
+          : (rentData.cars ?? rentData.data ?? []);
+        const cars = rawCars.map(car => ({
+          car_id: car.car_id ?? car.vehicle_id?.toString(),
+          car_name: car.car_name ?? car.title,
+          max_passenger: car.max_passenger ?? car.max_pax ?? 4,
+          luggage_size: car.luggage_size ?? car.luggage ?? 0,
+          service_type: car.service_type ?? 'rent',
+          service_details: Array.isArray(car.service_details)
+            ? car.service_details.map(s => s.title).join(' • ')
+            : (car.service_details ?? ''),
+          price_per_km: car.price_per_km ?? car.estimate_price_per_km ?? 0,
+          daily_rate: car.daily_rate ?? 0,
+          total_fare: car.total_fare ?? 0,
+          car_type: car.car_type ?? car.vehicle_type_text,
+          car_picture: car.car_picture ?? car.img_path,
+          car_highlight: car.car_highlight ?? '',
+        }));
+
+        setSearchResults({
           success: true,
-          service_type: formData.serviceType,
-          currency: apiData.currency ?? 'MYR',
-          distance_km: Math.round(distance * 10) / 10,
+          service_type: 'rent',
+          currency: rentData.currency ?? 'MYR',
+          distance_km: distanceKm,
           estimated_duration_min: travelDuration,
           rental_duration: rentalDuration,
           pickup_datetime: `${formData.pickupDate} ${formData.pickupTime}`,
           dropoff_datetime: `${effectiveDropoffDate} ${effectiveDropoffTime}`,
-          cars
-        };
+          cars,
+        });
 
-        setSearchResults(transformedData);
-      } else {
-        setSearchError(response.data.msg || t('home.failedToFetchCars'));
+        return;
       }
+
+      // ── HIRE: use car detail API with hire payload ─────────────────────────
+      const hirePayload = {
+        landingPageCarDetailAPI: {
+          service_type: 'hire',
+          pickup_date: `${formData.pickupDate} ${formData.pickupTime}:00`,
+          pickup: { lat: formData.pickupLat, lng: formData.pickupLng },
+        },
+      };
+
+      console.log('[Hire Detail API] payload:', hirePayload);
+
+      const hireResponse = await axios.post(RENT_DETAIL_API_URL, hirePayload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log('[Hire Detail API] raw response:', hireResponse.data);
+
+      const rawHire = hireResponse.data;
+      const rawHireCars = Array.isArray(rawHire)
+        ? rawHire
+        : (rawHire.cars ?? rawHire.data ?? []);
+
+      const hireCars = rawHireCars.map(car => ({
+        car_id: car.car_id ?? car.vehicle_id?.toString(),
+        car_name: car.car_name ?? car.title,
+        max_passenger: car.max_passenger ?? car.max_pax ?? 4,
+        luggage_size: car.luggage_size ?? car.luggage ?? 0,
+        service_type: car.service_type ?? 'hire',
+        service_details: Array.isArray(car.service_details)
+          ? car.service_details.map(s => s.title).join(' • ')
+          : (car.service_details ?? ''),
+        price_per_km: car.price_per_km ?? car.estimate_price_per_km ?? 0,
+        daily_rate: car.daily_rate ?? 0,
+        total_fare: car.total_fare ?? 0,
+        car_type: car.car_type ?? car.vehicle_type_text,
+        car_picture: car.car_picture ?? car.img_path,
+        car_highlight: car.car_highlight ?? '',
+      }));
+
+      setSearchResults({
+        success: true,
+        service_type: 'hire',
+        currency: rawHire.currency ?? 'MYR',
+        distance_km: distanceKm,
+        estimated_duration_min: travelDuration,
+        pickup_datetime: `${formData.pickupDate} ${formData.pickupTime}`,
+        cars: hireCars,
+      });
+
+      setSelectedHirePackage(null);
+
+      // Initialise hire packages loading state
+      const initPkgs = {};
+      hireCars.forEach(c => { initPkgs[c.car_id] = { list: [], loading: true, error: null }; });
+      setHirePackages(initPkgs);
+
+      // Fetch hire duration packages for each car (fire-and-forget)
+      hireCars.forEach(async (car) => {
+        try {
+          const pkgRes = await axios.get(HIRE_DURATION_OPTIONS_API_URL, {
+            params: { car_id: car.car_id },
+          });
+          const raw = pkgRes.data;
+          const list = Array.isArray(raw)
+            ? raw
+            : Array.isArray(raw?.data)
+              ? raw.data
+              : Array.isArray(raw?.packages)
+                ? raw.packages
+                : [];
+          setHirePackages(prev => ({
+            ...prev,
+            [car.car_id]: { list, loading: false, error: null },
+          }));
+        } catch (err) {
+          const msg = err.response?.data?.msg || err.message || 'Failed to load';
+          setHirePackages(prev => ({
+            ...prev,
+            [car.car_id]: { list: [], loading: false, error: msg },
+          }));
+        }
+      });
     } catch (error) {
       console.error('Error fetching car details:', error);
       setSearchError(error.response?.data?.msg || error.message || t('home.errorFetchingCars'));
@@ -380,11 +445,14 @@ function HomePage() {
     setShowModal(false);
     setSearchResults(null);
     setSearchError(null);
+    setHirePackages({});
+    setSelectedHirePackage(null);
   };
 
   // Handle book now - open customer details form
   const handleBookNow = (car) => {
-    setSelectedCar(car);
+    const pkg = selectedHirePackage?.carId === car.car_id ? selectedHirePackage : null;
+    setSelectedCar({ ...car, selected_package: pkg });
     setShowModal(false);
     setShowBookingForm(true);
   };
@@ -435,6 +503,7 @@ function HomePage() {
         pax: customerData.pax
       },
       selected_car: selectedCar,
+      hire_package: selectedCar?.selected_package ?? null,
       pickup_datetime: formatPickupDropoff(formData.pickupDate, formData.pickupTime),
       dropoff_datetime: formatPickupDropoff(dropoffForBooking.dropoffDate, dropoffForBooking.dropoffTime),
       pickup_address: formData.pickupAddress,
@@ -1063,51 +1132,59 @@ function HomePage() {
           <div className="chauffeur-bg-overlay"></div>
           <div className="chauffeur-content">
             <div className="chauffeur-text-side">
-              <p className="lux-eyebrow">{t('home.chauffeurAirportCity')}</p>
-              <h2 className="chauffeur-title">{t('home.malaysiaChauffeurService')}</h2>
-              <p className="chauffeur-subtitle">
-                {t('home.experienceLuxuryTransport')}
-              </p>
-
-{/* 
-
-              <div className="lux-trustbar" aria-label="Trusted partners">
-                <div className="lux-trust-item">
-                  <img className="lux-trust-logo" src="/kw99.png" alt="KW99" loading="lazy" />
-                </div>
-                <div className="lux-trust-divider" aria-hidden="true"></div>
-                <div className="lux-trust-item">
-                  <span className="lux-trust-text">{t('home.concierge24')}</span>
-                </div>
-                <div className="lux-trust-divider" aria-hidden="true"></div>
-                <div className="lux-trust-item">
-                  <span className="lux-trust-text">{t('home.premiumFleet')}</span>
-                </div>
-              </div>
-              */}
-
-
-
-              <div className="chauffeur-features">
-                <div className="feature-item">
-                  <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>{t('home.professionalDrivers')}</span>
-                </div>
-                <div className="feature-item">
-                  <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>{t('home.availability24')}</span>
-                </div>
-                <div className="feature-item">
-                  <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>{t('home.luxuryVehicles')}</span>
-                </div>
-              </div>
+              {formData.serviceType === 'hire' ? (
+                <>
+                  <p className="lux-eyebrow">{t('home.chauffeurAirportCity')}</p>
+                  <h2 className="chauffeur-title">{t('home.malaysiaChauffeurService')}</h2>
+                  <p className="chauffeur-subtitle">{t('home.experienceLuxuryTransport')}</p>
+                  <div className="chauffeur-features">
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.professionalDrivers')}</span>
+                    </div>
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.availability24')}</span>
+                    </div>
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.luxuryVehicles')}</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="lux-eyebrow">{t('home.rentalSelfDrive')}</p>
+                  <h2 className="chauffeur-title">{t('home.rentalTitle')}</h2>
+                  <p className="chauffeur-subtitle">{t('home.rentalDescription')}</p>
+                  <div className="chauffeur-features">
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.rentalFeatureFleet')}</span>
+                    </div>
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.rentalFeatureDuration')}</span>
+                    </div>
+                    <div className="feature-item">
+                      <svg className="feature-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span>{t('home.rentalFeatureDelivery')}</span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             
             <div className="chauffeur-form-side">
@@ -1129,7 +1206,21 @@ function HomePage() {
                   </button>
                   <button 
                     className={`home-form-tab ${formData.serviceType === 'rent' ? 'active' : ''}`}
-                    onClick={() => setFormData(prev => ({ ...prev, serviceType: 'rent' }))}
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      serviceType: 'rent',
+                      deliveryMode: prev.deliveryMode || 'store_pickup',
+                      pickupAddress: prev.deliveryMode !== 'door_step_delivery'
+                        ? 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang'
+                        : prev.pickupAddress,
+                      pickupLat: prev.deliveryMode !== 'door_step_delivery' ? 5.409642 : prev.pickupLat,
+                      pickupLng: prev.deliveryMode !== 'door_step_delivery' ? 100.316488 : prev.pickupLng,
+                      dropoffAddress: prev.deliveryMode !== 'door_step_delivery'
+                        ? 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang'
+                        : prev.dropoffAddress,
+                      dropoffLat: prev.deliveryMode !== 'door_step_delivery' ? 5.409642 : prev.dropoffLat,
+                      dropoffLng: prev.deliveryMode !== 'door_step_delivery' ? 100.316488 : prev.dropoffLng,
+                    }))}
                     type="button"
                   >
                     {t('home.carRental')}
@@ -1137,40 +1228,92 @@ function HomePage() {
                 </div>
                 
                 <form className="home-booking-form" onSubmit={handleSearchCars}>
-                  <div className="home-form-group">
-                    <label className="home-form-label">{t('home.from')}</label>
-                    <div className="home-input-with-icon">
-                      <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      <AddressAutocomplete
-                        value={formData.pickupAddress}
-                        onChange={(e) => setFormData(prev => ({ ...prev, pickupAddress: e.target.value }))}
-                        onPlaceSelect={handlePickupPlaceSelect}
-                        placeholder={t('home.addressPlaceholder')}
-                        className="home-form-input"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="home-form-group">
-                    <label className="home-form-label">{t('home.to')}</label>
-                    <div className="home-input-with-icon">
-                      <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      <AddressAutocomplete
-                        value={formData.dropoffAddress}
-                        onChange={(e) => setFormData(prev => ({ ...prev, dropoffAddress: e.target.value }))}
-                        onPlaceSelect={handleDropoffPlaceSelect}
-                        placeholder={t('home.addressPlaceholder')}
-                        className="home-form-input"
-                      />
+                  {/* Delivery Mode — rent only, always first */}
+                  {formData.serviceType === 'rent' && (
+                    <div className="home-form-group">
+                      <label className="home-form-label">{t('home.deliveryMode')}</label>
+                      <div className="home-input-with-icon">
+                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <select
+                          className="home-form-input"
+                          value={formData.deliveryMode}
+                          onChange={(e) => {
+                            const mode = e.target.value;
+                            if (mode === 'store_pickup') {
+                              setFormData(prev => ({
+                                ...prev,
+                                deliveryMode: mode,
+                                pickupAddress: 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang',
+                                pickupLat: 5.409642,
+                                pickupLng: 100.316488,
+                                dropoffAddress: 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang',
+                                dropoffLat: 5.409642,
+                                dropoffLng: 100.316488,
+                              }));
+                            } else {
+                              setFormData(prev => ({
+                                ...prev,
+                                deliveryMode: mode,
+                                pickupAddress: '',
+                                pickupLat: null,
+                                pickupLng: null,
+                                dropoffAddress: '',
+                                dropoffLat: null,
+                                dropoffLng: null,
+                              }));
+                            }
+                          }}
+                        >
+                          <option value="store_pickup">Store Pickup</option>
+                          <option value="door_step_delivery">Door Step Delivery</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
+                  {/* Pickup / Dropoff address — hidden for store_pickup */}
+                  {!(formData.serviceType === 'rent' && formData.deliveryMode === 'store_pickup') && (
+                    <>
+                      <div className="home-form-group">
+                        <label className="home-form-label">{t('home.from')}</label>
+                        <div className="home-input-with-icon">
+                          <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <AddressAutocomplete
+                            value={formData.pickupAddress}
+                            onChange={(e) => setFormData(prev => ({ ...prev, pickupAddress: e.target.value, pickupLat: null, pickupLng: null }))}
+                            onPlaceSelect={handlePickupPlaceSelect}
+                            placeholder={t('home.addressPlaceholder')}
+                            className="home-form-input"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="home-form-group">
+                        <label className="home-form-label">{t('home.to')}</label>
+                        <div className="home-input-with-icon">
+                          <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <AddressAutocomplete
+                            value={formData.dropoffAddress}
+                            onChange={(e) => setFormData(prev => ({ ...prev, dropoffAddress: e.target.value, dropoffLat: null, dropoffLng: null }))}
+                            onPlaceSelect={handleDropoffPlaceSelect}
+                            placeholder={t('home.addressPlaceholder')}
+                            className="home-form-input"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Pickup date + time */}
                   <div className="home-form-row">
                     <div className="home-form-group flex-1">
                       <label className="home-form-label">{t('home.pickupDate')}</label>
@@ -1204,6 +1347,7 @@ function HomePage() {
                     </div>
                   </div>
 
+                  {/* Dropoff date + time — rent only */}
                   {formData.serviceType === 'rent' && (
                     <div className="home-form-row">
                       <div className="home-form-group flex-1">
@@ -1839,6 +1983,9 @@ function HomePage() {
         results={searchResults}
         loading={searchLoading}
         error={searchError}
+        hirePackages={hirePackages}
+        selectedHirePackage={selectedHirePackage}
+        onSelectHirePackage={setSelectedHirePackage}
       />
 
       {/* Customer Booking Form Modal */}

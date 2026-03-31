@@ -2,7 +2,17 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import './CarSearchResultsModal.css';
 
-const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, error }) => {
+const CarSearchResultsModal = ({
+  isOpen,
+  onClose,
+  onBookNow,
+  results,
+  loading,
+  error,
+  hirePackages = {},
+  selectedHirePackage = null,
+  onSelectHirePackage = () => {},
+}) => {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
@@ -157,6 +167,78 @@ const CarSearchResultsModal = ({ isOpen, onClose, onBookNow, results, loading, e
                             <span className="price-value">{results.currency} {car.price_per_km}</span>
                           </div>
                         )}
+
+                        {(results.service_type === 'rent' || results.service_type === 'hire') && (
+                          <div className="car-rental-pricing">
+                            {Number(car.daily_rate) > 0 && (
+                              <div className="car-price">
+                                <span className="price-label">{t('home.dailyRate', 'Daily Rate')}:</span>
+                                <span className="price-value">{results.currency} {Number(car.daily_rate).toFixed(2)}</span>
+                              </div>
+                            )}
+                            {Number(car.total_fare) > 0 && (
+                              <div className="car-price car-price--total">
+                                <span className="price-label">{t('home.totalFare', 'Total Fare')}:</span>
+                                <span className="price-value price-value--total">{results.currency} {Number(car.total_fare).toFixed(2)}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Hire packages */}
+                        {results.service_type === 'hire' && (() => {
+                          const pkgData = hirePackages[car.car_id];
+                          if (!pkgData) return null;
+                          const isCarSelected = selectedHirePackage?.carId === car.car_id;
+                          return (
+                            <div className="hire-packages">
+                              <p className="hire-packages-label">{t('home.selectPackage') || 'Select Package'}</p>
+                              {pkgData.loading && (
+                                <div className="hire-packages-loading">
+                                  <div className="spinner-small"></div>
+                                  <span>{t('home.loadingPackages') || 'Loading packages…'}</span>
+                                </div>
+                              )}
+                              {pkgData.error && (
+                                <p className="hire-packages-error">{pkgData.error}</p>
+                              )}
+                              {!pkgData.loading && pkgData.list.length === 0 && !pkgData.error && (
+                                <p className="hire-packages-empty">{t('home.noPackages') || 'No packages available.'}</p>
+                              )}
+                              {!pkgData.loading && pkgData.list.length > 0 && (
+                                <div className="hire-packages-list">
+                                  {pkgData.list.map((pkg) => {
+                                    const pkgId = pkg.id ?? pkg.package_id ?? pkg.hire_package_id;
+                                    const pkgTitle = pkg.title ?? pkg.name ?? String(pkgId);
+                                    const isSelected = isCarSelected && selectedHirePackage?.id === pkgId;
+                                    return (
+                                      <button
+                                        key={pkgId}
+                                        type="button"
+                                        className={`hire-package-btn${isSelected ? ' selected' : ''}`}
+                                        onClick={() =>
+                                          onSelectHirePackage(
+                                            isSelected
+                                              ? null
+                                              : { carId: car.car_id, id: pkgId, title: pkgTitle }
+                                          )
+                                        }
+                                      >
+                                        {pkgTitle}
+                                        {isSelected && <span className="hire-package-check">✓</span>}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                              {isCarSelected && selectedHirePackage && (
+                                <p className="hire-package-selected-note">
+                                  {t('home.packageSelected') || 'Package selected:'} <strong>{selectedHirePackage.title}</strong>
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })()}
 
                         <button className="book-car-btn" onClick={() => onBookNow(car)}>
                           {t('home.bookNow')}
