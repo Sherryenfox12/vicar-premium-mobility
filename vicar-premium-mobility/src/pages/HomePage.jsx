@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCar, FaCalendarAlt, FaKey } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ import AddressAutocomplete from '../components/AddressAutocomplete';
 import CustomerBookingModal from '../components/CustomerBookingModal';
 import '../components/CustomerBookingModal.css';
 import './HomePage.css';
+
 
 
 const VIDEO_TRIGGER_STORAGE_KEY = 'vicar_home_video_last_trigger';
@@ -41,6 +42,97 @@ const saveVideoTrigger = () => {
     console.warn('Failed to save video trigger to localStorage:', e);
   }
 };
+
+/** When the location API is unavailable, keep previous default coordinates so search still works. */
+const FALLBACK_PICKUP_LOCATION = {
+  id: null,
+  name: 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang',
+  latitude: 5.409642,
+  longitude: 100.316488,
+};
+
+/** Match ids whether the API / localStorage uses number or string (e.g. 1 vs "1"). */
+function locationIdsEqual(a, b) {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return String(a) === String(b);
+}
+
+function findLocationById(list, id) {
+  if (!list?.length || id == null) return undefined;
+  return list.find((loc) => locationIdsEqual(loc.id, id));
+}
+
+/** API may use latitude/longitude or lat/lng. */
+function parseCoordsFromLocation(loc) {
+  if (!loc || typeof loc !== 'object') return { lat: null, lng: null };
+  const latRaw = loc.latitude ?? loc.lat;
+  const lngRaw = loc.longitude ?? loc.lng;
+  const lat = typeof latRaw === 'number' ? latRaw : parseFloat(String(latRaw ?? ''));
+  const lng = typeof lngRaw === 'number' ? lngRaw : parseFloat(String(lngRaw ?? ''));
+  return {
+    lat: Number.isFinite(lat) ? lat : null,
+    lng: Number.isFinite(lng) ? lng : null,
+  };
+}
+
+function isValidPickupLocation(loc) {
+  if (!loc || typeof loc !== 'object') return false;
+  if (loc.id == null) return false;
+  const { lat, lng } = parseCoordsFromLocation(loc);
+  return lat != null && lng != null;
+}
+
+/**
+ * Normalises `GET getLocationDetailsAPI` body (e.g. axios `response.data`).
+ * Example: `{ result, status_code, msg, data: { id, name, latitude, longitude, img_url } }`
+ * — a single store object — or `data: [ ... ]` when multiple exist.
+ * Also supports: `data.locations` / `data.stores` / `data.items` / `data.list` as arrays.
+ */
+function normalizeLocationListFromApi(responseData) {
+  const raw = responseData?.data;
+  let candidates = [];
+
+  if (Array.isArray(raw)) {
+    candidates = raw;
+  } else if (raw && typeof raw === 'object') {
+    if (Array.isArray(raw.locations)) {
+      candidates = raw.locations;
+    } else if (Array.isArray(raw.stores)) {
+      candidates = raw.stores;
+    } else if (Array.isArray(raw.items)) {
+      candidates = raw.items;
+    } else if (Array.isArray(raw.list)) {
+      candidates = raw.list;
+    } else {
+      candidates = [raw];
+    }
+  }
+
+  const valid = candidates.filter(isValidPickupLocation);
+  const seen = new Set();
+  return valid.filter((loc) => {
+    const key = String(loc.id);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function formPatchFromPickupLocation(loc) {
+  if (!loc) return {};
+  const { lat, lng } = parseCoordsFromLocation(loc);
+  const label = loc.name || '';
+  return {
+    pickupLocationId: loc.id ?? null,
+    pickupAddress: label,
+    pickupLat: lat,
+    pickupLng: lng,
+    dropoffAddress: label,
+    dropoffLat: lat,
+    dropoffLng: lng,
+  };
+}
 
 function HomePage() {
   const { t } = useTranslation();
@@ -77,7 +169,8 @@ function HomePage() {
     pickupTime: '',
     dropoffDate: '',
     dropoffTime: '',
-    deliveryMode: 'store_pickup'
+    deliveryMode: 'store_pickup',
+    pickupLocationId: null,
   };
 
   const [formData, setFormData] = useState(() => {
@@ -140,9 +233,64 @@ function HomePage() {
 
   const KW99_LANDING_API_URL = `${import.meta.env.VITE_LANDING_PAGE_CAR_LIST_URL}`;
   const RENT_DETAIL_API_URL = `${import.meta.env.VITE_LANDING_PAGE_CAR_DETAIL_URL}`;
+  const GET_LOCATION_DETAILS_API_URL = `${import.meta.env.VITE_GET_LOCATION_DETAILS_API_URL || ''}`;
   const HIRE_DURATION_OPTIONS_API_URL = RENT_DETAIL_API_URL
     ? RENT_DETAIL_API_URL.replace(/\/[^/]+$/, '/getHireDurationOptionsAPI')
     : '';
+
+  const [pickupLocations, setPickupLocations] = useState([]);
+  const [pickupLocationsLoading, setPickupLocationsLoading] = useState(false);
+
+  /** API list or single fallback; used for rent + store pickup UI and sync. */
+  const pickupStoreOptions = useMemo(() => {
+    return pickupLocations.length > 0 ? pickupLocations : [FALLBACK_PICKUP_LOCATION];
+  }, [pickupLocations]);
+
+  useEffect(() => {
+    if (!GET_LOCATION_DETAILS_API_URL) return;
+    let cancelled = false;
+    setPickupLocationsLoading(true);
+    axios
+      .get(GET_LOCATION_DETAILS_API_URL)
+      .then((res) => {
+        if (cancelled) return;
+        const list = normalizeLocationListFromApi(res.data);
+        setPickupLocations(list);
+      })
+      .catch((err) => {
+        console.error('Failed to load pickup locations:', err);
+        if (!cancelled) setPickupLocations([]);
+      })
+      .finally(() => {
+        if (!cancelled) setPickupLocationsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [GET_LOCATION_DETAILS_API_URL]);
+
+  /** Keep rent + store_pickup coordinates aligned with API locations (or fallback). */
+  useEffect(() => {
+    if (pickupLocationsLoading) return;
+    setFormData((prev) => {
+      if (prev.serviceType !== 'rent' || prev.deliveryMode !== 'store_pickup') return prev;
+      const list = pickupStoreOptions;
+      const pick =
+        prev.pickupLocationId != null
+          ? findLocationById(list, prev.pickupLocationId) || list[0]
+          : list[0];
+      if (!pick) return prev;
+      const patch = formPatchFromPickupLocation(pick);
+      if (
+        locationIdsEqual(prev.pickupLocationId, pick.id) &&
+        prev.pickupLat === patch.pickupLat &&
+        prev.pickupLng === patch.pickupLng
+      ) {
+        return prev;
+      }
+      return { ...prev, ...patch };
+    });
+  }, [pickupStoreOptions, pickupLocationsLoading]);
 
   const goToTownDetails = (id) => {
     navigate(`/town-details/${id}`);
@@ -232,7 +380,38 @@ function HomePage() {
     // Validate form
     const isStorePickup = formData.serviceType === 'rent' && formData.deliveryMode === 'store_pickup';
 
-    if (!isStorePickup) {
+    if (isStorePickup && pickupLocationsLoading) {
+      alert(t('home.loadingPickupStores'));
+      return;
+    }
+
+    let pickupLat = formData.pickupLat;
+    let pickupLng = formData.pickupLng;
+    let dropoffLat = formData.dropoffLat;
+    let dropoffLng = formData.dropoffLng;
+
+    if (isStorePickup) {
+      const loc =
+        findLocationById(pickupStoreOptions, formData.pickupLocationId) || pickupStoreOptions[0];
+      if (loc) {
+        const p = formPatchFromPickupLocation(loc);
+        if (p.pickupLat != null && p.pickupLng != null) {
+          pickupLat = p.pickupLat;
+          pickupLng = p.pickupLng;
+          dropoffLat = p.dropoffLat;
+          dropoffLng = p.dropoffLng;
+        }
+      }
+      const coordsOk =
+        pickupLat != null &&
+        pickupLng != null &&
+        Number.isFinite(Number(pickupLat)) &&
+        Number.isFinite(Number(pickupLng));
+      if (!coordsOk) {
+        alert(t('home.pleaseSelectPickupStore'));
+        return;
+      }
+    } else {
       if (!formData.pickupAddress || !formData.pickupLat || !formData.pickupLng) {
         alert(t('home.pleaseEnterPickup'));
         return;
@@ -252,7 +431,13 @@ function HomePage() {
     let effectiveDropoffTime = formData.dropoffTime;
 
     if (formData.serviceType === 'hire') {
-      const est = computeEstimatedDropoffFromRoute(formData);
+      const est = computeEstimatedDropoffFromRoute({
+        ...formData,
+        pickupLat,
+        pickupLng,
+        dropoffLat,
+        dropoffLng,
+      });
       effectiveDropoffDate = est.dropoffDate;
       effectiveDropoffTime = est.dropoffTime;
     } else {
@@ -270,10 +455,10 @@ function HomePage() {
       }
     }
 
-    // Shared distance / duration calculation (coords may be null for store_pickup)
-    const hasCoords = formData.pickupLat != null && formData.dropoffLat != null;
+    // Shared distance / duration calculation
+    const hasCoords = pickupLat != null && dropoffLat != null;
     const distance = hasCoords
-      ? calculateDistance(formData.pickupLat, formData.pickupLng, formData.dropoffLat, formData.dropoffLng)
+      ? calculateDistance(pickupLat, pickupLng, dropoffLat, dropoffLng)
       : 0;
     const distanceKm = Math.round(distance * 10) / 10;
     const travelDuration = Math.round((distance / 60) * 60);
@@ -297,8 +482,8 @@ function HomePage() {
             delivery_mode: formData.deliveryMode,
             pickup_date: `${formData.pickupDate} ${formData.pickupTime}:00`,
             return_date: `${effectiveDropoffDate} ${effectiveDropoffTime}:00`,
-            pickup: { lat: formData.pickupLat, lng: formData.pickupLng },
-            dropoff: { lat: formData.dropoffLat, lng: formData.dropoffLng },
+            pickup: { lat: pickupLat, lng: pickupLng },
+            dropoff: { lat: dropoffLat, lng: dropoffLng },
             distance_km: distanceKm,
             estimated_duration_min: travelDuration,
           },
@@ -355,7 +540,7 @@ function HomePage() {
         landingPageCarDetailAPI: {
           service_type: 'hire',
           pickup_date: `${formData.pickupDate} ${formData.pickupTime}:00`,
-          pickup: { lat: formData.pickupLat, lng: formData.pickupLng },
+          pickup: { lat: pickupLat, lng: pickupLng },
         },
       };
 
@@ -493,6 +678,11 @@ function HomePage() {
         ? computeEstimatedDropoffFromRoute(formData)
         : { dropoffDate: formData.dropoffDate, dropoffTime: formData.dropoffTime };
 
+    const hireRouteEstimate =
+      formData.serviceType === 'hire'
+        ? computeEstimatedDropoffFromRoute(formData)
+        : null;
+
     const bookingData = {
       timestamp: toMyDateTimeString(new Date()),
       customer: {
@@ -512,7 +702,28 @@ function HomePage() {
       dropoff_address: formData.dropoffAddress,
       dropoff_lat: formData.dropoffLat,
       dropoff_lng: formData.dropoffLng,
-      service_type: formData.serviceType
+      service_type: formData.serviceType,
+
+      /** Car rental (self-drive): store vs door delivery + last search quote context */
+      delivery_mode:
+        formData.serviceType === 'rent' ? formData.deliveryMode : null,
+      pickup_location_id:
+        formData.serviceType === 'rent' && formData.deliveryMode === 'store_pickup'
+          ? formData.pickupLocationId
+          : null,
+      currency: searchResults?.currency ?? null,
+      distance_km: searchResults?.distance_km ?? null,
+      estimated_route_duration_min: searchResults?.estimated_duration_min ?? null,
+      rental_duration:
+        formData.serviceType === 'rent' && searchResults?.rental_duration
+          ? searchResults.rental_duration
+          : null,
+
+      /** Chauffeur (hire): route estimate to drop-off (not user-picked) */
+      estimated_travel_duration_min:
+        formData.serviceType === 'hire' && hireRouteEstimate
+          ? hireRouteEstimate.travelDurationMin
+          : null
     };
 
     const backendUrl = import.meta.env.VITE_VICAR_BACKEND || 'http://localhost:82/api';
@@ -1206,21 +1417,13 @@ function HomePage() {
                   </button>
                   <button 
                     className={`home-form-tab ${formData.serviceType === 'rent' ? 'active' : ''}`}
-                    onClick={() => setFormData(prev => ({
-                      ...prev,
-                      serviceType: 'rent',
-                      deliveryMode: prev.deliveryMode || 'store_pickup',
-                      pickupAddress: prev.deliveryMode !== 'door_step_delivery'
-                        ? 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang'
-                        : prev.pickupAddress,
-                      pickupLat: prev.deliveryMode !== 'door_step_delivery' ? 5.409642 : prev.pickupLat,
-                      pickupLng: prev.deliveryMode !== 'door_step_delivery' ? 100.316488 : prev.pickupLng,
-                      dropoffAddress: prev.deliveryMode !== 'door_step_delivery'
-                        ? 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang'
-                        : prev.dropoffAddress,
-                      dropoffLat: prev.deliveryMode !== 'door_step_delivery' ? 5.409642 : prev.dropoffLat,
-                      dropoffLng: prev.deliveryMode !== 'door_step_delivery' ? 100.316488 : prev.dropoffLng,
-                    }))}
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        serviceType: 'rent',
+                        deliveryMode: prev.deliveryMode || 'store_pickup',
+                      }))
+                    }
                     type="button"
                   >
                     {t('home.carRental')}
@@ -1243,20 +1446,12 @@ function HomePage() {
                           onChange={(e) => {
                             const mode = e.target.value;
                             if (mode === 'store_pickup') {
-                              setFormData(prev => ({
-                                ...prev,
-                                deliveryMode: mode,
-                                pickupAddress: 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang',
-                                pickupLat: 5.409642,
-                                pickupLng: 100.316488,
-                                dropoffAddress: 'NO.148, Jalan Sungai Pinang, Taman Cemerlang, 10150 George Town, Pulau Pinang',
-                                dropoffLat: 5.409642,
-                                dropoffLng: 100.316488,
-                              }));
+                              setFormData((prev) => ({ ...prev, deliveryMode: mode }));
                             } else {
-                              setFormData(prev => ({
+                              setFormData((prev) => ({
                                 ...prev,
                                 deliveryMode: mode,
+                                pickupLocationId: null,
                                 pickupAddress: '',
                                 pickupLat: null,
                                 pickupLng: null,
@@ -1269,6 +1464,47 @@ function HomePage() {
                         >
                           <option value="store_pickup">Store Pickup</option>
                           <option value="door_step_delivery">Door Step Delivery</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.serviceType === 'rent' && formData.deliveryMode === 'store_pickup' && (
+                    <div className="home-form-group">
+                      <label className="home-form-label">{t('home.pickupStore')}</label>
+                      <div className="home-input-with-icon">
+                        <svg className="home-input-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <select
+                          className="home-form-input"
+                          disabled={pickupLocationsLoading}
+                          value={
+                            formData.pickupLocationId != null ? String(formData.pickupLocationId) : ''
+                          }
+                          onChange={(e) => {
+                            const idRaw = e.target.value;
+                            const list = pickupStoreOptions;
+                            const loc =
+                              idRaw === ''
+                                ? list[0]
+                                : findLocationById(list, idRaw) || list[0];
+                            if (!loc) return;
+                            setFormData((prev) => ({ ...prev, ...formPatchFromPickupLocation(loc) }));
+                          }}
+                        >
+                          {pickupLocationsLoading && (
+                            <option value="">{t('home.loadingPickupStores')}</option>
+                          )}
+                          {!pickupLocationsLoading &&
+                            pickupStoreOptions.map((loc, index) => (
+                              <option
+                                key={`pickup-store-${String(loc.id)}-${index}`}
+                                value={loc.id != null ? String(loc.id) : ''}
+                              >
+                                {loc.name || t('home.pickupStore')}
+                              </option>
+                            ))}
                         </select>
                       </div>
                     </div>

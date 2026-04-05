@@ -74,9 +74,14 @@ function VicarFooter() {
                 <span className="vicar-footerLux__metaLabel">{t('footer.location')}</span>
                 <span className="vicar-footerLux__metaValue">{t('footer.penangMalaysia')}</span>
               </div>
-              <Link to="/contact-us" className="vicar-footerLux__cta">
+              <a
+                href="https://api.whatsapp.com/send/?phone=601155532999&text&type=phone_number&app_absent=0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="vicar-footerLux__cta"
+              >
                 {t('footer.contactConcierge')}
-              </Link>
+              </a>
             </div>
           </div>
         </div>

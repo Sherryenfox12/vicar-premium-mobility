@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import './VicarHeader.css';
 
+const HEADER_WHATSAPP_HREF =
+  'https://api.whatsapp.com/send/?phone=601155532999&text&type=phone_number&app_absent=0';
+
 function VicarHeader({ currentPage = 'home' }) {
   const { i18n, t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,9 +76,14 @@ function VicarHeader({ currentPage = 'home' }) {
             <button className="vicar-header__lang vicar-header__lang--main" type="button" onClick={toggleLanguage} aria-label="Toggle language">
               EN / 中文
             </button>
-            <Link to="/contact-us" className="vicar-header__cta">
+            <a
+              href={HEADER_WHATSAPP_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vicar-header__cta"
+            >
               {t('header.bookNow')}
-            </Link>
+            </a>
 
             <button
               type="button"
@@ -125,9 +133,15 @@ function VicarHeader({ currentPage = 'home' }) {
           <button className="vicar-header__lang vicar-drawer__lang" type="button" onClick={toggleLanguage} aria-label="Toggle language">
             EN / 中文
           </button>
-          <Link to="/contact-us" className="vicar-drawer__cta" onClick={closeMenu}>
+          <a
+            href={HEADER_WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="vicar-drawer__cta"
+            onClick={closeMenu}
+          >
             {t('header.bookNow')}
-          </Link>
+          </a>
           <p className="vicar-drawer__hint">{t('header.tagline')}</p>
         </div>
       </div>

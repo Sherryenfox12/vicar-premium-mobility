@@ -976,20 +976,14 @@
 
 .lux-flow__pills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.5rem;
   margin: 1.4rem 0 1.6rem 0;
 }
 
 .lux-flow__pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.55rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid rgba(216, 195, 154, 0.18);
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(10px);
   color: rgba(216, 195, 154, 0.86);
   font-size: 0.72rem;
   letter-spacing: 0.18em;
